@@ -4,7 +4,7 @@
   "description": "MCP server that drafts winning proposals in your voice from a client brief",
   "type": "module",
   "bin": {
-    "proposalcraft": "./dist/index.js"
+    "proposalcraft": "dist/index.js"
   },
   "main": "./dist/index.js",
   "files": [
@@ -30,7 +30,7 @@
   "homepage": "https://bradshawprojects.github.io/proposalcraft/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bradshawprojects/proposalcraft"
+    "url": "git+https://github.com/bradshawprojects/proposalcraft.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0"
