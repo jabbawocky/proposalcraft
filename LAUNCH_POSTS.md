@@ -99,3 +99,83 @@ Landing page: https://bradshawprojects.github.io/proposalcraft/
 Motivation: proposal writing is one of those high-value but annoying tasks perfect for AI-assist. Existing tools (Bonsai, Honeybook) are full CRMs with proposal as an afterthought. This is the opposite — just the proposal, nothing else.
 
 Would appreciate feedback on whether the MCP distribution model makes sense, or if a standalone CLI / web UI would get more traction.
+
+---
+
+## Product Hunt
+
+**Name:** ProposalCraft
+**Tagline:** Draft winning proposals in your voice — free MCP server for Claude Desktop
+**Topics:** Developer Tools, Productivity, Freelancing
+
+**Description:**
+ProposalCraft is an open-source MCP server that turns client briefs into ready-to-send proposals in 30 seconds.
+
+Save your 2-3 best past proposals → paste a new brief → Claude drafts a new one in your voice. No API key, no subscription, no cloud storage. Everything runs locally.
+
+**Why it's different from Proposal Genie / PouncerAI / BidPilot:**
+- Free, MIT licensed (not $8-15/mo)
+- Works for any client, not just Upwork
+- Learns from YOUR proposals (not generic templates)
+- Local-only — your proposals never leave your machine
+
+**Maker's first comment:**
+Hi PH! Built this because the proposal math is brutal — most freelancers win ~25% of pitches, so you're writing 3-4 proposals for every deal you close. ProposalCraft turns 2 hours → 30 seconds.
+
+The MCP distribution model is a deliberate bet: zero infrastructure, zero ops, plugs directly into Claude Desktop. Trade-off is you need Claude Desktop, which cuts the TAM vs a web app. But it also means zero backend costs and a much tighter ICP: freelancers who already use AI daily.
+
+One thing I shipped this week: I removed the Anthropic SDK dependency entirely. The original version made its own API calls (needed your API key). The new version passes context to Claude and lets your existing session handle the drafting — so you only pay for one subscription (Claude), not two (Claude + API).
+
+Would love honest feedback: is the MCP distribution the right call, or should I build a web version next?
+
+GitHub: https://github.com/bradshawprojects/proposalcraft
+Landing: https://bradshawprojects.github.io/proposalcraft/
+
+---
+
+## X/Twitter thread
+
+**Post 1:**
+I built a free tool that writes client proposals in your own voice.
+
+No subscription. No cloud. Learns from your own winning proposals.
+
+Here's the 30-second install 🧵
+
+**Post 2:**
+The problem: freelancers spend 2-4h per proposal and win ~25% of pitches.
+
+That's 6-12h unpaid per deal closed.
+
+Existing tools charge $8-15/mo, store your data on their servers, and most only work on Upwork.
+
+**Post 3:**
+ProposalCraft is an MCP server for Claude Desktop.
+
+Save 2-3 of your past winning proposals. Paste a new brief. Ask Claude to draft it.
+
+It uses YOUR proposals as the style guide — so the output sounds like you, not generic AI.
+
+**Post 4:**
+Everything runs locally. Your proposals stay on your machine.
+
+No API key. No account. No subscription.
+
+Install = one JSON block in your Claude config:
+
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+    }
+  }
+}
+
+**Post 5:**
+Free, MIT licensed.
+
+Landing page + docs: https://bradshawprojects.github.io/proposalcraft/
+GitHub: https://github.com/bradshawprojects/proposalcraft
+
+If you're a freelancer using Claude Desktop — try it and tell me what's missing.
