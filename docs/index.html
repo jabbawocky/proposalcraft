@@ -321,6 +321,120 @@
       border-top: 1px solid var(--border);
       margin: 0;
     }
+
+    /* ── Credibility bar ── */
+    .cred-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cred-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .cred-pill .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* ── Demo section ── */
+    .demo-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .demo-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .demo-panels { grid-template-columns: 1fr; }
+    }
+    .demo-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .demo-panel.output-panel {
+      border-color: rgba(108,99,255,0.4);
+      box-shadow: 0 0 0 1px rgba(108,99,255,0.1), 0 4px 24px rgba(108,99,255,0.08);
+    }
+    .demo-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .demo-panel-header .panel-label {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .demo-panel-header .panel-label.input-label { color: var(--muted); }
+    .demo-panel-header .panel-label.output-label { color: var(--accent-light); }
+    .demo-panel-body {
+      padding: 1.25rem 1.4rem;
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+    .demo-panel-body.input-body {
+      color: #b8b8cc;
+      font-style: italic;
+    }
+    .demo-panel-body p { margin-bottom: 0.6rem; }
+    .demo-panel-body p:last-child { margin-bottom: 0; }
+    .demo-fade {
+      background: linear-gradient(to bottom, transparent 60%, var(--surface) 100%);
+      height: 2.5rem;
+      margin-top: -2.5rem;
+      position: relative;
+    }
+    .demo-more {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding: 0.5rem 1.25rem 1rem;
+    }
+    .demo-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent);
+      padding: 0.5rem 0;
+      align-self: center;
+    }
+    @media (max-width: 700px) {
+      .demo-arrow { transform: rotate(90deg); }
+    }
+    .demo-cta {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .demo-cta a { color: var(--accent-light); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -330,6 +444,7 @@
   <div style="display:flex;gap:1.2rem;align-items:center">
     <a href="guide.html" style="color:var(--muted);font-size:.9rem">Guide</a>
     <a href="https://github.com/bradshawprojects/proposalcraft" style="color:var(--muted);font-size:.9rem">GitHub</a>
+    <a href="https://github.com/bradshawprojects/proposalcraft" target="_blank" rel="noopener" style="display:flex;align-items:center;line-height:1"><img src="https://img.shields.io/github/stars/bradshawprojects/proposalcraft?style=social" alt="GitHub Stars" style="height:20px;display:block" /></a>
     <a href="#install" class="cta-nav">Get started free</a>
   </div>
 </nav>
@@ -347,6 +462,67 @@
     <a href="#how" class="btn btn-outline">See how it works</a>
   </div>
 </section>
+
+<!-- Credibility bar -->
+<div class="cred-bar">
+  <span class="cred-pill"><span class="pill-dot"></span>8 tools</span>
+  <span class="cred-pill"><span class="pill-dot"></span>Freemium · free forever tier</span>
+  <span class="cred-pill"><span class="pill-dot"></span>No API key required</span>
+  <span class="cred-pill"><span class="pill-dot"></span>Works with Claude Desktop</span>
+  <span class="cred-pill"><span class="pill-dot"></span>TypeScript</span>
+  <span class="cred-pill"><span class="pill-dot"></span>MIT License</span>
+  <span class="cred-pill"><span class="pill-dot"></span>Local storage · your data only</span>
+</div>
+
+<!-- Demo: See it in action -->
+<section id="demo" class="demo-section">
+  <div class="section-label" style="text-align:center;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent-light);font-weight:600;margin-bottom:0.75rem;">See it in action</div>
+  <h2 style="text-align:center;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:0.75rem;">Brief in. Proposal out.</h2>
+  <p style="text-align:center;color:var(--muted);font-size:1rem;margin-bottom:2.5rem;">Paste a client email into Claude. ProposalCraft drafts a complete, send-ready proposal — structured, scoped, and priced — in under 30 seconds.</p>
+  <div class="demo-panels">
+    <!-- INPUT panel -->
+    <div class="demo-panel">
+      <div class="demo-panel-header">
+        <span class="panel-label input-label">Client email</span>
+        <span style="margin-left:auto;font-size:0.72rem;opacity:0.6">paste into Claude</span>
+      </div>
+      <div class="demo-panel-body input-body">
+        <p>Hi, we need a full website redesign for our e-commerce store. We sell outdoor gear — about 200 SKUs. The current site is on Shopify but it feels dated and our conversion rate has dropped.</p>
+        <p>Budget is around $15k. Timeline: we'd like to launch within 3 months. We'll need a new homepage, updated product pages, a better checkout flow, and mobile optimisation throughout.</p>
+        <p>Please send a proposal when you get a chance. Thanks, Jamie</p>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="demo-arrow">&#8594;</div>
+
+    <!-- OUTPUT panel -->
+    <div class="demo-panel output-panel">
+      <div class="demo-panel-header">
+        <span class="panel-label output-label">draft_proposal output</span>
+        <span style="margin-left:auto;font-size:0.72rem;color:var(--green);font-weight:600">&#10003; ready in &lt;30s</span>
+      </div>
+      <div class="demo-panel-body">
+        <p><strong>Hi Jamie,</strong></p>
+        <p>Thanks for reaching out — a conversion-focused redesign on an established Shopify store is exactly the kind of project I enjoy. A few things in your brief stood out: the drop in conversion rate is almost always a combination of trust signals, mobile friction, and checkout abandonment, and all three are fixable.</p>
+        <p>Here's how I'd approach it:</p>
+        <p><strong>Discovery &amp; Audit (Week 1–2)</strong><br />
+        Review your current analytics to identify the exact drop-off points, audit the 10 highest-traffic pages, and map a revised site architecture.</p>
+        <p><strong>Design (Weeks 3–5)</strong><br />
+        Mobile-first redesign of Homepage, Collection pages, Product pages, and Checkout — delivered in Figma with 2 rounds of revisions.</p>
+        <p><strong>Build on Shopify (Weeks 6–10)</strong><br />
+        Custom theme development within your existing Shopify plan...</p>
+      </div>
+      <div class="demo-fade"></div>
+      <div class="demo-more">+ deliverables, investment table, timeline &amp; next steps</div>
+    </div>
+  </div>
+  <div class="demo-cta">
+    Want to see the full output? <a href="#install">Install free and try it on your next brief.</a>
+  </div>
+</section>
+
+<hr class="section-divider" />
 
 <!-- Code install -->
 <div id="install" class="code-block" style="margin: 0 auto 0; max-width:680px; margin-left:auto; margin-right:auto; margin-bottom:0; padding: 0 2rem;">
