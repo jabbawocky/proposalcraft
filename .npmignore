@@ -1,0 +1,15 @@
+src/
+docs/
+starter-pack/
+marketing/
+research/
+devops/
+.github/
+.env
+.env.example
+tsconfig.json
+smithery.yaml
+Dockerfile
+*.md
+!README.md
+node_modules/

@@ -88,7 +88,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.0.1" },
+  { name: "proposalcraft", version: "1.0.2" },
   { capabilities: { tools: {} } }
 );
 
