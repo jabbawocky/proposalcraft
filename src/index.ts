@@ -15,6 +15,8 @@ const BUNDLED_EXAMPLES_DIR = path.join(__dirname, "..", "sample-proposals");
 
 const FREE_DRAFT_LIMIT = 5;
 const PRO_URL = "https://bradshawprojects.github.io/proposalcraft/#pricing";
+const PRO_MAILTO =
+  "mailto:mathew.carter@knowfirst.ai?subject=ProposalCraft%20Pro%20%E2%80%94%20Founding%20Access&body=Hi%2C%0A%0AI%27d%20like%20to%20upgrade%20to%20ProposalCraft%20Pro%20(%2419%2Fmo).%0A%0AName%3A%20%0AUse%20case%3A%20";
 
 interface UsageRecord {
   month: string; // "YYYY-MM"
@@ -52,7 +54,7 @@ function checkFreeTier(): { allowed: boolean; used: number; message?: string } {
     return {
       allowed: false,
       used: usage.draft_count,
-      message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**Upgrade to ProposalCraft Pro** for unlimited drafts + priority support:\n${PRO_URL}\n\nFree tier resets next month. Your saved proposals and library are unaffected.`,
+      message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**ProposalCraft Pro — $19/mo** (founding rate until June 10, 2026)\n- Unlimited drafts — no monthly cap\n- 12 industry-specific Starter Pack templates included\n- Priority email support\n\n**Upgrade:** [Reserve founding access →](${PRO_MAILTO})\n\nOr visit: ${PRO_URL}\n\n_Free tier resets on the 1st of each month. Your saved proposals and library are unaffected._`,
     };
   }
   return { allowed: true, used: usage.draft_count };
@@ -88,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.0.2" },
+  { name: "proposalcraft", version: "1.0.3" },
   { capabilities: { tools: {} } }
 );
 
@@ -325,8 +327,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
     const usageNote =
       remaining > 0
-        ? `\n\n_Free plan: ${remaining} draft${remaining !== 1 ? "s" : ""} remaining this month. Upgrade for unlimited: ${PRO_URL}_`
-        : `\n\n_Free plan: this was your last free draft this month. Upgrade for unlimited: ${PRO_URL}_`;
+        ? `\n\n---\n_Free plan: ${remaining} draft${remaining !== 1 ? "s" : ""} remaining this month._`
+        : `\n\n---\n_**Last free draft this month.** Upgrade to Pro ($19/mo) for unlimited: [Reserve founding access →](${PRO_MAILTO})_`;
 
     const examples = loadProposals();
     const brief = String(args!.brief);
@@ -513,7 +515,7 @@ ${brief}`,
       content: [
         {
           type: "text",
-          text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 Want more templates? The ProposalCraft Starter Pack includes 12 industry-specific templates: https://bradshawprojects.github.io/proposalcraft/#starter-pack`,
+          text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 **Want 12 industry-specific templates?** The Starter Pack (web design, SaaS, e-commerce, video production, paid ads + more) is included in Pro ($19/mo): [Reserve founding access →](${PRO_MAILTO})`,
         },
       ],
     };
@@ -524,8 +526,8 @@ ${brief}`,
     const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
     const status =
       remaining > 0
-        ? `Free plan: ${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. ${remaining} remaining.\n\nUpgrade for unlimited: ${PRO_URL}`
-        : `Free plan: limit reached for ${usage.month} (${usage.draft_count}/${FREE_DRAFT_LIMIT}). Resets next month.\n\nUpgrade for unlimited drafts: ${PRO_URL}`;
+        ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo** (founding rate until June 10, 2026): unlimited drafts + 12 Starter Pack templates.\n[Reserve founding access →](${PRO_MAILTO})`
+        : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts + 12 industry templates.\n[Reserve founding access →](${PRO_MAILTO})`;
     return { content: [{ type: "text", text: status }] };
   }
 
