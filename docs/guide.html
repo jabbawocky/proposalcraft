@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Write Client Proposals Faster with Claude Desktop — ProposalCraft Guide</title>
+  <meta name="description" content="Step-by-step guide to automating freelance proposals using Claude Desktop and ProposalCraft MCP. No API key needed. Works for web designers, copywriters, consultants, and agencies." />
+  <meta property="og:title" content="Automate Client Proposals with Claude Desktop — ProposalCraft" />
+  <meta property="og:description" content="Stop writing proposals from scratch. ProposalCraft MCP server learns from your winning proposals and drafts new ones in your voice in seconds." />
+  <meta property="og:url" content="https://bradshawprojects.github.io/proposalcraft/guide.html" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://bradshawprojects.github.io/proposalcraft/guide.html" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a35;
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --green: #22c55e;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+    a { color: var(--accent-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    .logo { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+    .logo span { color: var(--accent-light); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: .9rem; }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: .5rem 1.2rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+    .btn:hover { background: var(--accent-light); text-decoration: none; }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+
+    header.hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .breadcrumb { color: var(--muted); font-size: .85rem; margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--muted); }
+    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; color: var(--text); }
+    .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+    .meta { color: var(--muted); font-size: .85rem; }
+
+    article { padding: 3rem 0; }
+
+    h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--text); }
+    h3 { font-size: 1.15rem; margin: 2rem 0 .75rem; color: var(--accent-light); }
+    p { margin-bottom: 1.1rem; color: var(--text); }
+    ul, ol { margin: 0 0 1.1rem 1.5rem; }
+    li { margin-bottom: .4rem; }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .callout strong { color: var(--accent-light); }
+
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1.5rem;
+      overflow-x: auto;
+      font-size: .88rem;
+      margin: 1.2rem 0;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+    }
+    code { font-family: 'Fira Code', 'Cascadia Code', monospace; font-size: .9em; color: var(--accent-light); }
+    pre code { color: var(--text); font-size: .88rem; }
+
+    .use-case {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .use-case h3 { margin-top: 0; }
+    .tag {
+      display: inline-block;
+      background: rgba(108, 99, 255, 0.15);
+      color: var(--accent-light);
+      border: 1px solid rgba(108, 99, 255, 0.3);
+      border-radius: 4px;
+      font-size: .75rem;
+      padding: .2rem .6rem;
+      margin-right: .4rem;
+      margin-bottom: .5rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: .1rem;
+    }
+    .step-body h3 { margin-top: 0; }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(108,99,255,.15), rgba(108,99,255,.05));
+      border: 1px solid rgba(108,99,255,.3);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+    .cta-box h2 { margin-top: 0; }
+    .cta-box p { color: var(--muted); }
+    .cta-box .btn { margin-top: 1rem; padding: .75rem 2rem; font-size: 1rem; }
+
+    .faq dt { font-weight: 600; margin: 1.5rem 0 .4rem; }
+    .faq dd { color: var(--muted); margin-left: 0; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      color: var(--muted);
+      font-size: .875rem;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.25rem; }
+      nav { padding: 1rem; }
+      .nav-links { gap: .8rem; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Automate Client Proposals Using Claude Desktop and ProposalCraft",
+    "description": "Step-by-step guide for freelancers and consultants to draft winning proposals faster using the ProposalCraft MCP server with Claude Desktop.",
+    "tool": [{
+      "@type": "HowToTool",
+      "name": "Claude Desktop"
+    }, {
+      "@type": "HowToTool",
+      "name": "ProposalCraft MCP server"
+    }],
+    "step": [
+      {"@type": "HowToStep", "name": "Install ProposalCraft", "text": "Add ProposalCraft to Claude Desktop by editing claude_desktop_config.json with the npx command."},
+      {"@type": "HowToStep", "name": "Save a winning proposal", "text": "Use save_proposal to teach ProposalCraft your voice with a past proposal you're proud of."},
+      {"@type": "HowToStep", "name": "Draft from a brief", "text": "Paste the client brief into Claude and ask draft_proposal to write a new proposal in your voice."}
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Proposal<span>Craft</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#install">Install</a>
+    <a href="https://github.com/bradshawprojects/proposalcraft">GitHub</a>
+    <a href="index.html#install" class="btn">Get started free</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <header class="hero">
+    <div class="breadcrumb"><a href="index.html">ProposalCraft</a> / Guide</div>
+    <h1>How to Write Client Proposals Faster with Claude Desktop</h1>
+    <p class="subtitle">A complete guide for freelancers and consultants who want to stop writing proposals from scratch — and start winning more clients with less time spent.</p>
+    <div class="meta">10 min read · Free tool · No API key required</div>
+  </header>
+
+  <article>
+
+    <p>If you're a freelancer or consultant, proposals are a necessary evil. They take hours to write, they're stressful to price, and they're mostly the same thing over and over with different client names. <strong>ProposalCraft is an MCP server for Claude Desktop that solves this.</strong> It learns from your past winning proposals and drafts new ones in your writing voice — instantly.</p>
+
+    <p>This guide walks you through setting it up, training it on your work, and using it for real client briefs. No coding required. No monthly fee. No API key.</p>
+
+    <div class="callout">
+      <strong>What's an MCP server?</strong> MCP (Model Context Protocol) is how Claude Desktop talks to external tools. Installing ProposalCraft gives Claude a set of new abilities — like saving your past proposals and drafting new ones — directly inside your Claude conversations.
+    </div>
+
+    <h2>Who this is for</h2>
+
+    <p>ProposalCraft is built for anyone who writes project proposals as part of their client work:</p>
+    <ul>
+      <li>Freelance web designers and developers</li>
+      <li>Independent copywriters and content strategists</li>
+      <li>Business and management consultants</li>
+      <li>Marketing and branding agencies</li>
+      <li>UX/UI designers and researchers</li>
+      <li>Solo SEO and digital marketing specialists</li>
+    </ul>
+
+    <p>If you've ever copy-pasted a past proposal and manually updated the client name, scope, and pricing — this tool is for you.</p>
+
+    <h2>Step-by-step setup (5 minutes)</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Open your Claude Desktop config file</h3>
+        <p>Find <code>claude_desktop_config.json</code> on your machine:</p>
+        <ul>
+          <li><strong>macOS:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+          <li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+          <li><strong>Linux:</strong> <code>~/.config/Claude/claude_desktop_config.json</code></li>
+        </ul>
+        <p>Create the file if it doesn't exist yet.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Add ProposalCraft to your config</h3>
+        <p>Paste this into your config file (or add it to the <code>mcpServers</code> section if you already have other tools):</p>
+        <pre><code>{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+    }
+  }
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Restart Claude Desktop</h3>
+        <p>Quit and reopen Claude Desktop. You should see a tools icon appear in the input area — that confirms ProposalCraft is connected.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Save a past proposal you're proud of</h3>
+        <p>Open a new Claude conversation and tell it:</p>
+        <pre><code>Save this as a winning proposal for web design work:
+
+[paste your past proposal text here]</code></pre>
+        <p>Claude will use <code>save_proposal</code> to store it. Repeat this for 2–3 past proposals — the more context it has, the better the drafts will be.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>Draft your first proposal from a brief</h3>
+        <p>Next time you get a client brief, paste it into Claude and say:</p>
+        <pre><code>Draft a proposal for this brief using my past winning proposals as a guide:
+
+[paste the client brief]</code></pre>
+        <p>Claude uses <code>draft_proposal</code> to combine your writing style, your typical structure, and your pricing approach into a first draft you can send or refine.</p>
+      </div>
+    </div>
+
+    <h2>Real use cases</h2>
+
+    <div class="use-case">
+      <div><span class="tag">Web design</span><span class="tag">Freelance</span></div>
+      <h3>Web designer quoting a Shopify rebuild</h3>
+      <p>A client emails asking for a quote to rebuild their e-commerce store on Shopify. Instead of starting from scratch, you paste the email brief into Claude. ProposalCraft pulls from your past web design proposals — your typical discovery phase, your milestone structure, your payment terms — and drafts a proposal in under a minute. You tweak the price and send.</p>
+    </div>
+
+    <div class="use-case">
+      <div><span class="tag">Copywriter</span><span class="tag">Content</span></div>
+      <h3>Copywriter responding to a brand refresh brief</h3>
+      <p>A startup asks for a quote on full website copy — homepage, about, services, case studies. You've written this proposal 20 times. ProposalCraft drafts it in your voice with your typical deliverables list and word-count estimates. You adjust for the client's budget and you're done in 10 minutes instead of 90.</p>
+    </div>
+
+    <div class="use-case">
+      <div><span class="tag">Consultant</span><span class="tag">Strategy</span></div>
+      <h3>Business consultant scoping a growth project</h3>
+      <p>A Series A startup needs help with go-to-market strategy. The brief is detailed. ProposalCraft reads it, then drafts a proposal that mirrors your usual consulting structure: problem framing, methodology, deliverables, timeline, investment. You check the approach and refine the numbers. Total time: 20 minutes instead of a half day.</p>
+    </div>
+
+    <div class="use-case">
+      <div><span class="tag">Agency</span><span class="tag">SEO</span></div>
+      <h3>SEO agency responding to an inbound lead</h3>
+      <p>An inbound lead fills out your contact form. ProposalCraft drafts a personalised proposal from the brief, matching your agency's tone, standard service tiers, and case study references. The proposal goes out same-day. Your competitor is still writing theirs.</p>
+    </div>
+
+    <h2>Tips for better proposals</h2>
+
+    <h3>Save proposals that closed deals, not average ones</h3>
+    <p>The quality of ProposalCraft's drafts depends on what you feed it. Save proposals that won the client, not ones that were "fine." If you have a proposal with great pricing framing or a particularly strong problem statement, save that one. You're teaching it your best work, not your average work.</p>
+
+    <h3>Save examples from different project types</h3>
+    <p>If you do both web design and content work, save examples from each. When you ask ProposalCraft to draft a proposal, it will find the most relevant past proposals to base the draft on.</p>
+
+    <h3>Give Claude the full brief, not a summary</h3>
+    <p>The more context Claude has about the client and project, the more tailored the draft. Paste the full email thread or intake form. The extra context costs nothing and significantly improves the output.</p>
+
+    <h3>Let it draft, then you edit</h3>
+    <p>Don't expect a send-ready proposal on the first pass. Use the draft as a strong first draft — the structure, tone, and approach will be right. Your job is to check the numbers, personalise the client references, and add any project-specific details you want to include.</p>
+
+    <h2>Frequently asked questions</h2>
+
+    <dl class="faq">
+      <dt>Does this require an Anthropic API key?</dt>
+      <dd>No. ProposalCraft works through Claude Desktop's built-in MCP support. You just need a Claude Desktop subscription (Claude Pro or higher). No separate API key, no extra costs.</dd>
+
+      <dt>Where are my proposals stored?</dt>
+      <dd>Locally on your machine in a JSON file at <code>~/proposalcraft-data/proposals.json</code>. Nothing is sent to any server. Your proposals stay private.</dd>
+
+      <dt>Can I use this with Claude in the browser?</dt>
+      <dd>Not yet — MCP servers currently require Claude Desktop. Browser support may come in a future Claude update.</dd>
+
+      <dt>How many proposals should I save to get good results?</dt>
+      <dd>Two or three solid examples from your best work is enough to get a useful draft. The more varied examples you save, the better it handles different project types.</dd>
+
+      <dt>Can I delete proposals I've saved?</dt>
+      <dd>Yes. Ask Claude to "list my proposals" to see what's saved, then "delete proposal [name]" to remove any you don't want.</dd>
+
+      <dt>Is this free?</dt>
+      <dd>Yes. ProposalCraft is fully open source and free to use. You only need a Claude Desktop subscription, which you probably already have.</dd>
+
+      <dt>What if I want to customise it?</dt>
+      <dd>The full source is on <a href="https://github.com/bradshawprojects/proposalcraft">GitHub</a>. Fork it, modify it, make it your own.</dd>
+    </dl>
+
+    <div class="cta-box">
+      <h2>Ready to stop writing proposals from scratch?</h2>
+      <p>ProposalCraft is free, open source, and works with your existing Claude Desktop subscription. Setup takes 5 minutes.</p>
+      <a href="index.html#install" class="btn">Install ProposalCraft — it's free</a>
+    </div>
+
+  </article>
+</div>
+
+<footer>
+  <div class="container">
+    <p>ProposalCraft is open source and free to use. <a href="https://github.com/bradshawprojects/proposalcraft">View on GitHub</a> · <a href="index.html">Back to home</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
