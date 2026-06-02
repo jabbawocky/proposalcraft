@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1270">
+<title>ProposalCraft — PH Gallery Image 1</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1270px; height: 760px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f0f2f5;
+    display: flex; flex-direction: column;
+  }
+
+  /* Header bar */
+  .header {
+    background: #1a1a2e; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; flex-shrink: 0;
+  }
+  .logo { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .logo span { color: #7c6af7; }
+  .tool-badge {
+    background: #2d2d4a; color: #a78bfa; font-size: 12px; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+  }
+
+  /* Main split */
+  .panels {
+    flex: 1; display: flex; gap: 20px; padding: 20px 28px 14px;
+    overflow: hidden;
+  }
+
+  /* Email panel */
+  .email-panel {
+    flex: 1; background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .email-titlebar {
+    background: #f8f9fa; padding: 10px 16px;
+    border-bottom: 1px solid #e8eaed; flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .email-label { color: #999; font-size: 12px; margin-left: 6px; font-weight: 500; }
+  .email-body { padding: 20px 20px; flex: 1; overflow: hidden; }
+  .from-line { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .email-from { color: #444; font-weight: 600; }
+  .subject { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; margin-top: 2px; }
+  .email-text { font-size: 13.5px; color: #333; line-height: 1.65; }
+  .email-text p { margin-bottom: 10px; }
+  .panel-label {
+    padding: 10px 16px; text-align: center;
+    font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px;
+    text-transform: uppercase; border-top: 1px solid #eee;
+    background: #fafafa;
+  }
+
+  /* Arrow divider */
+  .arrow {
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 40px;
+  }
+  .arrow-svg { color: #7c6af7; }
+
+  /* Analysis panel */
+  .analysis-panel {
+    flex: 1.1; background: #0f1117; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .analysis-titlebar {
+    background: #1a1d2a; padding: 10px 16px;
+    border-bottom: 1px solid #2a2d3a; flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .analysis-label-bar { color: #888; font-size: 12px; margin-left: 6px;
+    font-family: "SFMono-Regular", Consolas, monospace; }
+  .analysis-body { padding: 16px 20px; flex: 1; overflow: hidden; color: #e2e8f0; }
+  .a-section { margin-bottom: 14px; }
+  .a-title {
+    font-size: 11px; font-weight: 700; color: #7c6af7;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .a-line { font-size: 13px; color: #c9d1d9; line-height: 1.55; margin-bottom: 4px;
+    display: flex; gap: 8px; }
+  .a-icon { flex-shrink: 0; width: 18px; }
+  .green { color: #4ade80; }
+  .yellow { color: #fbbf24; }
+  .red { color: #f87171; }
+  .blue { color: #60a5fa; }
+  .dim { color: #6e7681; }
+  .tag {
+    display: inline-block; background: #1e3a2f; color: #4ade80;
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, monospace; margin-right: 4px;
+  }
+  .tag-warn { background: #3a2e1a; color: #fbbf24; }
+  .analysis-footer {
+    padding: 10px 16px; text-align: center;
+    font-size: 11px; font-weight: 700; color: #444; letter-spacing: 1px;
+    text-transform: uppercase; border-top: 1px solid #1a1d2a;
+    background: #0c0e14;
+  }
+
+  /* Bottom caption */
+  .caption {
+    text-align: center; padding: 0 28px 16px;
+    font-size: 14px; color: #555; font-weight: 500; flex-shrink: 0;
+  }
+  .caption strong { color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Proposal<span>Craft</span></div>
+  <div class="tool-badge">analyze_brief</div>
+</div>
+
+<div class="panels">
+
+  <!-- Left: Client email -->
+  <div class="email-panel">
+    <div class="email-titlebar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="email-label">Incoming brief</span>
+    </div>
+    <div class="email-body">
+      <div class="from-line">From: <span class="email-from">jamie@elevatecommerce.co</span></div>
+      <div class="subject">Website redesign — interested?</div>
+      <div class="email-text">
+        <p>Hi,</p>
+        <p>We need a complete redesign of our Shopify store. It's an established e-commerce brand doing around $2M/year, but our conversion rates have dropped since we last redesigned in 2022.</p>
+        <p>Budget is around $15k. Timeline: we'd like to launch within 3 months. We'll need a new homepage, updated product pages, a better checkout flow, and mobile optimisation throughout.</p>
+        <p>Let me know if this is something you'd be interested in. Happy to jump on a call.</p>
+        <p>— Jamie</p>
+      </div>
+    </div>
+    <div class="panel-label">Client email · pasted into Claude</div>
+  </div>
+
+  <!-- Arrow -->
+  <div class="arrow">
+    <svg class="arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </div>
+
+  <!-- Right: Analysis output -->
+  <div class="analysis-panel">
+    <div class="analysis-titlebar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="analysis-label-bar">ProposalCraft · analyze_brief · result</span>
+    </div>
+    <div class="analysis-body">
+
+      <div class="a-section">
+        <div class="a-title">Budget signal</div>
+        <div class="a-line">
+          <span class="a-icon green">💰</span>
+          <span><span class="green">$15k explicit</span> — solid anchor. Leave room for discovery phase in scope. <span class="tag">firm enough to quote</span></span>
+        </div>
+      </div>
+
+      <div class="a-section">
+        <div class="a-title">Timeline</div>
+        <div class="a-line">
+          <span class="a-icon yellow">📅</span>
+          <span><span class="yellow">3 months</span> — achievable for a redesign. Tight if content/copy isn't pre-prepared. <span class="tag tag-warn">flag in proposal</span></span>
+        </div>
+      </div>
+
+      <div class="a-section">
+        <div class="a-title">Red flags</div>
+        <div class="a-line"><span class="a-icon red">⚠</span><span><span class="red">"around $15k"</span> — soft framing. Confirm hard budget before final pricing.</span></div>
+        <div class="a-line"><span class="a-icon red">⚠</span><span>No mention of content or copywriting — who owns updates to product pages?</span></div>
+        <div class="a-line"><span class="a-icon red">⚠</span><span>2022 redesign failed → ask <em>why</em> before scoping the solution.</span></div>
+      </div>
+
+      <div class="a-section">
+        <div class="a-title">Ask before quoting</div>
+        <div class="a-line"><span class="a-icon blue">1.</span><span>Current conversion rate and target — what does success look like?</span></div>
+        <div class="a-line"><span class="a-icon blue">2.</span><span>Theme customisation or full rebuild from scratch?</span></div>
+        <div class="a-line"><span class="a-icon blue">3.</span><span>Does budget include copy, photography, or just design + dev?</span></div>
+        <div class="a-line"><span class="a-icon blue">4.</span><span>Who is the internal sign-off person? (avoids late-stage surprises)</span></div>
+      </div>
+
+    </div>
+    <div class="analysis-footer">ProposalCraft output · 4 seconds</div>
+  </div>
+
+</div>
+
+<div class="caption">
+  Paste any client brief into Claude. ProposalCraft surfaces budget signals, red flags, and the <strong>exact questions to ask before you quote</strong> — in under 5 seconds.
+</div>
+
+</body>
+</html>
