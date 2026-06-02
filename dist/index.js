@@ -5,6 +5,9 @@ import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextpro
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BUNDLED_EXAMPLES_DIR = path.join(__dirname, "..", "sample-proposals");
 function getProposalsDir() {
     const dir = process.env.PROPOSALS_DIR ||
         path.join(os.homedir(), ".proposalcraft", "proposals");
@@ -12,6 +15,14 @@ function getProposalsDir() {
         fs.mkdirSync(dir, { recursive: true });
     }
     return dir;
+}
+// Returns the resolved path only if it stays within dir — prevents path traversal.
+function safeFilepath(dir, name) {
+    const base = path.resolve(dir);
+    const resolved = path.resolve(dir, name);
+    if (!resolved.startsWith(base + path.sep))
+        return null;
+    return resolved;
 }
 function loadProposals() {
     const dir = getProposalsDir();
@@ -23,7 +34,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.0.0" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.0.1" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -47,6 +58,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     your_rate: {
                         type: "string",
                         description: "Your hourly or day rate to include in pricing (e.g. '$150/hr')",
+                    },
+                },
+                required: ["brief"],
+            },
+        },
+        {
+            name: "analyze_brief",
+            description: "Analyze a client brief BEFORE drafting. Extracts budget signals, timeline urgency, red flags, scope creep risks, and suggests clarifying questions to ask the client. Use this first when a brief is vague or the budget is unclear.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    brief: {
+                        type: "string",
+                        description: "The client brief, job post, or email thread to analyze",
                     },
                 },
                 required: ["brief"],
@@ -79,6 +104,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "get_proposal",
+            description: "Read the full content of a saved proposal by filename. Use list_proposals first to see available filenames.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    name: {
+                        type: "string",
+                        description: "The filename of the proposal to read (e.g. 'ecommerce-redesign-2024.md')",
+                    },
+                },
+                required: ["name"],
+            },
+        },
+        {
             name: "delete_proposal",
             description: "Remove a saved proposal from your reference library",
             inputSchema: {
@@ -93,31 +132,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
-            name: "analyze_brief",
-            description: "Analyze a client brief BEFORE drafting. Extracts budget signals, timeline urgency, red flags, scope creep risks, and suggests clarifying questions to ask the client. Use this first when a brief is vague or the budget is unclear.",
+            name: "load_examples",
+            description: "Load bundled example proposals into your library to use as style references immediately. Run this on first use to get started without needing your own past proposals yet.",
             inputSchema: {
                 type: "object",
-                properties: {
-                    brief: {
-                        type: "string",
-                        description: "The client brief, job post, or email thread to analyze",
-                    },
-                },
-                required: ["brief"],
-            },
-        },
-        {
-            name: "get_proposal",
-            description: "Read the full content of a saved proposal by filename. Use list_proposals first to see available filenames.",
-            inputSchema: {
-                type: "object",
-                properties: {
-                    name: {
-                        type: "string",
-                        description: "The filename of the proposal to read (e.g. 'ecommerce-redesign-2024.md')",
-                    },
-                },
-                required: ["name"],
+                properties: {},
             },
         },
     ],
@@ -134,7 +153,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 content: [
                     {
                         type: "text",
-                        text: `No proposals saved yet.\n\nUse save_proposal to add your past winning proposals — the more examples, the better the drafts match your voice.\n\nStorage: ${dir}`,
+                        text: `No proposals saved yet.\n\nQuick start: run load_examples to load bundled templates, or use save_proposal to add your own past winning proposals.\n\nStorage: ${dir}`,
                     },
                 ],
             };
@@ -156,11 +175,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "save_proposal") {
         const dir = getProposalsDir();
         const safeName = String(args.name)
+            .replace(/\.md$/i, "")
             .toLowerCase()
             .replace(/[^a-z0-9_-]/g, "-")
             .replace(/-+/g, "-")
             .replace(/^-|-$/g, "");
-        const filename = safeName.endsWith(".md") ? safeName : `${safeName}.md`;
+        const filename = `${safeName}.md`;
         const filepath = path.join(dir, filename);
         fs.writeFileSync(filepath, String(args.content), "utf-8");
         return {
@@ -175,7 +195,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "delete_proposal") {
         const dir = getProposalsDir();
         const target = String(args.name);
-        const filepath = path.join(dir, target);
+        const filepath = safeFilepath(dir, target);
+        if (!filepath) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Invalid filename. Run list_proposals to see available proposals.`,
+                    },
+                ],
+            };
+        }
         if (!fs.existsSync(filepath)) {
             return {
                 content: [
@@ -242,7 +272,7 @@ BRIEF:
 ${brief}${budget}${deadline}${rate}
 
 ---
-_Tip: Save your past winning proposals with save_proposal to get drafts that match your voice instead of generic best practices._`,
+_Tip: Run load_examples to get started with bundled templates, or save your past winning proposals with save_proposal to get drafts that match your voice._`,
                 },
             ],
         };
@@ -250,7 +280,17 @@ _Tip: Save your past winning proposals with save_proposal to get drafts that mat
     if (name === "get_proposal") {
         const dir = getProposalsDir();
         const target = String(args.name);
-        const filepath = path.join(dir, target);
+        const filepath = safeFilepath(dir, target);
+        if (!filepath) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Invalid filename. Run list_proposals to see available proposals.`,
+                    },
+                ],
+            };
+        }
         if (!fs.existsSync(filepath)) {
             const files = fs
                 .readdirSync(dir)
@@ -304,6 +344,55 @@ _Tip: Save your past winning proposals with save_proposal to get drafts that mat
 BRIEF TO ANALYZE:
 
 ${brief}`,
+                },
+            ],
+        };
+    }
+    if (name === "load_examples") {
+        const dir = getProposalsDir();
+        if (!fs.existsSync(BUNDLED_EXAMPLES_DIR)) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `Bundled examples not found at ${BUNDLED_EXAMPLES_DIR}. This can happen if you're running from source. Try reinstalling via npx.`,
+                    },
+                ],
+            };
+        }
+        const files = fs
+            .readdirSync(BUNDLED_EXAMPLES_DIR)
+            .filter((f) => f.endsWith(".md") || f.endsWith(".txt"));
+        if (files.length === 0) {
+            return {
+                content: [{ type: "text", text: "No bundled examples available." }],
+            };
+        }
+        const loaded = [];
+        const skipped = [];
+        for (const file of files) {
+            const src = path.join(BUNDLED_EXAMPLES_DIR, file);
+            const dest = path.join(dir, file);
+            if (fs.existsSync(dest)) {
+                skipped.push(file);
+            }
+            else {
+                fs.copyFileSync(src, dest);
+                loaded.push(file);
+            }
+        }
+        const totalNow = fs
+            .readdirSync(dir)
+            .filter((f) => f.endsWith(".md") || f.endsWith(".txt")).length;
+        const summary = loaded.length > 0
+            ? `Loaded ${loaded.length} example${loaded.length > 1 ? "s" : ""}: ${loaded.join(", ")}.`
+            : `All ${files.length} bundled example${files.length > 1 ? "s" : ""} already in your library — nothing to do.`;
+        const skipNote = skipped.length > 0 ? ` (${skipped.length} already existed, skipped)` : "";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 Want more templates? The ProposalCraft Starter Pack includes 12 industry-specific templates: https://bradshawprojects.github.io/proposalcraft/#starter-pack`,
                 },
             ],
         };

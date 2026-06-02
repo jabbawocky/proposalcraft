@@ -12,8 +12,9 @@ The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pi
 
 ## What this server does
 
-ProposalCraft gives your AI client 6 tools for proposal work:
+ProposalCraft gives your AI client 7 tools for proposal work:
 
+- **Load examples instantly** — one command loads bundled templates so you can start immediately without past proposals
 - **Analyze a brief before committing** — surfaces budget signals, red flags, scope creep risks, and questions to ask before you quote
 - **Draft a proposal** — uses your saved winning proposals as style and structure references, not generic templates
 - **Manage your proposal library** — save, list, read, and delete proposals from a local directory you control
@@ -78,6 +79,7 @@ Gets you: budget signals, red flags, scope creep risks, and the 3–5 questions 
 
 | Tool | Input | What it does |
 |---|---|---|
+| `load_examples` | — | Loads bundled example templates — best first command for new users |
 | `analyze_brief` | Brief text | Pre-proposal intel: budget signals, red flags, scope risks, go/no-go recommendation |
 | `draft_proposal` | Brief text (+ optional budget/deadline) | Drafts a full proposal using your saved examples as voice/format references |
 | `save_proposal` | Proposal text + name | Adds a winning proposal to your local reference library |
