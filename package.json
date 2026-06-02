@@ -1,6 +1,6 @@
 {
   "name": "proposalcraft",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MCP server that drafts winning proposals in your voice from a client brief",
   "type": "module",
   "bin": {
@@ -26,6 +26,11 @@
   ],
   "author": "Mat Carter",
   "license": "MIT",
+  "homepage": "https://bradshawprojects.github.io/proposalcraft/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bradshawprojects/proposalcraft"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
