@@ -104,7 +104,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 7 tools for proposal work:
+ProposalCraft gives your AI client 8 tools for proposal work:
 
 - **Load examples instantly** — one command loads bundled templates so you can start immediately without past proposals
 - **Analyze a brief before committing** — surfaces budget signals, red flags, scope creep risks, and questions to ask before you quote
@@ -178,6 +178,7 @@ Gets you: budget signals, red flags, scope creep risks, and the 3–5 questions 
 | `list_proposals` | — | Lists all saved proposals by filename |
 | `get_proposal` | Proposal name | Returns the full text of a saved proposal |
 | `delete_proposal` | Proposal name | Removes a proposal from the library |
+| `usage_status` | — | Shows free tier usage: drafts used/remaining this month |
 
 **Example prompts that trigger this server:**
 - *"Analyze this brief before I quote"*
