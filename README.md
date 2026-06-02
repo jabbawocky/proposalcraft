@@ -10,6 +10,93 @@ The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pi
 
 ---
 
+## Demo
+
+**Input — a typical vague brief you'd get in your inbox:**
+
+> "Hi, we're a 12-person accounting firm. Our website is outdated and we need it redesigned. We want something modern that gets us more leads. We have some budget and need it done reasonably soon. Let me know what you can do."
+
+**Step 1 — Analyze the brief first** (`analyze_brief`):
+
+```
+1. Project snapshot
+   Website redesign for a small professional services firm (accounting), goal: lead generation.
+
+2. Budget signals
+   "Some budget" — no figure given. For a 12-person firm, realistic range: $4,000–$8,000.
+   Confidence: low. Clarify before quoting.
+
+3. Timeline signals
+   "Reasonably soon" — no hard date. Likely 4–8 weeks in their mind.
+   Not an unrealistic timeline for this scope.
+
+4. Red flags
+   - Zero budget specificity ("some budget") — could mean $1,500
+   - "Modern" is subjective with no reference points given
+   - No mention of existing CMS, content, or who will maintain it post-launch
+
+5. Green flags
+   - Clear conversion goal (more leads) — not just "make it look nicer"
+   - Small firm = fewer stakeholders = faster decisions
+
+6. Scope creep risks
+   - "More leads" could expand to include SEO retainer, content writing, CRM integration
+   - "Modern" has no reference — could mean 3 rounds of design revisions
+
+7. Clarifying questions
+   1. What's the budget range you're working with?
+   2. Do you have a CMS preference, or are you open to a recommendation?
+   3. Who on your team will maintain the site after launch?
+   4. Do you have existing brand guidelines, or is a brand refresh in scope?
+   5. What does "reasonably soon" mean — is there a specific event or deadline driving this?
+
+8. Go/no-go
+   Yes — clean brief, clear goal, professional services client. Clarify budget before proceeding.
+```
+
+**Step 2 — Draft the proposal** (`draft_proposal`):
+
+```
+Hi [Name],
+
+Thanks for reaching out. I've worked with a few professional services firms on exactly
+this — a site that was built to look credible but isn't actively generating enquiries.
+Here's how I'd approach it.
+
+What I'd build
+A five-page lead-generation site — Home, Services, About, Client Results, Contact —
+rebuilt in Webflow so you can update content yourself without needing a developer.
+Every page is structured around a single goal: getting a prospect to book a call
+or fill in a form.
+
+Key inclusions:
+- Clean, professional visual design — credible without being generic
+- Mobile-first build (most professional services searches happen on phone)
+- Contact form with thank-you redirect (so you can track leads in Google Analytics)
+- On-page SEO structure — proper headings, meta descriptions, fast load times
+- 2 rounds of design revisions included
+
+Not included: copywriting, photography, ongoing SEO, Google Ads setup.
+
+Investment
+$5,500 flat. 50% on kickoff, 50% on approval before launch. No hourly surprises.
+
+Timeline
+4 weeks from kickoff call to handover.
+
+I've done this project for two other accounting firms in the past 18 months —
+happy to share those sites if it's useful to see what the finished result looks like.
+
+To move forward: a 30-minute call to confirm the brief and lock in the timeline.
+I have a slot open [DATE] — does that work?
+
+[Your name]
+```
+
+30 seconds. Ready to send.
+
+---
+
 ## What this server does
 
 ProposalCraft gives your AI client 7 tools for proposal work:

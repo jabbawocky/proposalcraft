@@ -24,11 +24,31 @@ jobs:
       - name: Compile TypeScript
         run: npm run build
 
-      - name: Smoke test — server starts
+      - name: Verify binary is executable
         run: |
-          timeout 5 node dist/index.js || true
-          node dist/index.js &
-          PID=$!
-          sleep 2
-          kill $PID 2>/dev/null || true
-          echo "Smoke test passed"
+          test -f dist/index.js
+          head -1 dist/index.js | grep -q "#!/usr/bin/env node"
+          echo "Binary check passed"
+
+      - name: Smoke test — server starts and handles EOF cleanly
+        run: |
+          # MCP servers communicate over stdio. Send EOF immediately (empty input).
+          # A healthy server will start, log to stderr, then exit when stdin closes.
+          # We check that it exits with code 0 or 1 (not a crash like 2+).
+          echo "" | timeout 5 node dist/index.js 2>/tmp/mcp-stderr.txt; EXIT=$?
+          cat /tmp/mcp-stderr.txt
+          if [ $EXIT -ge 2 ]; then
+            echo "Server crashed with exit code $EXIT"
+            exit 1
+          fi
+          echo "Smoke test passed (exit $EXIT)"
+
+      - name: Verify sample proposals are bundled
+        run: |
+          test -d sample-proposals
+          COUNT=$(ls sample-proposals/*.md 2>/dev/null | wc -l)
+          echo "Found $COUNT sample proposal(s)"
+          if [ "$COUNT" -lt 1 ]; then
+            echo "ERROR: No sample proposals bundled — load_examples tool will fail"
+            exit 1
+          fi
