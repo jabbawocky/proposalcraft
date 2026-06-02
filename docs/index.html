@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProposalCraft — Win more clients, write less</title>
+  <meta name="description" content="MCP server for freelancers. Paste a brief, get a proposal in your voice. Learns from your winning proposals." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a35;
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --green: #22c55e;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; }
+    .logo span { color: var(--accent-light); }
+    nav a.cta-nav {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.45rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    nav a.cta-nav:hover { background: var(--accent-light); text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: #1e1e2e;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .badge span { color: var(--accent-light); font-weight: 600; }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+    h1 em { color: var(--accent-light); font-style: normal; }
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 2.5rem;
+    }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    /* ── Code snippet ── */
+    .code-block {
+      margin: 4rem auto;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .code-label { font-size: 0.8rem; color: var(--muted); margin-left: auto; }
+    pre {
+      padding: 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      color: var(--text);
+    }
+    .kw { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .key { color: #82aaff; }
+    .cm { color: var(--muted); }
+
+    /* ── Features ── */
+    .section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .section-label {
+      text-align: center;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-light);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      text-align: center;
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 3rem;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .feature h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feature p { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      counter-reset: steps;
+    }
+    .step {
+      text-align: center;
+      counter-increment: steps;
+    }
+    .step::before {
+      content: counter(steps);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 0.9rem;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .step p { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Pricing ── */
+    .pricing-card {
+      max-width: 420px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .price { font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; }
+    .price sub { font-size: 1.2rem; font-weight: 400; color: var(--muted); }
+    .price-note { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 1.75rem; }
+    .price-features { list-style: none; text-align: left; margin-bottom: 2rem; }
+    .price-features li {
+      padding: 0.5rem 0;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .price-features li:last-child { border-bottom: none; }
+    .check { color: var(--green); font-weight: 700; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    hr.section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Proposal<span>Craft</span></div>
+  <a href="#pricing" class="cta-nav">Get started free</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge">MCP Server · works with <span>Claude Desktop</span> &amp; any MCP client</div>
+  <h1>Win more clients.<br /><em>Write fewer proposals.</em></h1>
+  <p class="subtitle">
+    Paste a client brief into Claude. ProposalCraft drafts a ready-to-send proposal
+    in <em>your</em> voice — learned from the proposals that already won you work.
+  </p>
+  <div class="cta-group">
+    <a href="#install" class="btn btn-primary">Install free →</a>
+    <a href="#how" class="btn btn-outline">See how it works</a>
+  </div>
+</section>
+
+<!-- Code install -->
+<div id="install" class="code-block" style="margin: 0 auto 0; max-width:680px; margin-left:auto; margin-right:auto; margin-bottom:0; padding: 0 2rem;">
+  <div class="code-block" style="margin:0 0 4rem;">
+    <div class="code-header">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="code-label">claude_desktop_config.json</span>
+    </div>
+    <pre><span class="cm">// Add to your MCP servers config:</span>
+{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"proposalcraft"</span>: {
+      <span class="key">"command"</span>: <span class="str">"npx"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"github:bradshawprojects/proposalcraft"</span>]
+    }
+  }
+}</pre>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- Features -->
+<section class="section">
+  <div class="section-label">What you get</div>
+  <h2>Your proposals, on autopilot</h2>
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🎯</div>
+      <h3>Learns your voice</h3>
+      <p>Save your best-performing proposals. ProposalCraft uses them as a template so every draft sounds like you wrote it.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>Brief in, proposal out</h3>
+      <p>Paste the client brief into Claude. Get a structured, personalised proposal in under 30 seconds — ready to send or polish.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <h3>Your data, your machine</h3>
+      <p>Proposals are stored locally. No cloud database, no third-party access. Just a file on your computer.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔌</div>
+      <h3>One-line install</h3>
+      <p>No API keys, no OAuth, no accounts. Add one block to your Claude config and you're live.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📁</div>
+      <h3>Proposal library</h3>
+      <p>Save, list, and delete past proposals. Build a library of your best work to improve every future draft.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🛠️</div>
+      <h3>Open source</h3>
+      <p>MIT licensed. Inspect the code, fork it, or contribute. No black box, no lock-in.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- How it works -->
+<section id="how" class="section">
+  <div class="section-label">How it works</div>
+  <h2>Three steps. That's it.</h2>
+  <div class="steps">
+    <div class="step">
+      <h3>Install ProposalCraft</h3>
+      <p>Add one JSON block to your Claude Desktop config. Restart Claude.</p>
+    </div>
+    <div class="step">
+      <h3>Save a winning proposal</h3>
+      <p>Paste one of your past proposals. ProposalCraft stores it and learns your style.</p>
+    </div>
+    <div class="step">
+      <h3>Paste the client brief</h3>
+      <p>Ask Claude to draft a proposal. It uses your voice, their brief. Send it.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- Pricing -->
+<section id="pricing" class="section">
+  <div class="section-label">Pricing</div>
+  <h2>Free while in beta</h2>
+  <div class="pricing-card">
+    <div class="price">$0 <sub>/mo</sub></div>
+    <p class="price-note">Beta access. Paid plan coming — early users lock in a discount.</p>
+    <ul class="price-features">
+      <li><span class="check">✓</span> Unlimited proposal drafts</li>
+      <li><span class="check">✓</span> Unlimited saved proposals</li>
+      <li><span class="check">✓</span> Local storage — your data, your machine</li>
+      <li><span class="check">✓</span> Works with Claude Desktop + any MCP client</li>
+      <li><span class="check">✓</span> MIT open source</li>
+    </ul>
+    <a href="#install" class="btn btn-primary" style="width:100%; display:block;">Install now — takes 2 minutes</a>
+  </div>
+</section>
+
+<footer>
+  <p>ProposalCraft · MIT License · Built for freelancers who'd rather be billing than writing</p>
+</footer>
+
+</body>
+</html>

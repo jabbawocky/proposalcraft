@@ -1,0 +1,40 @@
+{
+  "name": "proposalcraft",
+  "version": "0.1.0",
+  "description": "MCP server that drafts winning proposals in your voice from a client brief",
+  "type": "module",
+  "bin": {
+    "proposalcraft": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "sample-proposals"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "proposal",
+    "freelance",
+    "ai",
+    "claude"
+  ],
+  "author": "Mat Carter",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
