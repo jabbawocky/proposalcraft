@@ -13,6 +13,51 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BUNDLED_EXAMPLES_DIR = path.join(__dirname, "..", "sample-proposals");
 
+const FREE_DRAFT_LIMIT = 5;
+const PRO_URL = "https://bradshawprojects.github.io/proposalcraft/#pricing";
+
+interface UsageRecord {
+  month: string; // "YYYY-MM"
+  draft_count: number;
+}
+
+function getUsageFile(): string {
+  const dir = path.join(os.homedir(), ".proposalcraft");
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  return path.join(dir, "usage.json");
+}
+
+function getUsage(): UsageRecord {
+  const file = getUsageFile();
+  const now = new Date();
+  const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  if (!fs.existsSync(file)) return { month, draft_count: 0 };
+  try {
+    const data = JSON.parse(fs.readFileSync(file, "utf-8")) as UsageRecord;
+    if (data.month !== month) return { month, draft_count: 0 };
+    return data;
+  } catch {
+    return { month, draft_count: 0 };
+  }
+}
+
+function incrementUsage(usage: UsageRecord): void {
+  usage.draft_count += 1;
+  fs.writeFileSync(getUsageFile(), JSON.stringify(usage), "utf-8");
+}
+
+function checkFreeTier(): { allowed: boolean; used: number; message?: string } {
+  const usage = getUsage();
+  if (usage.draft_count >= FREE_DRAFT_LIMIT) {
+    return {
+      allowed: false,
+      used: usage.draft_count,
+      message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**Upgrade to ProposalCraft Pro** for unlimited drafts + priority support:\n${PRO_URL}\n\nFree tier resets next month. Your saved proposals and library are unaffected.`,
+    };
+  }
+  return { allowed: true, used: usage.draft_count };
+}
+
 function getProposalsDir(): string {
   const dir =
     process.env.PROPOSALS_DIR ||
@@ -52,7 +97,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: "draft_proposal",
       description:
-        "Draft a new client proposal based on a brief. Uses your saved winning proposals as style/voice references. Returns a ready-to-send proposal.",
+        "Draft a new client proposal based on a brief. Uses your saved winning proposals as style/voice references. Returns a ready-to-send proposal. Free plan: 5 drafts/month. Upgrade for unlimited.",
       inputSchema: {
         type: "object",
         properties: {
@@ -261,6 +306,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   if (name === "draft_proposal") {
+    const tier = checkFreeTier();
+    if (!tier.allowed) {
+      return { content: [{ type: "text", text: tier.message! }] };
+    }
+
+    const usage = getUsage();
+    incrementUsage(usage);
+    const remaining = FREE_DRAFT_LIMIT - usage.draft_count - 1;
+    const usageNote =
+      remaining > 0
+        ? `\n\n_Free plan: ${remaining} draft${remaining !== 1 ? "s" : ""} remaining this month. Upgrade for unlimited: ${PRO_URL}_`
+        : `\n\n_Free plan: this was your last free draft this month. Upgrade for unlimited: ${PRO_URL}_`;
+
     const examples = loadProposals();
     const brief = String(args!.brief);
     const budget = args!.budget ? `\nClient budget: ${args!.budget}` : "";
@@ -290,7 +348,7 @@ NEW BRIEF TO RESPOND TO:
 
 ${brief}${budget}${deadline}${rate}
 
-Write the full proposal now.`,
+Write the full proposal now.${usageNote}`,
           },
         ],
       };
@@ -309,7 +367,7 @@ BRIEF:
 ${brief}${budget}${deadline}${rate}
 
 ---
-_Tip: Run load_examples to get started with bundled templates, or save your past winning proposals with save_proposal to get drafts that match your voice._`,
+_Tip: Run load_examples to get started with bundled templates, or save your past winning proposals with save_proposal to get drafts that match your voice.${usageNote}_`,
         },
       ],
     };
