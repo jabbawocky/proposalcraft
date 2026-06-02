@@ -124,6 +124,19 @@
     .dot-y { background: #febc2e; }
     .dot-g { background: #28c840; }
     .code-label { font-size: 0.8rem; color: var(--muted); margin-left: auto; }
+    .copy-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-left: 0.5rem;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
     pre {
       padding: 1.5rem;
       font-family: 'SF Mono', 'Fira Code', monospace;
@@ -246,7 +259,7 @@
 
 <nav>
   <div class="logo">Proposal<span>Craft</span></div>
-  <a href="#pricing" class="cta-nav">Get started free</a>
+  <a href="#install" class="cta-nav">Get started free</a>
 </nav>
 
 <!-- Hero -->
@@ -269,8 +282,9 @@
     <div class="code-header">
       <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
       <span class="code-label">claude_desktop_config.json</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyConfig()">Copy</button>
     </div>
-    <pre><span class="cm">// Add to your MCP servers config:</span>
+    <pre id="configCode"><span class="cm">// Add to your MCP servers config:</span>
 {
   <span class="key">"mcpServers"</span>: {
     <span class="key">"proposalcraft"</span>: {
@@ -368,5 +382,23 @@
   <p>ProposalCraft · MIT License · Built for freelancers who'd rather be billing than writing</p>
 </footer>
 
+<script>
+function copyConfig() {
+  const config = `{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+    }
+  }
+}`;
+  navigator.clipboard.writeText(config).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
 </body>
 </html>
