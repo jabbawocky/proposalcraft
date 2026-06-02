@@ -312,8 +312,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     const usage = getUsage();
-    incrementUsage(usage);
-    const remaining = FREE_DRAFT_LIMIT - usage.draft_count - 1;
+    incrementUsage(usage); // mutates usage.draft_count in place (now = total used including this one)
+    const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
     const usageNote =
       remaining > 0
         ? `\n\n_Free plan: ${remaining} draft${remaining !== 1 ? "s" : ""} remaining this month. Upgrade for unlimited: ${PRO_URL}_`
