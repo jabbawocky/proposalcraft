@@ -1,0 +1,15 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      proposalsDir:
+        type: string
+        description: "Directory to store your saved proposals (default: ~/.proposalcraft/proposals)"
+    required: []
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["-y", "github:bradshawprojects/proposalcraft"],
+      env: config.proposalsDir ? { PROPOSALS_DIR: config.proposalsDir } : {}
+    })

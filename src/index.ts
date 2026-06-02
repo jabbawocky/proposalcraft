@@ -108,6 +108,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["name"],
       },
     },
+    {
+      name: "analyze_brief",
+      description:
+        "Analyze a client brief BEFORE drafting. Extracts budget signals, timeline urgency, red flags, scope creep risks, and suggests clarifying questions to ask the client. Use this first when a brief is vague or the budget is unclear.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          brief: {
+            type: "string",
+            description:
+              "The client brief, job post, or email thread to analyze",
+          },
+        },
+        required: ["brief"],
+      },
+    },
   ],
 }));
 
@@ -245,6 +261,41 @@ ${brief}${budget}${deadline}${rate}
 
 ---
 _Tip: Save your past winning proposals with save_proposal to get drafts that match your voice instead of generic best practices._`,
+        },
+      ],
+    };
+  }
+
+  if (name === "analyze_brief") {
+    const brief = String(args!.brief);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Analyze the following client brief and produce a structured pre-proposal intelligence report. Cover these sections:
+
+**1. Project snapshot** — one sentence: what they want built/done, for what purpose.
+
+**2. Budget signals** — any explicit figures; if none, infer from company size, scope, or platform signals. Give a realistic range and confidence (high/medium/low).
+
+**3. Timeline signals** — stated deadline or urgency language. Flag if it looks unrealistic for the stated scope.
+
+**4. Red flags** — anything that suggests difficult client, scope creep risk, payment risk, or project likely to fail. Be direct.
+
+**5. Green flags** — signs this is a good engagement: clear brief, realistic expectations, warm tone, returning client signals, etc.
+
+**6. Scope creep risks** — specific areas where the brief is vague and could expand unpredictably. Name the exact vague phrases.
+
+**7. Clarifying questions** — exactly 3–5 questions to ask the client BEFORE writing the proposal. Order by importance. These should fill the gaps that most affect your pricing or go/no-go decision.
+
+**8. Go/no-go recommendation** — one of: Strong yes / Yes / Borderline / Lean no / Hard no. One sentence of reasoning.
+
+---
+
+BRIEF TO ANALYZE:
+
+${brief}`,
         },
       ],
     };

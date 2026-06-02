@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f0f13"/>
+  <rect x="60" y="60" width="1080" height="510" rx="16" fill="#18181f" stroke="#2a2a35" stroke-width="2"/>
+
+  <!-- Accent bar -->
+  <rect x="60" y="60" width="8" height="510" rx="4" fill="#6c63ff"/>
+
+  <!-- Logo mark -->
+  <rect x="120" y="140" width="48" height="48" rx="10" fill="#6c63ff"/>
+  <text x="144" y="172" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="white" text-anchor="middle">P</text>
+
+  <!-- Title -->
+  <text x="184" y="172" font-family="system-ui,sans-serif" font-size="32" font-weight="700" fill="#e8e8f0">ProposalCraft</text>
+
+  <!-- Headline -->
+  <text x="120" y="270" font-family="system-ui,sans-serif" font-size="64" font-weight="800" fill="#e8e8f0">Win more clients.</text>
+  <text x="120" y="346" font-family="system-ui,sans-serif" font-size="64" font-weight="800" fill="#6c63ff">Write fewer proposals.</text>
+
+  <!-- Subtext -->
+  <text x="120" y="420" font-family="system-ui,sans-serif" font-size="28" fill="#8888a0">Claude MCP server for freelancers — paste a brief,</text>
+  <text x="120" y="458" font-family="system-ui,sans-serif" font-size="28" fill="#8888a0">get a ready-to-send proposal in your voice.</text>
+
+  <!-- Badge -->
+  <rect x="120" y="500" width="200" height="42" rx="8" fill="#6c63ff" opacity="0.15" stroke="#6c63ff" stroke-width="1.5"/>
+  <text x="220" y="527" font-family="system-ui,sans-serif" font-size="20" fill="#8b85ff" text-anchor="middle">No API key needed</text>
+
+  <rect x="336" y="500" width="100" height="42" rx="8" fill="#22c55e" opacity="0.15" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="386" y="527" font-family="system-ui,sans-serif" font-size="20" fill="#22c55e" text-anchor="middle">Free</text>
+</svg>
