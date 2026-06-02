@@ -178,6 +178,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 properties: {},
             },
         },
+        {
+            name: "usage_status",
+            description: "Check your free tier usage: how many proposal drafts you've used this month and how many remain before hitting the limit. Run this before draft_proposal if you're unsure of your remaining quota.",
+            inputSchema: {
+                type: "object",
+                properties: {},
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -445,6 +453,14 @@ ${brief}`,
                 },
             ],
         };
+    }
+    if (name === "usage_status") {
+        const usage = getUsage();
+        const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
+        const status = remaining > 0
+            ? `Free plan: ${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. ${remaining} remaining.\n\nUpgrade for unlimited: ${PRO_URL}`
+            : `Free plan: limit reached for ${usage.month} (${usage.draft_count}/${FREE_DRAFT_LIMIT}). Resets next month.\n\nUpgrade for unlimited drafts: ${PRO_URL}`;
+        return { content: [{ type: "text", text: status }] };
     }
     throw new Error(`Unknown tool: ${name}`);
 });
