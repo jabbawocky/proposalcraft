@@ -90,9 +90,9 @@ Quick build (3 days) — sharing because it's a bit different from the usual Saa
 
 **Why MCP:** Zero friction. No OAuth, no onboarding, no dashboard to maintain. One JSON config block and it's running. MCP is underrated for zero-op tools.
 
-**Business model:** Free open-source now. Paid plan at $49/mo for a team version (shared proposal library, multi-user). Freelance market is massive — they already pay for Bonsai, Honeybook, etc. This just plugs into Claude.
+**Business model:** Free tier is 5 draft_proposal calls/month. Pro is $19/mo for unlimited drafts + all 8 tools. Freelance market is massive — they already pay for Bonsai, HoneyBook, etc. This just plugs into Claude.
 
-**What I'd build next:** Browser extension that auto-detects job posts and pre-fills proposals on Upwork/Toptal.
+**What I'd build next:** Standup/progress reports MCP — same pattern, daily habit instead of monthly.
 
 Landing page: https://bradshawprojects.github.io/proposalcraft/
 GitHub: https://github.com/bradshawprojects/proposalcraft

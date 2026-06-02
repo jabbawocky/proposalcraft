@@ -20,7 +20,9 @@ ProposalCraft has been distributed with zero revenue mechanism. The "paid plan c
 
 **Revenue share:** 85% to you (Founding Member rate — expires June 10, 2026. After that it drops to 80%.)
 
-**You keep:** $16.15 of every $19/mo Pro subscription.
+**Bonus:** 0% platform fee for the first month — confirmed from MCPize developers page June 2026.
+
+**You keep:** $16.15 of every $19/mo Pro subscription (vs $15.20 at standard 80% rate).
 
 **Steps (~30 minutes):**
 
@@ -102,3 +104,35 @@ Do the Gumroad Starter Pack *as well* — it's one afternoon and creates an imme
 5. **Create Gumroad starter pack** (~2 hrs) — 50 templates already exist in `starter-pack/` directory
 
 That's it. Revenue goes live before the r/freelance post.
+
+---
+
+## Revenue calculator — what the math looks like
+
+**Conversion benchmark:** 8% free-to-paid is achievable at this price point (validated by Indie Hacker Analyst tick 10). Need 26 paid users at $19/mo for $500 MRR.
+
+**Distribution channels now active:**
+- 6 awesome-list PRs open (~90k+ combined stars — when merged, passive installs begin)
+- Content assets ready: LinkedIn, Dev.to article, 4 newsletter pitches, r/ClaudeAI, Discord
+- r/freelance + Show HN queued (fire after payment path live)
+
+**Conservative scenario (1% conversion, small distribution):**
+
+| Users install/month | 1% convert to Pro | Monthly revenue (85%) |
+|---|---|---|
+| 100 | 1 | $16 |
+| 500 | 5 | $80 |
+| 1,000 | 10 | $162 |
+| 2,600 | 26 | **$420/mo** |
+
+**Optimistic scenario (8% conversion, awesome-list traffic merges):**
+
+| Users install/month | 8% convert | Monthly revenue |
+|---|---|---|
+| 500 | 40 | **$646/mo** |
+| 1,000 | 80 | **$1,292/mo** |
+
+**Gumroad Starter Pack on top (one-time $19):**
+Every r/freelance-driven install = potential $19 upsell. Even 10 sales/month = $190 passive.
+
+**The ask to get here:** 30 min on MCPize (or 5 min on Gumroad). Product, freemium gate, and 8 tools already exist and are working.
