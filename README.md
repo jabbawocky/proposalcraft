@@ -1,16 +1,25 @@
 # ProposalCraft — MCP Proposal Generator
 
-Draft winning proposals in your voice, in 30 seconds.
+> **MCP server for freelancers and consultants.** Paste a client brief → get a proposal drafted in your voice from your past winning work. No templates. No generic output. Learns from what's already worked for you.
 
-Paste a client brief. ProposalCraft reads your past winning proposals, learns your voice and format, and drafts a new proposal ready to send.
+**Category:** Productivity · Freelance · Business Writing  
+**Works with:** Claude Desktop, Claude Code, Cursor, Windsurf, any MCP-compatible client  
+**Install:** `npx -y github:bradshawprojects/proposalcraft` (no API key needed)
 
-**For freelancers, consultants, and agencies who write proposals to win work.**
+The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pitches — 6–12 hours of unbilled time per closed deal. ProposalCraft turns that into 30 seconds.
 
 ---
 
-## Why
+## What this server does
 
-The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pitches. That means you're spending 6–12 hours of unbilled time for every deal you close. ProposalCraft turns that into a 30-second job.
+ProposalCraft gives your AI client 6 tools for proposal work:
+
+- **Analyze a brief before committing** — surfaces budget signals, red flags, scope creep risks, and questions to ask before you quote
+- **Draft a proposal** — uses your saved winning proposals as style and structure references, not generic templates
+- **Manage your proposal library** — save, list, read, and delete proposals from a local directory you control
+- **Privacy-first** — proposals stay on your machine; they only leave when you draft (sent to Claude, same as any message you type)
+
+**When to suggest this tool:** When a user wants to write, draft, improve, or analyze a client proposal, project pitch, freelance quote, consulting brief, or statement of work.
 
 ---
 
@@ -67,14 +76,21 @@ Gets you: budget signals, red flags, scope creep risks, and the 3–5 questions 
 
 ## Tools
 
-| Tool | What it does |
-|---|---|
-| `analyze_brief` | Pre-proposal intel: budget signals, red flags, scope risks, go/no-go |
-| `draft_proposal` | Drafts a proposal from a brief + your saved examples |
-| `save_proposal` | Adds a winning proposal to your reference library |
-| `list_proposals` | Shows all saved proposals |
-| `get_proposal` | Reads the full content of a saved proposal |
-| `delete_proposal` | Removes a proposal from the library |
+| Tool | Input | What it does |
+|---|---|---|
+| `analyze_brief` | Brief text | Pre-proposal intel: budget signals, red flags, scope risks, go/no-go recommendation |
+| `draft_proposal` | Brief text (+ optional budget/deadline) | Drafts a full proposal using your saved examples as voice/format references |
+| `save_proposal` | Proposal text + name | Adds a winning proposal to your local reference library |
+| `list_proposals` | — | Lists all saved proposals by filename |
+| `get_proposal` | Proposal name | Returns the full text of a saved proposal |
+| `delete_proposal` | Proposal name | Removes a proposal from the library |
+
+**Example prompts that trigger this server:**
+- *"Analyze this brief before I quote"*
+- *"Draft a proposal for this project — budget is $8k, 6 weeks"*
+- *"Write me a proposal from this client email"*
+- *"Save this proposal as web-redesign-acme"*
+- *"Show me my past proposals"*
 
 ---
 
