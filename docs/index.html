@@ -254,29 +254,59 @@
     .pack-price .one-time { font-size: 0.8rem; color: var(--muted); display: block; margin-top: -0.25rem; }
 
     /* ── Pricing ── */
-    .pricing-card {
-      max-width: 420px;
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 780px;
       margin: 0 auto;
-      background: var(--surface);
-      border: 2px solid var(--accent);
-      border-radius: 16px;
-      padding: 2.5rem;
-      text-align: center;
     }
-    .price { font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; }
-    .price sub { font-size: 1.2rem; font-weight: 400; color: var(--muted); }
-    .price-note { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 1.75rem; }
-    .price-features { list-style: none; text-align: left; margin-bottom: 2rem; }
+    @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .pricing-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .pricing-card.featured {
+      border-color: var(--accent);
+      border-width: 2px;
+    }
+    .badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.9rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pricing-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .price { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em; }
+    .price sub { font-size: 1.1rem; font-weight: 400; color: var(--muted); }
+    .price-note { color: var(--muted); font-size: 0.85rem; margin: 0.4rem 0 1.5rem; }
+    .price-features { list-style: none; text-align: left; margin-bottom: 1.75rem; flex: 1; }
     .price-features li {
-      padding: 0.5rem 0;
-      font-size: 0.95rem;
+      padding: 0.45rem 0;
+      font-size: 0.92rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.6rem;
     }
     .price-features li:last-child { border-bottom: none; }
     .check { color: var(--green); font-weight: 700; }
+    .dim { color: var(--muted); }
 
     /* ── Footer ── */
     footer {
@@ -444,18 +474,40 @@
 <!-- Pricing -->
 <section id="pricing" class="section">
   <div class="section-label">Pricing</div>
-  <h2>Free while in beta</h2>
-  <div class="pricing-card">
-    <div class="price">$0 <sub>/mo</sub></div>
-    <p class="price-note">Beta access. Paid plan coming — early users lock in a discount.</p>
-    <ul class="price-features">
-      <li><span class="check">✓</span> Unlimited proposal drafts</li>
-      <li><span class="check">✓</span> Unlimited saved proposals</li>
-      <li><span class="check">✓</span> Local storage — your data, your machine</li>
-      <li><span class="check">✓</span> Works with Claude Desktop + any MCP client</li>
-      <li><span class="check">✓</span> MIT open source</li>
-    </ul>
-    <a href="#install" class="btn btn-primary" style="width:100%; display:block;">Install now — takes 2 minutes</a>
+  <h2>Simple pricing. No surprises.</h2>
+  <p style="text-align:center;color:var(--muted);margin:-1rem auto 2.5rem;max-width:480px;font-size:1rem">
+    Start free. Upgrade when ProposalCraft pays for itself — which is usually after the first proposal.
+  </p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h3>Free</h3>
+      <div class="price">$0 <sub>/mo</sub></div>
+      <p class="price-note">Open source. Always free.</p>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 5 proposal drafts / month</li>
+        <li><span class="check">✓</span> Save &amp; reuse proposals</li>
+        <li><span class="check">✓</span> Local storage — your data only</li>
+        <li><span class="check">✓</span> Works with Claude Desktop</li>
+        <li><span class="dim">–</span> <span style="color:var(--muted)">analyze_brief tool</span></li>
+        <li><span class="dim">–</span> <span style="color:var(--muted)">Unlimited drafts</span></li>
+      </ul>
+      <a href="#install" class="btn btn-outline" style="width:100%;display:block;">Install free</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="badge">Launching June 2026</div>
+      <h3>Pro</h3>
+      <div class="price">$19 <sub>/mo</sub></div>
+      <p class="price-note">Early-bird rate · cancel any time</p>
+      <ul class="price-features">
+        <li><span class="check">✓</span> <strong>Unlimited</strong> proposal drafts</li>
+        <li><span class="check">✓</span> Save &amp; reuse proposals</li>
+        <li><span class="check">✓</span> Local storage — your data only</li>
+        <li><span class="check">✓</span> Works with Claude Desktop</li>
+        <li><span class="check">✓</span> <strong>analyze_brief</strong> — spot red flags before bidding</li>
+        <li><span class="check">✓</span> Priority support</li>
+      </ul>
+      <a href="https://github.com/bradshawprojects/proposalcraft/issues/new?title=Pro+access+request&body=I%27d+like+to+be+notified+when+ProposalCraft+Pro+launches.%0A%0AUse+case%3A+" class="btn btn-primary" style="width:100%;display:block;" target="_blank" rel="noopener">Join the waitlist →</a>
+    </div>
   </div>
 </section>
 
