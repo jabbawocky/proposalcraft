@@ -17,6 +17,7 @@
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build"
   },
+  "mcpName": "io.github.bradshawprojects/proposalcraft",
   "keywords": [
     "mcp",
     "proposal",
