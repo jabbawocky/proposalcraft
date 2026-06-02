@@ -2,11 +2,9 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema, } from "@modelcontextprotocol/sdk/types.js";
-import Anthropic from "@anthropic-ai/sdk";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
-const anthropic = new Anthropic();
 function getProposalsDir() {
     const dir = process.env.PROPOSALS_DIR ||
         path.join(os.homedir(), ".proposalcraft", "proposals");
@@ -173,60 +171,52 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "draft_proposal") {
         const examples = loadProposals();
         const brief = String(args.brief);
-        const budget = args.budget ? String(args.budget) : null;
-        const deadline = args.deadline ? String(args.deadline) : null;
-        const rate = args.your_rate ? String(args.your_rate) : null;
-        const contextLines = [
-            budget && `Client budget: ${budget}`,
-            deadline && `Project deadline: ${deadline}`,
-            rate && `Your rate: ${rate}`,
-        ]
-            .filter(Boolean)
-            .join("\n");
-        let systemPrompt;
-        let userMessage;
+        const budget = args.budget ? `\nClient budget: ${args.budget}` : "";
+        const deadline = args.deadline ? `\nDeadline: ${args.deadline}` : "";
+        const rate = args.your_rate ? `\nYour rate: ${args.your_rate}` : "";
         if (examples.length > 0) {
-            systemPrompt = `You are a proposal writer for a freelance professional. You have been given samples of their past winning proposals. Your job is to write a NEW proposal for a new client brief.
-
-CRITICAL RULES:
-- Match the writer's tone, voice, structure, and level of formality EXACTLY
-- Use the same section headings and layout patterns they use
-- Match their pricing format and how they present deliverables
-- Do NOT use generic corporate language — write how THEY write
-- Adapt content fully to the new brief — do not copy sentences
-- Be specific and concrete, never vague
-- The proposal should be ready to send with minimal editing`;
             const exampleBlock = examples
-                .map((e) => `=== EXAMPLE: ${e.name} ===\n${e.content}`)
+                .map((e) => `=== ${e.name} ===\n${e.content}`)
                 .join("\n\n");
-            userMessage = `Here are my past winning proposals — learn my voice, tone and structure from these:\n\n${exampleBlock}\n\n---\n\nNow write a new proposal for this brief:\n\n${brief}${contextLines ? `\n\n${contextLines}` : ""}`;
-        }
-        else {
-            systemPrompt = `You are an expert freelance proposal writer. Write compelling, professional proposals that win business.
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `I've loaded ${examples.length} proposal(s) from your library as voice and style references.
 
-RULES:
-- Be specific and concrete — no generic filler
-- Lead with understanding of the client's problem
-- Clear deliverables with scope boundaries
-- Transparent timeline and pricing
-- Short social proof or credibility signal if natural
-- End with a clear next step
-- Tone: professional but human, confident not arrogant
-- The proposal should be ready to send`;
-            userMessage = `Write a proposal for this client brief:\n\n${brief}${contextLines ? `\n\n${contextLines}` : ""}`;
+INSTRUCTIONS: Using the examples below as your style guide — match the tone, structure, section headings, formality, and pricing format exactly — write a complete, ready-to-send proposal for the brief that follows. Adapt fully to the new client; do not copy sentences.
+
+YOUR PAST WINNING PROPOSALS (style reference):
+
+${exampleBlock}
+
+---
+
+NEW BRIEF TO RESPOND TO:
+
+${brief}${budget}${deadline}${rate}
+
+Write the full proposal now.`,
+                    },
+                ],
+            };
         }
-        const message = await anthropic.messages.create({
-            model: "claude-opus-4-8",
-            max_tokens: 2048,
-            system: systemPrompt,
-            messages: [{ role: "user", content: userMessage }],
-        });
-        const text = message.content[0].type === "text" ? message.content[0].text : "";
-        const footer = examples.length === 0
-            ? "\n\n---\n_Tip: Save your past winning proposals with save_proposal to get drafts that match your voice._"
-            : "";
         return {
-            content: [{ type: "text", text: text + footer }],
+            content: [
+                {
+                    type: "text",
+                    text: `No saved proposals found — writing from best practices.
+
+INSTRUCTIONS: Write a complete, ready-to-send client proposal for the brief below. Lead with understanding of their problem, include clear deliverables and scope boundaries, transparent timeline and pricing, a brief credibility signal, and a clear next step. Tone: professional but human, confident not arrogant.
+
+BRIEF:
+
+${brief}${budget}${deadline}${rate}
+
+---
+_Tip: Save your past winning proposals with save_proposal to get drafts that match your voice instead of generic best practices._`,
+                },
+            ],
         };
     }
     throw new Error(`Unknown tool: ${name}`);

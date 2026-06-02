@@ -25,10 +25,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"],
-      "env": {
-        "ANTHROPIC_API_KEY": "sk-ant-YOUR_KEY_HERE"
-      }
+      "args": ["-y", "github:bradshawprojects/proposalcraft"]
     }
   }
 }
@@ -37,13 +34,12 @@ Add to your `claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add proposalcraft npx github:bradshawprojects/proposalcraft
+claude mcp add proposalcraft npx -- -y github:bradshawprojects/proposalcraft
 ```
 
-Then set your key:
-```bash
-export ANTHROPIC_API_KEY=sk-ant-YOUR_KEY_HERE
-```
+No API key required — ProposalCraft uses your existing Claude session to draft proposals.
+
+> **npm package coming soon** — once published on npm, the install simplifies to `npx proposalcraft`.
 
 ---
 
