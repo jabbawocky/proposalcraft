@@ -37,33 +37,31 @@ Add to your `claude_desktop_config.json`:
 claude mcp add proposalcraft npx -- -y github:bradshawprojects/proposalcraft
 ```
 
-No API key required — ProposalCraft uses your existing Claude session to draft proposals.
-
-> **npm package coming soon** — once published on npm, the install simplifies to `npx proposalcraft`.
+No API key required — ProposalCraft uses your existing Claude session.
 
 ---
 
-## Usage
+## Quick start
 
-### 1. Save your winning proposals (do this first)
+### 1. Save a winning proposal (do this first)
 
 The more examples you give it, the better it matches your voice.
 
-Ask Claude:
 > "Save this proposal to proposalcraft" — then paste your proposal text
 
-Or: point `PROPOSALS_DIR` at a folder of `.md`/`.txt` files you already have.
+Or point `PROPOSALS_DIR` at a folder of `.md`/`.txt` files you already have.
 
-### 2. Draft a proposal
+### 2. Analyze a brief before committing
 
-Ask Claude:
+> "Analyze this brief with proposalcraft: [paste brief]"
+
+Gets you: budget signals, red flags, scope creep risks, and the 3–5 questions to ask before you quote.
+
+### 3. Draft a proposal
+
 > "Draft a proposal for this brief: [paste brief]"
-> "Write a proposal — budget is $8k, deadline is 6 weeks: [paste brief]"
+> "Write a proposal — budget is $8k, deadline 6 weeks: [paste brief]"
 > "I got this email from a potential client, write me a proposal: [paste email]"
-
-### 3. List your library
-
-> "List my saved proposals in proposalcraft"
 
 ---
 
@@ -71,46 +69,45 @@ Ask Claude:
 
 | Tool | What it does |
 |---|---|
+| `analyze_brief` | Pre-proposal intel: budget signals, red flags, scope risks, go/no-go |
 | `draft_proposal` | Drafts a proposal from a brief + your saved examples |
 | `save_proposal` | Adds a winning proposal to your reference library |
 | `list_proposals` | Shows all saved proposals |
+| `get_proposal` | Reads the full content of a saved proposal |
 | `delete_proposal` | Removes a proposal from the library |
 
 ---
 
-## Pricing
+## Custom proposals directory
 
-**$49/month** — [proposalcraft.ai](https://proposalcraft.ai) *(coming soon)*
+Store proposals anywhere — useful if you sync via Dropbox or a shared drive:
 
-Free 7-day trial. No credit card required.
+```json
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:bradshawprojects/proposalcraft"],
+      "env": {
+        "PROPOSALS_DIR": "/Users/you/Dropbox/Proposals/winning"
+      }
+    }
+  }
+}
+```
 
 ---
 
 ## Privacy
 
-Your proposals are stored locally on your machine (in `~/.proposalcraft/proposals/`). They are sent to Anthropic's API when drafting — same as any Claude conversation. Nothing is stored on our servers.
+Your proposals are stored locally (`~/.proposalcraft/proposals/`). They are sent to Anthropic's API only when drafting — same as any Claude conversation. Nothing is stored externally.
 
 ---
 
 ## Requirements
 
 - Node.js 18+
-- Anthropic API key ([get one here](https://console.anthropic.com))
-
----
-
-## Custom proposals directory
-
-Store proposals anywhere — useful if you use a shared Dropbox/Google Drive folder:
-
-```json
-{
-  "env": {
-    "ANTHROPIC_API_KEY": "sk-ant-...",
-    "PROPOSALS_DIR": "/Users/you/Dropbox/Proposals/winning"
-  }
-}
-```
+- Claude Desktop or Claude Code
 
 ---
 

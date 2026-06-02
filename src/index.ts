@@ -31,7 +31,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "0.1.0" },
+  { name: "proposalcraft", version: "1.0.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -122,6 +122,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["brief"],
+      },
+    },
+    {
+      name: "get_proposal",
+      description:
+        "Read the full content of a saved proposal by filename. Use list_proposals first to see available filenames.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description:
+              "The filename of the proposal to read (e.g. 'ecommerce-redesign-2024.md')",
+          },
+        },
+        required: ["name"],
       },
     },
   ],
@@ -261,6 +277,37 @@ ${brief}${budget}${deadline}${rate}
 
 ---
 _Tip: Save your past winning proposals with save_proposal to get drafts that match your voice instead of generic best practices._`,
+        },
+      ],
+    };
+  }
+
+  if (name === "get_proposal") {
+    const dir = getProposalsDir();
+    const target = String(args!.name);
+    const filepath = path.join(dir, target);
+
+    if (!fs.existsSync(filepath)) {
+      const files = fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".txt") || f.endsWith(".md"));
+      const list = files.length > 0 ? files.join(", ") : "(none saved yet)";
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Proposal "${target}" not found.\n\nAvailable proposals: ${list}`,
+          },
+        ],
+      };
+    }
+
+    const content = fs.readFileSync(filepath, "utf-8");
+    return {
+      content: [
+        {
+          type: "text",
+          text: `=== ${target} ===\n\n${content}`,
         },
       ],
     };
