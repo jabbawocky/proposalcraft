@@ -22,8 +22,8 @@ Shipped a free MCP server for freelancers: **ProposalCraft**
 
 Free: 5 draft_proposal/month | Pro: $19/mo unlimited
 
-GitHub: https://github.com/bradshawprojects/proposalcraft
-Landing: https://bradshawprojects.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing: https://jabbawocky.github.io/proposalcraft/
 
 Would love feedback, especially from anyone already using MCP tools in a consulting workflow.
 
@@ -44,7 +44,7 @@ Core loop: save your past winning proposals as style examples → paste a client
 
 No SDK dependency — doesn't make its own API calls, just passes context to the existing Claude Desktop session. MIT licensed, all local file storage.
 
-GitHub: https://github.com/bradshawprojects/proposalcraft
+GitHub: https://github.com/jabbawocky/proposalcraft
 
 If anyone's building adjacent MCP tools in the professional services / workflow automation space, interested to compare notes.
 
@@ -62,7 +62,7 @@ If anyone's building adjacent MCP tools in the professional services / workflow 
 
 Update on ProposalCraft (shipped this week): the v1.0.2 freemium gate is live — 5 free `draft_proposal` calls/month, then $19/mo. The product has 8 MCP tools now including `analyze_brief` (extracts scope risks and budget signals from client briefs before you draft anything) and `usage_status` (check quota on demand).
 
-Still at 0 revenue — MCPize registration coming this week to wire the payment path. If you're freelancing and using Claude Desktop, try it: https://github.com/bradshawprojects/proposalcraft
+Still at 0 revenue — MCPize registration coming this week to wire the payment path. If you're freelancing and using Claude Desktop, try it: https://github.com/jabbawocky/proposalcraft
 
 ---
 
@@ -81,6 +81,6 @@ Hey all — just shipped a free tool that might be useful here.
 
 5 free drafts/month (enough to test on a real brief). No subscription required to get started.
 
-Install + docs: https://bradshawprojects.github.io/proposalcraft/
+Install + docs: https://jabbawocky.github.io/proposalcraft/
 
 Would love to know if it's useful or what's missing for your workflow.

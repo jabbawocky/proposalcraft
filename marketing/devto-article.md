@@ -10,7 +10,7 @@ Freelance math is brutal.
 
 You win roughly 1 in 4 pitches. That means for every client you close, you've written 3 proposals that earned you nothing. At 1-2 hours per proposal, you're spending 6-12 hours **unpaid** per deal closed.
 
-I got tired of it. So I built [ProposalCraft](https://github.com/bradshawprojects/proposalcraft) — an MCP server that drafts client proposals in 30 seconds, in my voice, using my past winning work as the template.
+I got tired of it. So I built [ProposalCraft](https://github.com/jabbawocky/proposalcraft) — an MCP server that drafts client proposals in 30 seconds, in my voice, using my past winning work as the template.
 
 Here's how I built it, why I chose MCP over a web app, and what I'd do differently.
 
@@ -114,7 +114,7 @@ The tool doesn't call any external APIs — it retrieves context and lets Claude
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
@@ -144,8 +144,8 @@ What's working: the MCP distribution model is genuinely zero-friction. No auth, 
 
 ## Try It
 
-- **GitHub:** https://github.com/bradshawprojects/proposalcraft
-- **Landing page:** https://bradshawprojects.github.io/proposalcraft/
+- **GitHub:** https://github.com/jabbawocky/proposalcraft
+- **Landing page:** https://jabbawocky.github.io/proposalcraft/
 
 If you're a freelancer using Claude Desktop, try it and tell me what's missing. The whole thing is MIT licensed.
 

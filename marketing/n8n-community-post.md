@@ -41,13 +41,13 @@ Install is one JSON config block:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
 ```
 
-8 tools total — free tier covers most of it (draft_proposal gates at 5/month, everything else unlimited). Repo: https://github.com/bradshawprojects/proposalcraft
+8 tools total — free tier covers most of it (draft_proposal gates at 5/month, everything else unlimited). Repo: https://github.com/jabbawocky/proposalcraft
 
 For anyone maintaining n8n proposal pipelines — happy to compare approaches. Curious how others are handling the "AI updated and broke my workflow" problem.
 
@@ -63,7 +63,7 @@ Saw the Upwork proposal autopilot post here a while back. Same pain point, diffe
 
 **ProposalCraft:** paste a client brief into Claude Desktop, it drafts a proposal in your voice from your past work. `analyze_brief` tool extracts red flags + scope risks first. Everything local, no backend.
 
-GitHub: https://github.com/bradshawprojects/proposalcraft
+GitHub: https://github.com/jabbawocky/proposalcraft
 
 The main difference from n8n: nothing to maintain. No nodes, no webhook endpoints, no "it worked last week" debugging sessions. Tradeoff: requires Claude Desktop (not browser/API).
 

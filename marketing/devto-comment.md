@@ -20,7 +20,7 @@ Two things we found that reinforce your argument:
 
 For what it's worth: GitHub install works without npm publish, which is a cleaner zero-friction path for MCP tools specifically. Your readers building MCP servers might find that useful.
 
-Repo if anyone wants to poke at the freemium gate implementation: https://github.com/bradshawprojects/proposalcraft
+Repo if anyone wants to poke at the freemium gate implementation: https://github.com/jabbawocky/proposalcraft
 
 ---
 

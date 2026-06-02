@@ -1,6 +1,6 @@
 # ProposalCraft — MCP Proposal Generator
 
-[![CI](https://github.com/bradshawprojects/proposalcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/bradshawprojects/proposalcraft/actions/workflows/ci.yml)
+[![CI](https://github.com/jabbawocky/proposalcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/jabbawocky/proposalcraft/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node: >=18](https://img.shields.io/badge/Node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![MCP Compatible](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io)
@@ -9,7 +9,7 @@
 
 **Category:** Productivity · Freelance · Business Writing  
 **Works with:** Claude Desktop, Claude Code, Cursor, Windsurf, any MCP-compatible client  
-**Install:** `npx -y github:bradshawprojects/proposalcraft` (no API key needed)
+**Install:** `npx -y github:jabbawocky/proposalcraft` (no API key needed)
 
 The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pitches — 6–12 hours of unbilled time per closed deal. ProposalCraft turns that into 30 seconds.
 
@@ -127,7 +127,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
@@ -136,7 +136,7 @@ Add to your `claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add proposalcraft npx -- -y github:bradshawprojects/proposalcraft
+claude mcp add proposalcraft npx -- -y github:jabbawocky/proposalcraft
 ```
 
 No API key required — ProposalCraft uses your existing Claude session.
@@ -198,7 +198,7 @@ Store proposals anywhere — useful if you sync via Dropbox or a shared drive:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"],
+      "args": ["-y", "github:jabbawocky/proposalcraft"],
       "env": {
         "PROPOSALS_DIR": "/Users/you/Dropbox/Proposals/winning"
       }

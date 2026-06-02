@@ -10,6 +10,6 @@ startCommand:
   commandFunction: |-
     (config) => ({
       command: "npx",
-      args: ["-y", "github:bradshawprojects/proposalcraft"],
+      args: ["-y", "github:jabbawocky/proposalcraft"],
       env: config.proposalsDir ? { PROPOSALS_DIR: config.proposalsDir } : {}
     })

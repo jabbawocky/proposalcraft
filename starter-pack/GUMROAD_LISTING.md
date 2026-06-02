@@ -47,7 +47,7 @@ The ProposalCraft Starter Pack gives you 12 professional proposal frameworks —
 
 **How to use:**
 
-1. Install ProposalCraft (free) → https://bradshawprojects.github.io/proposalcraft/
+1. Install ProposalCraft (free) → https://jabbawocky.github.io/proposalcraft/
 2. Run `node install.js` from the downloaded pack — all 12 templates load automatically
 3. Open Claude Desktop, paste your brief, ask for a proposal — ProposalCraft uses the templates as reference
 

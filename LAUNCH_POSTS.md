@@ -1,8 +1,8 @@
 # Launch Posts — ready to fire
 
 **Live URLs:**
-- Landing page: https://bradshawprojects.github.io/proposalcraft/
-- GitHub repo: https://github.com/bradshawprojects/proposalcraft
+- Landing page: https://jabbawocky.github.io/proposalcraft/
+- GitHub repo: https://github.com/jabbawocky/proposalcraft
 
 ---
 
@@ -31,7 +31,7 @@ Install is one JSON block in your Claude config:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
@@ -39,8 +39,8 @@ Install is one JSON block in your Claude config:
 
 **Pricing:** Free tier is 5 draft_proposal calls/month — enough to test on a real brief. Pro is $19/mo for unlimited drafts + all 8 tools.
 
-Landing page: https://bradshawprojects.github.io/proposalcraft/
-Repo: https://github.com/bradshawprojects/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
+Repo: https://github.com/jabbawocky/proposalcraft
 
 Happy to answer questions on how it works or what's on the roadmap.
 
@@ -72,8 +72,8 @@ The hook: it learns from *your* past proposals, so the output sounds like you wr
 - MIT licensed
 - One JSON config block to install
 
-Landing page: https://bradshawprojects.github.io/proposalcraft/
-GitHub: https://github.com/bradshawprojects/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
 
 Would love feedback on what else would make this useful.
 
@@ -94,8 +94,8 @@ Quick build (3 days) — sharing because it's a bit different from the usual Saa
 
 **What I'd build next:** Standup/progress reports MCP — same pattern, daily habit instead of monthly.
 
-Landing page: https://bradshawprojects.github.io/proposalcraft/
-GitHub: https://github.com/bradshawprojects/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
 
 ---
 
@@ -113,10 +113,10 @@ How it works:
 
 Everything runs locally. MIT licensed. No API key — it uses your existing Claude Desktop session.
 
-Install: one JSON block in `claude_desktop_config.json` pointing to `npx -y github:bradshawprojects/proposalcraft`.
+Install: one JSON block in `claude_desktop_config.json` pointing to `npx -y github:jabbawocky/proposalcraft`.
 
-Repo: https://github.com/bradshawprojects/proposalcraft
-Landing page: https://bradshawprojects.github.io/proposalcraft/
+Repo: https://github.com/jabbawocky/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
 
 Motivation: proposal writing is one of those high-value but annoying tasks perfect for AI-assist. Existing tools (Bonsai, Honeybook) are full CRMs with proposal as an afterthought. This is the opposite — just the proposal, nothing else.
 
@@ -150,8 +150,8 @@ One thing I shipped this week: I removed the Anthropic SDK dependency entirely. 
 
 Would love honest feedback: is the MCP distribution the right call, or should I build a web version next?
 
-GitHub: https://github.com/bradshawprojects/proposalcraft
-Landing: https://bradshawprojects.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing: https://jabbawocky.github.io/proposalcraft/
 
 ---
 
@@ -189,7 +189,7 @@ Install = one JSON block in your Claude config:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
@@ -197,7 +197,7 @@ Install = one JSON block in your Claude config:
 **Post 5:**
 Free, MIT licensed.
 
-Landing page + docs: https://bradshawprojects.github.io/proposalcraft/
-GitHub: https://github.com/bradshawprojects/proposalcraft
+Landing page + docs: https://jabbawocky.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
 
 If you're a freelancer using Claude Desktop — try it and tell me what's missing.

@@ -17,7 +17,7 @@
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build"
   },
-  "mcpName": "io.github.bradshawprojects/proposalcraft",
+  "mcpName": "io.github.jabbawocky/proposalcraft",
   "keywords": [
     "mcp",
     "proposal",
@@ -27,10 +27,10 @@
   ],
   "author": "Mat Carter",
   "license": "MIT",
-  "homepage": "https://bradshawprojects.github.io/proposalcraft/",
+  "homepage": "https://jabbawocky.github.io/proposalcraft/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bradshawprojects/proposalcraft.git"
+    "url": "git+https://github.com/jabbawocky/proposalcraft.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0"

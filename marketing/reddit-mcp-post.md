@@ -53,14 +53,14 @@ Curious how others here have handled freemium gates in MCP — client-side trust
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
 ```
 
-GitHub (MIT, TypeScript): https://github.com/bradshawprojects/proposalcraft
-Landing: https://bradshawprojects.github.io/proposalcraft/
+GitHub (MIT, TypeScript): https://github.com/jabbawocky/proposalcraft
+Landing: https://jabbawocky.github.io/proposalcraft/
 
 Happy to talk through any of the design decisions — especially the "no SDK" choice and the local-file-as-context-injection pattern. It's a pattern that generalises well for any tool that manages user content.
 

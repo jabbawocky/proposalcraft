@@ -56,8 +56,8 @@ The hunter's email to their followers on launch morning is the single highest-le
 > hook). Would you be up to hunt it? The MCP category is clearly converting for you
 > and this is the first MCP tool aimed at the 800k-member freelance market.
 >
-> GitHub: https://github.com/bradshawprojects/proposalcraft
-> Landing: https://bradshawprojects.github.io/proposalcraft/
+> GitHub: https://github.com/jabbawocky/proposalcraft
+> Landing: https://jabbawocky.github.io/proposalcraft/
 >
 > Happy to give you a walkthrough if useful. Let me know either way.
 > — Mat
@@ -76,7 +76,7 @@ The hunter's email to their followers on launch morning is the single highest-le
 > interested in hunting this one? I've got gallery images, copy, and a full launch-day
 > playbook ready to go.
 >
-> GitHub: https://github.com/bradshawprojects/proposalcraft
+> GitHub: https://github.com/jabbawocky/proposalcraft
 >
 > — Mat Carter
 
@@ -96,8 +96,8 @@ The hunter's email to their followers on launch morning is the single highest-le
 > I have gallery images, a tagline, first-comment copy, and a launch-day timeline ready.
 > You'd just need to submit the listing (I can pre-fill everything for you).
 >
-> GitHub: https://github.com/bradshawprojects/proposalcraft
-> Landing: https://bradshawprojects.github.io/proposalcraft/
+> GitHub: https://github.com/jabbawocky/proposalcraft
+> Landing: https://jabbawocky.github.io/proposalcraft/
 >
 > Let me know if you're interested or if you can point me to someone who might be.
 > — Mat
@@ -119,8 +119,8 @@ Looking for a hunter for my MCP server for freelancers — launching June 10
 > Freemium (5 free drafts/month), $19/mo Pro. 8 tools. No API key required.
 > MIT license. TypeScript.
 >
-> GitHub: https://github.com/bradshawprojects/proposalcraft
-> Landing: https://bradshawprojects.github.io/proposalcraft/
+> GitHub: https://github.com/jabbawocky/proposalcraft
+> Landing: https://jabbawocky.github.io/proposalcraft/
 >
 > I have the full launch package ready: gallery images (4), tagline, description,
 > topics, first-comment copy, and a launch-day timeline. You'd just need to submit
@@ -162,8 +162,8 @@ Once a hunter says yes, send them:
    record/screenshot at 1270×760. Image 2 (`image2-core-loop.html`) = record 15s
    animated loop → convert to GIF.
 6. **Links:**
-   - GitHub: https://github.com/bradshawprojects/proposalcraft
-   - Website: https://bradshawprojects.github.io/proposalcraft/
+   - GitHub: https://github.com/jabbawocky/proposalcraft
+   - Website: https://jabbawocky.github.io/proposalcraft/
 7. **Launch date:** June 10, 12:01am PT
 
 ---

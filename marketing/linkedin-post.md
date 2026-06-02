@@ -31,7 +31,7 @@ This week I shipped a brief analysis tool too — before drafting, it flags budg
 Three years ago I would have paid $50/mo for this. It's free, open source, MIT licensed.
 
 Install is one JSON block in your Claude config. Full steps on the landing page:
-👉 https://bradshawprojects.github.io/proposalcraft/
+👉 https://jabbawocky.github.io/proposalcraft/
 
 If you use Claude Desktop and write client proposals, try it. Happy to answer questions in the comments.
 
@@ -41,7 +41,7 @@ If you use Claude Desktop and write client proposals, try it. Happy to answer qu
 
 For context on the technical side: it's distributed as an MCP (Model Context Protocol) server, which means zero backend, zero ops. One JSON config block and it's running. I specifically didn't build a web app because I didn't want to maintain a database of your proposals — local-first felt right for client-sensitive work.
 
-GitHub if you want to look under the hood: https://github.com/bradshawprojects/proposalcraft
+GitHub if you want to look under the hood: https://github.com/jabbawocky/proposalcraft
 
 ---
 

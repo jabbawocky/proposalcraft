@@ -32,7 +32,7 @@ You'll need ProposalCraft installed first:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
@@ -81,4 +81,4 @@ Use draft_proposal with this brief: [brief]. Reference the [name] template for s
 ---
 
 ProposalCraft is free and open source. This starter pack is a one-time purchase.
-https://bradshawprojects.github.io/proposalcraft/
+https://jabbawocky.github.io/proposalcraft/

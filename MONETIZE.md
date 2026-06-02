@@ -31,7 +31,7 @@ ProposalCraft has been distributed with zero revenue mechanism. The "paid plan c
 3. Dashboard → Connect Stripe (your existing Stripe account)
 4. Create a new server listing:
    - Name: ProposalCraft
-   - GitHub: https://github.com/bradshawprojects/proposalcraft
+   - GitHub: https://github.com/jabbawocky/proposalcraft
    - Category: Productivity / Business
    - Description: "MCP server for freelancers — paste a client brief, get a proposal drafted in your voice from your past winning work."
 5. Set pricing tiers:

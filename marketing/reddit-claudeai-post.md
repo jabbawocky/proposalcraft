@@ -37,14 +37,14 @@ Install is one JSON block:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"]
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
     }
   }
 }
 ```
 
-GitHub: https://github.com/bradshawprojects/proposalcraft
-Landing: https://bradshawprojects.github.io/proposalcraft/
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing: https://jabbawocky.github.io/proposalcraft/
 
 Happy to answer questions on the architecture — the "no SDK" design decision in particular was an interesting tradeoff.
 

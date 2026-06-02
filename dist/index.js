@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BUNDLED_EXAMPLES_DIR = path.join(__dirname, "..", "sample-proposals");
 const FREE_DRAFT_LIMIT = 5;
-const PRO_URL = "https://bradshawprojects.github.io/proposalcraft/#pricing";
+const PRO_URL = "https://jabbawocky.github.io/proposalcraft/#pricing";
 const PRO_MAILTO = "mailto:mathew.carter@knowfirst.ai?subject=ProposalCraft%20Pro%20%E2%80%94%20Founding%20Access&body=Hi%2C%0A%0AI%27d%20like%20to%20upgrade%20to%20ProposalCraft%20Pro%20(%2419%2Fmo).%0A%0AName%3A%20%0AUse%20case%3A%20";
 function getUsageFile() {
     const dir = path.join(os.homedir(), ".proposalcraft");
