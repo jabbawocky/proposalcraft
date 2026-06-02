@@ -22,14 +22,13 @@ Install is one JSON block in your Claude config:
   "mcpServers": {
     "proposalcraft": {
       "command": "npx",
-      "args": ["-y", "github:bradshawprojects/proposalcraft"],
-      "env": { "ANTHROPIC_API_KEY": "sk-ant-YOUR_KEY" }
+      "args": ["-y", "github:bradshawprojects/proposalcraft"]
     }
   }
 }
 ```
 
-No cloud storage — proposals live locally on your machine. MIT licensed.
+No API key, no cloud storage — proposals live locally on your machine. MIT licensed.
 
 Repo: https://github.com/bradshawprojects/proposalcraft
 
@@ -89,7 +88,7 @@ How it works:
 2. Paste a client brief into Claude
 3. Ask it to draft a proposal — it uses your examples as style/structure guides
 
-Everything runs locally. MIT licensed. Needs an Anthropic API key (free to get at console.anthropic.com).
+Everything runs locally. MIT licensed. No API key — it uses your existing Claude Desktop session.
 
 Install: one JSON block in `claude_desktop_config.json` pointing to `npx -y github:bradshawprojects/proposalcraft`.
 
