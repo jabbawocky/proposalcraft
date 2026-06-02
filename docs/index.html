@@ -6,13 +6,13 @@
   <title>ProposalCraft — Win more clients, write less</title>
   <meta name="description" content="MCP server for freelancers. Paste a brief, get a proposal in your voice. Learns from your winning proposals." />
   <meta property="og:title" content="ProposalCraft — Win more clients, write fewer proposals" />
-  <meta property="og:description" content="Claude MCP server for freelancers. Paste a client brief, get a ready-to-send proposal in your voice. No API key. Free." />
+  <meta property="og:description" content="Claude MCP server for freelancers. Paste a client brief, get a ready-to-send proposal in your voice. Learns from your winning work." />
   <meta property="og:url" content="https://bradshawprojects.github.io/proposalcraft/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://bradshawprojects.github.io/proposalcraft/og-image.svg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="ProposalCraft — Win more clients, write fewer proposals" />
-  <meta name="twitter:description" content="Claude MCP server for freelancers. Paste a client brief, get a ready-to-send proposal in your voice. No API key. Free." />
+  <meta name="twitter:description" content="Claude MCP server for freelancers. Paste a client brief, get a ready-to-send proposal in your voice. Learns from your winning work." />
   <link rel="canonical" href="https://bradshawprojects.github.io/proposalcraft/" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -224,6 +224,35 @@
     .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
     .step p { font-size: 0.88rem; color: var(--muted); }
 
+    /* ── Starter Pack ── */
+    .pack-card {
+      max-width: 640px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    @media (max-width: 600px) { .pack-card { grid-template-columns: 1fr; } }
+    .pack-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .pack-card p { font-size: 0.92rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .pack-templates { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0; }
+    .pack-tag {
+      font-size: 0.75rem;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+    .pack-price { text-align: center; white-space: nowrap; }
+    .pack-price .amount { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em; }
+    .pack-price .one-time { font-size: 0.8rem; color: var(--muted); display: block; margin-top: -0.25rem; }
+
     /* ── Pricing ── */
     .pricing-card {
       max-width: 420px;
@@ -377,6 +406,40 @@
 </section>
 
 <hr class="section-divider" />
+
+<!-- Starter Pack -->
+<section id="starter-pack" class="section">
+  <div class="section-label">Starter Pack</div>
+  <h2>Don't start from a blank slate</h2>
+  <p style="text-align:center;color:var(--muted);margin:-1rem auto 2.5rem;max-width:520px;font-size:1rem">
+    12 winning proposal templates — web dev, mobile apps, SaaS builds, SEO, branding, content, e-commerce, and more. Load them all into ProposalCraft in one command. Your next proposal starts from a frame that's already won work.
+  </p>
+  <div class="pack-card">
+    <div>
+      <h3>ProposalCraft Starter Pack</h3>
+      <p>12 templates across the most common freelance and consulting engagements. Each one is a complete, send-ready framework — structured to win, not a generic skeleton.</p>
+      <div class="pack-templates">
+        <span class="pack-tag">Web redesign</span>
+        <span class="pack-tag">Mobile MVP</span>
+        <span class="pack-tag">SaaS build</span>
+        <span class="pack-tag">Brand identity</span>
+        <span class="pack-tag">SEO audit</span>
+        <span class="pack-tag">API integration</span>
+        <span class="pack-tag">E-commerce</span>
+        <span class="pack-tag">Content retainer</span>
+        <span class="pack-tag">Data dashboard</span>
+        <span class="pack-tag">Paid ads</span>
+        <span class="pack-tag">Tech consulting</span>
+        <span class="pack-tag">Video production</span>
+      </div>
+    </div>
+    <div class="pack-price">
+      <div class="amount">$19</div>
+      <span class="one-time">one-time</span>
+      <a href="https://proposalcraft.gumroad.com/l/starter-pack" class="btn btn-primary" style="margin-top:1.25rem;white-space:nowrap" target="_blank" rel="noopener">Get the pack →</a>
+    </div>
+  </div>
+</section>
 
 <!-- Pricing -->
 <section id="pricing" class="section">
