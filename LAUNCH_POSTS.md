@@ -8,12 +8,21 @@
 
 ## Reddit — r/freelance
 
-**Title:** I built an MCP server that writes proposals in your voice (free, open source)
+**⚠️ Fire AFTER MCPize or Gumroad is live — this post references the $19/mo Pro tier**
+
+**Title:** I built an MCP server that drafts proposals in your voice — free tier, $19/mo Pro
 
 **Body:**
-Freelancers — I got tired of writing proposals from scratch and built this.
+Freelancers — I got tired of spending 2+ hours on proposals that might not win, and built something about it.
 
 **ProposalCraft** is an MCP server for Claude Desktop. You paste a client brief, it drafts a ready-to-send proposal in *your* voice — learned from the proposals that already won you work.
+
+**What it actually does:**
+- `analyze_brief` — before you even draft, it extracts budget signals, red flags, scope creep risks, and the 3–5 questions you should ask the client first
+- `draft_proposal` — generates a full proposal matched to your tone, structure, and pricing format
+- `save_proposal` / `load_examples` — build a proposal library from your past wins, or load 12 starter templates
+
+Nothing leaves your machine. No cloud DB, no API key, no accounts.
 
 Install is one JSON block in your Claude config:
 
@@ -28,11 +37,25 @@ Install is one JSON block in your Claude config:
 }
 ```
 
-No API key, no cloud storage — proposals live locally on your machine. MIT licensed.
+**Pricing:** Free tier is 5 draft_proposal calls/month — enough to test on a real brief. Pro is $19/mo for unlimited drafts + all 8 tools.
 
+Landing page: https://bradshawprojects.github.io/proposalcraft/
 Repo: https://github.com/bradshawprojects/proposalcraft
 
-Happy to answer questions on how it works.
+Happy to answer questions on how it works or what's on the roadmap.
+
+---
+
+**Prepared responses:**
+
+**"Why Claude Desktop? I don't use that."**
+> Fair — it does require Claude Desktop (or any MCP-compatible client). The trade-off for the MCP design: zero ops, no backend, your proposals stay local. If you're on a different AI setup, this won't work for you yet. CLI version is on the roadmap.
+
+**"$19/mo just for proposals?"**
+> Free tier covers 5 drafts/month — that's probably 1-2 client opportunities. If you win even one extra deal because you sent a better proposal faster, it's paid for itself many times over. At $150/hr, one hour saved = $150. The tool costs $19.
+
+**"Why not just prompt Claude directly?"**
+> You can — but you'd need to paste your past proposals into every conversation manually, remember to run the brief analysis step, and maintain your own system prompts. ProposalCraft makes the workflow persistent and repeatable. Your proposal library stays saved between sessions.
 
 ---
 
