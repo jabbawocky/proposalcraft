@@ -3,19 +3,19 @@
 **Phase**: DEPLOY
 
 **What shipped:**
-- ✅ mcpservers.org approved (confirmed email Jun 3)
+- ✅ mcpservers.org approved (email Jun 3)
 - ✅ PH gallery ready — `docs/ph-gallery/`
 - ✅ PH hunter outreach kit — `marketing/ph-hunter-outreach.md`
 - ✅ r/mcp post live
 - ✅ MCPize registration submitted — awaiting confirmation email
 - ✅ `activate-pro.js` script ready — `scripts/activate-pro.js`
-- ✅ punkpeye/awesome-mcp-servers PR #7404 — all green (`has-emoji`, `valid-name`, `has-glama`), awaiting merge
-- ✅ `marketing/roundup-outreach.md` — 6 roundup targets, copy-paste ready, **deadline June 8**
-- ✅ GitHub topics updated — `claude-desktop`, `mcp-server`
-- ✅ `server.json` committed — official MCP registry ready (needs 1 browser step)
-- ✅ **mcp.so submitted** — issue #2636 filed at github.com/chatmcp/mcpso/issues/2636
+- ✅ punkpeye/awesome-mcp-servers PR #7404 — all green labels, awaiting merge
+- ✅ `marketing/roundup-outreach.md` — 6 roundup targets, copy-paste ready
+- ✅ GitHub topics — `claude-desktop`, `mcp-server`, `mcp`, `model-context-protocol`
+- ✅ `server.json` committed — official MCP registry ready (1 browser step to publish)
+- ✅ mcp.so submitted — issue chatmcp/mcpso#2636
 
-**PR status:**
+**PR status (all OPEN):**
 | Repo | PR | Labels |
 |---|---|---|
 | punkpeye/awesome-mcp-servers | #7404 | ✅ has-emoji, valid-name, has-glama |
@@ -29,21 +29,22 @@
 | Directory | Status |
 |---|---|
 | mcpservers.org | ✅ approved |
-| mcp.so | ✅ submitted (issue #2636) |
-| punkpeye/awesome-mcp-servers | PR all-green, pending merge |
+| mcp.so | ✅ submitted (chatmcp/mcpso#2636) |
 | Glama.ai | ✅ indexed (badge live) |
-| Smithery.ai | configured via smithery.yaml |
-| registry.modelcontextprotocol.io | server.json ready — needs Mat to publish |
+| punkpeye (5.5k stars) | PR all-green, pending merge |
+| Smithery.ai | auto-indexed via smithery.yaml |
+| registry.modelcontextprotocol.io | server.json ready — needs Mat |
+| appcypher (5.5k stars) | external PRs restricted — not possible |
 
 **Metrics:**
 - Revenue: $0 — gate pending MCPize URL
 - Stars: 0 | Forks: 0
 
-**Blockers / needs Mat:**
-- 🚧 **Official MCP registry** → `cd /home/orbitosw/worker/proposalcraft && /home/orbitosw/worker/mcp-publisher login github && /home/orbitosw/worker/mcp-publisher publish`
-- 🚧 **MCPize confirmation email** → check inbox → `node scripts/activate-pro.js <url>`
-- 🚧 **Roundup outreach (June 8 deadline)** → `marketing/roundup-outreach.md` → 6 emails/DMs (~10 mins)
-- 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
+**Blockers / needs Mat (⚠️ June 8 deadline in 3 days for roundup outreach):**
+1. 🚧 **Roundup outreach** → `marketing/roundup-outreach.md` → 6 emails/DMs (~10 mins) — **highest leverage**
+2. 🚧 **Official MCP registry** → `cd /home/orbitosw/worker/proposalcraft && /home/orbitosw/worker/mcp-publisher login github && /home/orbitosw/worker/mcp-publisher publish`
+3. 🚧 **MCPize confirmation email** → check inbox → `node scripts/activate-pro.js <url>`
+4. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
 
 **Next autonomous action:**
-Check punkpeye PR #7404 merge; check mcp.so issue #2636 status; look for more directories.
+All remaining high-value steps need Mat. Next tick: check PR merges, check mcp.so issue status.
