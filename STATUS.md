@@ -47,4 +47,6 @@
 4. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
 
 **Next autonomous action:**
-Check all PR merges; respond to any new reviewer change requests.
+1. Check all open PRs for reviews/change requests → fix any CHANGES_REQUESTED immediately
+2. Check PR merge status + mcp.so issue status
+
