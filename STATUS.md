@@ -13,17 +13,18 @@
 - ✅ `marketing/roundup-outreach.md` — 6 roundup targets, copy-paste ready
 - ✅ GitHub topics — `claude-desktop`, `mcp-server`, `mcp`, `model-context-protocol`
 - ✅ `server.json` committed — official MCP registry ready (1 browser step to publish)
-- ✅ mcp.so submitted — issue chatmcp/mcpso#2636
+- ✅ mcp.so submitted — chatmcp/mcpso#2636
+- ✅ **TensorBlock PR #647** — new PR with README + docs/marketing-sales--crm.md (fixes reviewer request on old PR #635)
 
-**PR status (all OPEN):**
-| Repo | PR | Labels |
+**PR status:**
+| Repo | PR | Status |
 |---|---|---|
-| punkpeye/awesome-mcp-servers | #7404 | ✅ has-emoji, valid-name, has-glama |
-| habitoai/awesome-mcp-servers | #83 | clean |
-| TensorBlock/awesome-mcp-servers | #635 | clean |
-| tolkonepiu/best-of-mcp-servers | #227 | clean |
-| MobinX/awesome-mcp-list | #295 | clean |
-| win4r/Awesome-Claude-MCP-Servers | #55 | clean |
+| punkpeye/awesome-mcp-servers | #7404 | ✅ all green labels, awaiting merge |
+| TensorBlock/awesome-mcp-servers | #647 | new — awaiting review (supersedes #635) |
+| habitoai/awesome-mcp-servers | #83 | open, clean |
+| tolkonepiu/best-of-mcp-servers | #227 | open, clean |
+| MobinX/awesome-mcp-list | #295 | open, clean |
+| win4r/Awesome-Claude-MCP-Servers | #55 | open, clean |
 
 **Directory listings:**
 | Directory | Status |
@@ -33,18 +34,17 @@
 | Glama.ai | ✅ indexed (badge live) |
 | punkpeye (5.5k stars) | PR all-green, pending merge |
 | Smithery.ai | auto-indexed via smithery.yaml |
-| registry.modelcontextprotocol.io | server.json ready — needs Mat |
-| appcypher (5.5k stars) | external PRs restricted — not possible |
+| registry.modelcontextprotocol.io | server.json ready — needs Mat to publish |
 
 **Metrics:**
 - Revenue: $0 — gate pending MCPize URL
 - Stars: 0 | Forks: 0
 
-**Blockers / needs Mat (⚠️ June 8 deadline in 3 days for roundup outreach):**
+**Blockers / needs Mat (⚠️ June 8 deadline — 3 days):**
 1. 🚧 **Roundup outreach** → `marketing/roundup-outreach.md` → 6 emails/DMs (~10 mins) — **highest leverage**
 2. 🚧 **Official MCP registry** → `cd /home/orbitosw/worker/proposalcraft && /home/orbitosw/worker/mcp-publisher login github && /home/orbitosw/worker/mcp-publisher publish`
 3. 🚧 **MCPize confirmation email** → check inbox → `node scripts/activate-pro.js <url>`
 4. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
 
 **Next autonomous action:**
-All remaining high-value steps need Mat. Next tick: check PR merges, check mcp.so issue status.
+Check all PR merges; respond to any new reviewer change requests.
