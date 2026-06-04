@@ -10,10 +10,13 @@
   "packages": [
     {
       "registryType": "npm",
+      "name": "proposalcraft",
       "identifier": "proposalcraft",
       "version": "1.0.3",
       "transport": {
-        "type": "stdio"
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "github:jabbawocky/proposalcraft"]
       },
       "environmentVariables": []
     }
