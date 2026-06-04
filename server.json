@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jabbawocky/proposalcraft",
+  "description": "MCP server that drafts client proposals in your voice. Save 2-3 of your past winning proposals, paste a new brief, and Claude generates a ready-to-send draft. No API key, no cloud — local storage only.",
+  "repository": {
+    "url": "https://github.com/jabbawocky/proposalcraft",
+    "source": "github"
+  },
+  "version": "1.0.3",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "proposalcraft",
+      "version": "1.0.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": []
+    }
+  ]
+}
