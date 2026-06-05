@@ -1,7 +1,7 @@
 # ProposalCraft — Product Hunt Launch Package
 
 **Product:** ProposalCraft — MCP server for freelancers  
-**Version:** 1.0.2  
+**Version:** 1.0.3  
 **Live URLs:** https://jabbawocky.github.io/proposalcraft/ | https://github.com/jabbawocky/proposalcraft  
 **Pricing:** Free (5 drafts/mo) | Pro $19/mo  
 **PH Target:** Tuesday, June 10, 2026 (see rationale below)
