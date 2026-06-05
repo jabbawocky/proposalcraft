@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 6, 2026
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 2)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Dev blog post written** (7965514) — "Why I removed the Anthropic SDK from my MCP server" committed to `marketing/blog-sdk-removal.md`. Ready to post to dev.to/Hashnode/r/ClaudeAI. Targets developer ICP ahead of PH launch. Copy-paste ready.
+- ✅ **Duplicate actions cleaned up** — 5 stale duplicate action items resolved.
 - ✅ **server.json description fixed** (aa7c029) — was 205 chars, failing MCP registry with 422 error. Now 84 chars, `mcp-publisher validate` passes. Registry publish unblocked on content side — one OAuth login away.
 - ✅ mcpservers.org approved
 - ✅ PH gallery ready — `docs/ph-gallery/`
