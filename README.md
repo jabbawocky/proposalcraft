@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node: >=18](https://img.shields.io/badge/Node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![MCP Compatible](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io)
+[![jabbawocky/proposalcraft MCP server](https://glama.ai/mcp/servers/jabbawocky/proposalcraft/badges/score.svg)](https://glama.ai/mcp/servers/jabbawocky/proposalcraft)
 
 > **MCP server for freelancers and consultants.** Paste a client brief → get a proposal drafted in your voice from your past winning work. No templates. No generic output. Learns from what's already worked for you.
 
