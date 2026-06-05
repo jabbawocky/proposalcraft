@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 2)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 3)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.0.3 GitHub Release published** — https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.3. Covers all changes since v1.0.0 (free tier, load_examples, server.json, Glama badge, PH kit). Notifies watchers, gives PH an active "latest release" signal.
 - ✅ **Dev blog post written** (7965514) — "Why I removed the Anthropic SDK from my MCP server" committed to `marketing/blog-sdk-removal.md`. Ready to post to dev.to/Hashnode/r/ClaudeAI. Targets developer ICP ahead of PH launch. Copy-paste ready.
 - ✅ **Duplicate actions cleaned up** — 5 stale duplicate action items resolved.
 - ✅ **server.json description fixed** (aa7c029) — was 205 chars, failing MCP registry with 422 error. Now 84 chars, `mcp-publisher validate` passes. Registry publish unblocked on content side — one OAuth login away.
