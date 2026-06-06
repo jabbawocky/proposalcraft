@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 7)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 8)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **IH + HN Show HN + r/webdev launch posts written** — added to LAUNCH_POSTS.md. All 10 launch channels now have copy ready: r/freelance, r/SideProject, r/consulting, r/digitalnomad, r/Upwork, r/ClaudeAI, Indie Hackers, Show HN, r/webdev, X thread.
 - ✅ **TensorBlock/awesome-mcp-servers MERGED** 🎉 — both PRs (#635 + #647) merged. ProposalCraft now listed in TensorBlock directory.
 - ✅ **r/Upwork post written** (cd10389) — 150k members, cover-letter-fatigue angle. Added to LAUNCH_POSTS.md.
 - ✅ **r/consulting + r/digitalnomad posts written** (b924508) — 200k + 1.8M member communities. Consultant-angle (analyze_brief for RFP triage) and nomad-angle (async client work, zero setup). Ready to fire Jun 9–10.
@@ -58,4 +59,4 @@
 6. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-Monitor PR merges; file issue if any require a change request response.
+All 10 launch channels have copy. Monitor PR merges; final launch prep now fully in Mat's hands (4 days to PH launch).

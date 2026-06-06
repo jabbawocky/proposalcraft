@@ -357,4 +357,122 @@ Free, MIT licensed. 5 drafts/month free tier.
 GitHub: https://github.com/jabbawocky/proposalcraft  
 Docs: https://jabbawocky.github.io/proposalcraft/
 
+---
+
+## Indie Hackers
+
+**Target:** Indie Hackers community (product builders, early-stage SaaS founders, solo devs)
+**Timing:** PH launch day (June 10) — crosspost alongside PH
+**Angle:** The "maker" story — what problem, what you built, what surprised you, what's next
+
+**Title:**
+I built a free MCP server for freelancers — 0 to first GitHub star in one day
+
+**Body:**
+
+**The problem I was solving:** I freelance alongside my main work and was spending 2–3 hours on proposals that *might* win. The bottleneck was voice — every proposal had to sound like me, not like a template.
+
+**What I built:** ProposalCraft — an MCP server (plugin for Claude Desktop) that drafts client proposals in your voice using your own past winning proposals as examples.
+
+**How it works:**
+1. Save 2-3 of your past winning proposals to a local library
+2. Paste the new brief
+3. Ask Claude: "draft a proposal for this brief"
+4. Claude reads your examples and drafts in your style — structure, tone, pricing approach, all of it
+
+There's also an `analyze_brief` tool that runs before drafting — it extracts budget signals, scope risks, and red flags so you can decide whether a gig is worth pursuing before writing a word.
+
+**What surprised me:**
+- Removing the Anthropic SDK was the right call. Original design had the server making its own API calls (double billing for users). Now it returns context blocks and lets Claude do the drafting. Wrote a [full post about this](https://github.com/jabbawocky/proposalcraft/blob/main/marketing/blog-sdk-removal.md).
+- The free/Pro split worked: 5 drafts/month free (enough to try it), $19/mo Pro for unlimited. People need to feel the value before paying.
+
+**Stack:** TypeScript, MCP SDK, zero cloud dependencies. Proposals stay on-device. No account, no API key.
+
+**Current status:** Listed in 2 MCP server directories, GitHub release live, landing page up. PH launch today.
+
+**Free, MIT licensed.** Install: `npx -y github:jabbawocky/proposalcraft`
+
+GitHub: https://github.com/jabbawocky/proposalcraft
+
+Would love feedback on the Pro pricing and the free tier limit — is 5 drafts/month too tight?
+
+---
+
+## Hacker News — Show HN
+
+**Target:** Hacker News (developers, technical founders, OSS audience)
+**Timing:** PH launch day (June 10), morning AEST / late night EST prior day
+**Angle:** MCP architecture — zero SDK, context injection pattern. Technical story.
+
+**Title:**
+Show HN: ProposalCraft – MCP server that drafts client proposals in your voice (no API key)
+
+**Body:**
+
+ProposalCraft is an MCP server for Claude Desktop that helps freelancers draft client proposals. You store 2-3 past winning proposals locally, paste a new brief, and Claude drafts in your voice using the examples as context.
+
+The interesting technical part: this was originally built with the Anthropic SDK — the server made its own `messages.create` calls. That turned out to be the wrong architecture for MCP. The fix was removing the SDK entirely and having the tool return structured context blocks instead. Claude (running in the host) does the drafting as part of its main response.
+
+This pattern has real UX consequences:
+- Users needed two API keys (Anthropic subscription + API key). Now they need zero.
+- The server was competing with Claude Desktop for the LLM connection. Now it cooperates.
+- Install friction dropped: no `env` block required in the MCP config.
+
+The MCP protocol's design intention is "context injector, not LLM wrapper" — but nothing in the docs says that explicitly. Learned it by getting it wrong first.
+
+Repo: https://github.com/jabbawocky/proposalcraft  
+Install (one JSON block in Claude Desktop config): `npx -y github:jabbawocky/proposalcraft`  
+Landing: https://jabbawocky.github.io/proposalcraft/
+
+Free, MIT, no cloud. Happy to discuss the architecture or the MCP SDK patterns.
+
+---
+
+## Reddit — r/webdev
+
+**Target:** r/webdev (1.7M members — web developers, many freelance or consulting)
+**Timing:** PH launch day (June 10) or day before
+**Angle:** Technical story + freelance use case; developer-native audience who knows Claude Desktop
+
+**Title:**
+Built a free MCP server for writing client proposals — removed the Anthropic SDK and learned something
+
+**Body:**
+
+Working on a side project — **ProposalCraft**, an MCP server (Claude Desktop plugin) that drafts client proposals in your voice using your past winning work as the style guide.
+
+Sharing this mostly because the architecture lesson was interesting.
+
+**What I built first (wrong):**
+Server used the Anthropic SDK to make its own `messages.create` calls. Users needed their own API key — a second Anthropic account on top of their Claude Desktop subscription. Install required an `env` block in the MCP config with `ANTHROPIC_API_KEY`.
+
+**What I should have built:**
+Tools that return context blocks. Let Claude (running in the host) do the drafting.
+
+The MCP protocol is designed around this: tools are **context injectors**, not LLM wrappers. Your server's job is to fetch the right data, format it well, and return it. The host model handles reasoning.
+
+The fix was removing `@anthropic-ai/sdk` entirely. The `draft_proposal` tool now loads the user's saved proposals, assembles a structured prompt block, and returns it as a text content item. Claude reads it and drafts in its main response — no parallel API call, no extra billing, no extra setup.
+
+Result: zero env vars required. Install:
+
+```json
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
+    }
+  }
+}
+```
+
+That's it. No API key, no cloud, proposals stay local.
+
+Wrote up the full SDK-removal story here: https://github.com/jabbawocky/proposalcraft/blob/main/marketing/blog-sdk-removal.md
+
+GitHub: https://github.com/jabbawocky/proposalcraft  
+Landing: https://jabbawocky.github.io/proposalcraft/
+
+Free, MIT. If you freelance and use Claude Desktop, give it a try — curious what other MCP patterns people have found for productivity tooling.
+
 Does anyone else have a system for filtering Upwork jobs before applying? Curious what signals you watch for.
