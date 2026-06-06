@@ -1,8 +1,12 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 23)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 24)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Star campaign written** (`marketing/star-campaign.md`) — pre-launch GitHub star ask for Mat's close contacts. 3 copy-paste message variants (text/WhatsApp, Slack DM, email), target audience guidance, timing (Jun 9 evening before PH midnight). Stars before launch help PH ranking + directory listings. Goal: 20 stars before midnight PST Jun 9. Distinct from personal outreach email (that asks for installs; this asks for stars — different audience overlap and much lower friction: 10 seconds per star).
+- ✅ **Duplicate actions cleaned** — 4 duplicates from Status Monitor tick resolved.
+- ✅ **Landing page verified live** — jabbawocky.github.io/proposalcraft/ loads correctly. All credibility bar items showing. Stars counter at 0 — star campaign needed.
+- ✅ **PR statuses checked** — punkpeye #7404 still open (clean/mergeable), all 4 other awesome-mcp PRs still open. No merges or new activity since last tick.
 - ✅ **v1.0.4 GitHub Release published** — https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.4. Covers ticks 20-22: 12 bundled templates, upsell copy fix, dead Gumroad link fix, personal outreach email. Notifies repo watchers 3 days before PH launch; shows recent activity to directory bots.
 - ✅ **Launch-day guide cleaned up** — OG image step marked done (was showing as an open task but was shipped tick 17). Night-before checklist now accurately reflects remaining human gates only.
 - ✅ **Starter Pack section fixed** (`docs/index.html`) — removed broken `proposalcraft.gumroad.com/l/starter-pack` dead link. Section now accurately says "Free — bundled with ProposalCraft" with a `load_examples` CTA. No dead links on launch day.
@@ -83,4 +87,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-v1.0.4 released. All launch assets are complete: 10 channels, 12 templates, PH first comment, community response kit, blog posts. 3 days to PH launch. All remaining gates require Mat — see blockers above. Worker will check inbox + actions each tick for any newly unblocked items.
+All launch assets complete. Star campaign written (the final marketing gap). 3 days to PH launch. All remaining work requires Mat: Pro URL, GoDaddy, GitHub 2FA, NPM_TOKEN, MCP registry, Glama OAuth. Worker watching for any newly unblocked items each tick.
