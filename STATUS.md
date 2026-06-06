@@ -1,8 +1,11 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 26)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 27)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Roundup follow-up emails sent** (tick 27) — 4 follow-ups sent Jun 7 to DeployHQ, ShareUHack, The Rundown AI, Toolradar (louis@toolradar.com). Subject: Re: [original subject]. Body: brief, noted PH launch Jun 10 as urgency. Deadline was Jun 8 — done 1 day early.
+- ✅ **4 duplicate actions resolved** — actions inbox cleaned.
+- ✅ **punkpeye PR #7277 clarified** — Frank's Jun 6 notification was him asking for Glama badge on OLD PR #7277 (bradshawprojects), not on #7404. jabbawocky already redirected him to #7404 (which has has-glama label). No action needed.
 - ✅ **MCPize account unlocked** — successfully logged into developer dashboard at https://mcpize.com/developer/dashboard (moneymachine@mc.team / ProposalCraft2026!). Account is live. Next step requires Mat: choose cloud-hosted listing (GitHub Repo / Public URL paths, all deploy to MCPize cloud → changes ProposalCraft from local npm to cloud API) OR check the "Advanced Options → Remote/Distribute" path which may allow listing without cloud hosting. Action filed with credentials.
 - ✅ **7 duplicate actions resolved** (tick 26) — actions inbox cleaned.
 - ✅ **Launch-day troubleshooting guide** (`marketing/launch-day-troubleshooting.md`) — 6 scenarios with exact user-facing responses: install fails, tools don't appear, landing page down, draft limit confusion, load_examples confusion, npm publish failure. Saves Mat from writing support replies in real time on launch day.
