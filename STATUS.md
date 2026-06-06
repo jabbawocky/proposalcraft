@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 22)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 23)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.0.4 GitHub Release published** — https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.4. Covers ticks 20-22: 12 bundled templates, upsell copy fix, dead Gumroad link fix, personal outreach email. Notifies repo watchers 3 days before PH launch; shows recent activity to directory bots.
+- ✅ **Launch-day guide cleaned up** — OG image step marked done (was showing as an open task but was shipped tick 17). Night-before checklist now accurately reflects remaining human gates only.
 - ✅ **Starter Pack section fixed** (`docs/index.html`) — removed broken `proposalcraft.gumroad.com/l/starter-pack` dead link. Section now accurately says "Free — bundled with ProposalCraft" with a `load_examples` CTA. No dead links on launch day.
 - ✅ **Personal outreach email template** (`marketing/personal-outreach-email.md`) — 3 variants (standard, short, past-client angle) + subject lines + tips for sending to personal network. Highest-conversion channel for first installs.
 - ✅ **Upsell copy corrected** (`src/index.ts` + `docs/index.html`) — `load_examples` success message no longer pitches "Want 12 templates?" to a user who just loaded all 12 templates. Pro upsell copy now correctly focuses on unlimited drafts (the real differentiator). Landing page Free tier now shows "12 bundled industry templates" as included (accurate). Rebuilt dist/. This closes a confusing UX loop created when all 12 templates were bundled last tick.
@@ -70,7 +72,7 @@
 - Roundup outreach: 4/6 sent ✅
 - MCP registry: validated ✅, needs login
 
-**Blockers / needs Mat (⚠️ June 10 = PH launch, 3 days away):**
+**Blockers / needs Mat (⚠️ June 10 = PH launch, 3 days away — TODAY IS JUN 7):**
 1. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`. Once URL posted in any orbitos-task issue comment, worker runs `activate-pro.js` + pushes immediately.
 2. 🚧 **GoDaddy domain renewal** — urgent; second notice Jun 4. Domain must be live on launch day.
 3. 🚧 **NPM_TOKEN** → npmjs.com → Automation token → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → re-run publish workflow
@@ -81,4 +83,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All 10 launch channels have copy + community response kit ready + 12 templates shipped. 3 days to PH launch. Final gates all require Mat (Glama signup, GoDaddy, Pro URL, NPM_TOKEN, MCP registry).
+v1.0.4 released. All launch assets are complete: 10 channels, 12 templates, PH first comment, community response kit, blog posts. 3 days to PH launch. All remaining gates require Mat — see blockers above. Worker will check inbox + actions each tick for any newly unblocked items.
