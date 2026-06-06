@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 17)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 18)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Gumroad setup guide** (`docs/gumroad-setup.md`) — 5-min step-by-step for Mat to create ProposalCraft Pro at $19/mo on Gumroad (or Stripe Payment Link). Unblocks MCPize blocker without any architecture change. Once Mat posts the URL, worker runs `activate-pro.js` immediately.
 - ✅ **OG image PNG generated** — `docs/og-image.png` (1200×630) created autonomously using orbitos-browser + pure-Python PNG crop. `og:image` and `twitter:image` in docs/index.html updated from `.svg` → `.png`. Twitter large-card images are now fully wired — no action needed from Mat.
 - ✅ **MCPize architecture flag** — MCPize's "Quick Deploy" path hosts the server on their cloud (changes local-install architecture). Flagged for Mat's decision: MCPize as cloud host vs. Gumroad/Stripe Payment Link for local npm license. NOT deployed autonomously.
 - ✅ **Twitter card fix** — changed `twitter:card` from `summary` to `summary_large_image` and added `twitter:image` meta tag.
