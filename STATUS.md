@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 18)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 19)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Community response kit** (`marketing/community-response-kit.md`) — 15 pre-written replies covering setup, privacy, pricing objections, differentiation, HN/IH-specific pushback. Copy-paste ready for Jun 10 launch threads. Saves Mat 30-60 min of real-time typing on launch day.
+- ✅ **Glama signup attempted** — email path hit bot detection (Cloudflare Turnstile, no OTP delivered). GitHub OAuth = browser login gate. Glama indexing remains a Mat gate (5-min GitHub OAuth).
 - ✅ **Gumroad setup guide** (`docs/gumroad-setup.md`) — 5-min step-by-step for Mat to create ProposalCraft Pro at $19/mo on Gumroad (or Stripe Payment Link). Unblocks MCPize blocker without any architecture change. Once Mat posts the URL, worker runs `activate-pro.js` immediately.
 - ✅ **OG image PNG generated** — `docs/og-image.png` (1200×630) created autonomously using orbitos-browser + pure-Python PNG crop. `og:image` and `twitter:image` in docs/index.html updated from `.svg` → `.png`. Twitter large-card images are now fully wired — no action needed from Mat.
 - ✅ **MCPize architecture flag** — MCPize's "Quick Deploy" path hosts the server on their cloud (changes local-install architecture). Flagged for Mat's decision: MCPize as cloud host vs. Gumroad/Stripe Payment Link for local npm license. NOT deployed autonomously.
@@ -64,13 +66,15 @@
 - Roundup outreach: 4/6 sent ✅
 - MCP registry: validated ✅, needs login
 
-**Blockers / needs Mat (⚠️ June 10 = PH launch + MCPize rate expiry):**
-1. 🚧 **MCPize setup** — mcpize.com → account → list → connect Stripe (~30 mins); 85% rate expires June 10
-2. 🚧 **MCPize confirmation email** → check inbox → `node scripts/activate-pro.js <url>`
-3. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish` (5 min; server.json now valid)
-4. 🚧 **PH gallery image capture** → open `docs/ph-gallery/` in Chrome (~10 mins); see README
-5. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
-6. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
+**Blockers / needs Mat (⚠️ June 10 = PH launch, 3 days away):**
+1. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`. Once URL posted in any orbitos-task issue comment, worker runs `activate-pro.js` + pushes immediately.
+2. 🚧 **GoDaddy domain renewal** — urgent; second notice Jun 4. Domain must be live on launch day.
+3. 🚧 **NPM_TOKEN** → npmjs.com → Automation token → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → re-run publish workflow
+4. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish` (5 min browser OAuth; server.json is valid)
+5. 🚧 **Glama signup** → glama.ai/sign-up → GitHub OAuth → Add Server → paste `https://github.com/jabbawocky/proposalcraft`. Gets ProposalCraft indexed + quality score → unblocks punkpeye PR #7404 merge.
+6. 🚧 **PH gallery image capture** → open `docs/ph-gallery/` in Chrome (~10 mins); see README
+7. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
+8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All 10 launch channels have copy. Monitor PR merges; final launch prep now fully in Mat's hands (4 days to PH launch).
+All 10 launch channels have copy + community response kit ready. 3 days to PH launch. Final gates all require Mat (Glama signup, GoDaddy, Pro URL, NPM_TOKEN, MCP registry).
