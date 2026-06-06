@@ -1,8 +1,11 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 24)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 25)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Launch-day troubleshooting guide** (`marketing/launch-day-troubleshooting.md`) — 6 scenarios with exact user-facing responses: install fails, tools don't appear, landing page down, draft limit confusion, load_examples confusion, npm publish failure. Saves Mat from writing support replies in real time on launch day.
+- ✅ **GitHub 2FA deadline clarified** — forwarded email from Mat confirms deadline is Jul 21, 2026, not imminent. Not blocking Jun 10 launch. Downgraded from urgent.
+- ✅ **7 duplicate actions resolved** — actions inbox cleaned.
 - ✅ **Star campaign written** (`marketing/star-campaign.md`) — pre-launch GitHub star ask for Mat's close contacts. 3 copy-paste message variants (text/WhatsApp, Slack DM, email), target audience guidance, timing (Jun 9 evening before PH midnight). Stars before launch help PH ranking + directory listings. Goal: 20 stars before midnight PST Jun 9. Distinct from personal outreach email (that asks for installs; this asks for stars — different audience overlap and much lower friction: 10 seconds per star).
 - ✅ **Duplicate actions cleaned** — 4 duplicates from Status Monitor tick resolved.
 - ✅ **Landing page verified live** — jabbawocky.github.io/proposalcraft/ loads correctly. All credibility bar items showing. Stars counter at 0 — star campaign needed.
@@ -87,4 +90,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All launch assets complete. Star campaign written (the final marketing gap). 3 days to PH launch. All remaining work requires Mat: Pro URL, GoDaddy, GitHub 2FA, NPM_TOKEN, MCP registry, Glama OAuth. Worker watching for any newly unblocked items each tick.
+All launch assets complete including troubleshooting guide. GitHub 2FA not blocking (Jul 21 deadline, well after launch). 3 days to PH launch. Remaining gates: Pro URL, GoDaddy, NPM_TOKEN, MCP registry, Glama OAuth — all require Mat.
