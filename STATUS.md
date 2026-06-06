@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 9)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 10)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **MCP explainer post written** (marketing/blog-mcp-explainer.md) — plain-English "what is an MCP server" for non-technical freelancers. Addresses the single biggest adoption barrier: confusion about what Claude Desktop MCP is. Cross-post ready for IH/dev.to/Hashnode.
 - ✅ **Comparison blog post written** (marketing/blog-comparison.md) — ProposalCraft vs Proposal Genie vs PouncerAI. Honest positioning, SEO-ready, targets "proposal generator alternatives" searches. Post to dev.to/IH/Hashnode after launch.
 - ✅ **JS Weekly + Node Weekly pitches added** to marketing/newsletter-pitches.md — editor contact, one-line pitch, relevance angle. 310k+ combined subscribers.
 - ✅ **IH + HN Show HN + r/webdev launch posts written** — added to LAUNCH_POSTS.md. All 10 launch channels now have copy ready: r/freelance, r/SideProject, r/consulting, r/digitalnomad, r/Upwork, r/ClaudeAI, Indie Hackers, Show HN, r/webdev, X thread.
