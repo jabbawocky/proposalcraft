@@ -79,51 +79,6 @@ Would love feedback on what else would make this useful.
 
 ---
 
-## Indie Hackers
-
-**Title:** Shipped: ProposalCraft — free MCP server that writes proposals in your voice
-
-**Body:**
-Quick build (3 days) — sharing because it's a bit different from the usual SaaS.
-
-**What:** MCP server for Claude Desktop. Saves your best proposals, then generates new ones matched to client briefs. Sounds like you because it's trained on your work.
-
-**Why MCP:** Zero friction. No OAuth, no onboarding, no dashboard to maintain. One JSON config block and it's running. MCP is underrated for zero-op tools.
-
-**Business model:** Free tier is 5 draft_proposal calls/month. Pro is $19/mo for unlimited drafts + all 8 tools. Freelance market is massive — they already pay for Bonsai, HoneyBook, etc. This just plugs into Claude.
-
-**What I'd build next:** Standup/progress reports MCP — same pattern, daily habit instead of monthly.
-
-Landing page: https://jabbawocky.github.io/proposalcraft/
-GitHub: https://github.com/jabbawocky/proposalcraft
-
----
-
-## Hacker News — Show HN
-
-**Title:** Show HN: ProposalCraft – MCP server that drafts client proposals in your voice
-
-**Body:**
-I built ProposalCraft, an MCP server for Claude Desktop that generates client proposals based on your past winning work.
-
-How it works:
-1. Save your best proposals via the `save_proposal` MCP tool
-2. Paste a client brief into Claude
-3. Ask it to draft a proposal — it uses your examples as style/structure guides
-
-Everything runs locally. MIT licensed. No API key — it uses your existing Claude Desktop session.
-
-Install: one JSON block in `claude_desktop_config.json` pointing to `npx -y github:jabbawocky/proposalcraft`.
-
-Repo: https://github.com/jabbawocky/proposalcraft
-Landing page: https://jabbawocky.github.io/proposalcraft/
-
-Motivation: proposal writing is one of those high-value but annoying tasks perfect for AI-assist. Existing tools (Bonsai, Honeybook) are full CRMs with proposal as an afterthought. This is the opposite — just the proposal, nothing else.
-
-Would appreciate feedback on whether the MCP distribution model makes sense, or if a standalone CLI / web UI would get more traction.
-
----
-
 ## Product Hunt
 
 **Name:** ProposalCraft
@@ -476,3 +431,59 @@ Landing: https://jabbawocky.github.io/proposalcraft/
 Free, MIT. If you freelance and use Claude Desktop, give it a try — curious what other MCP patterns people have found for productivity tooling.
 
 Does anyone else have a system for filtering Upwork jobs before applying? Curious what signals you watch for.
+
+---
+
+## Reddit — r/learnprogramming
+
+**Target:** r/learnprogramming (4M members — learners, many doing freelance projects on the side)
+**Timing:** Day after PH launch (June 11) — let PH settle first
+**Angle:** Build story + practical tool; resonates with learners who moonlight as freelancers
+
+**Title:**
+I built a free MCP server that writes client proposals — here's the architecture mistake I made first
+
+**Body:**
+
+I've been learning to freelance alongside coding, and one thing nobody prepares you for is proposals. Every client needs one, they take 2+ hours to write well, and you're doing it before you've even been paid.
+
+I built **ProposalCraft** to fix this — it's an MCP server for Claude Desktop that drafts proposals in your voice from your past winning work. But the more interesting part is the mistake I made first.
+
+**The wrong way:**
+
+My first version used the Anthropic SDK inside the server. The tool would:
+1. Accept the client brief
+2. Call `client.messages.create()` directly
+3. Return the generated proposal
+
+This meant users needed *two* Anthropic accounts — one for Claude Desktop (which they already had) and one for the API key my server needed. I was creating a parallel LLM connection inside a tool that was supposed to extend Claude.
+
+**The right way:**
+
+MCP tools aren't supposed to call LLMs. They're context injectors. Your tool fetches data and returns it as a structured block. Claude — already running in the host — does the reasoning.
+
+The fix was removing `@anthropic-ai/sdk` entirely. Now:
+1. Tool loads the user's saved proposals from their local machine
+2. Tool builds a context block (brief + examples + style notes)
+3. Tool returns that block as a text content item
+4. Claude reads it and drafts the proposal in its main response
+
+Result: zero env vars required, no second API key, better output quality (Claude has full conversation context).
+
+```json
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
+    }
+  }
+}
+```
+
+That's the entire install. No API key, no account, everything runs locally.
+
+If you're learning to build MCP servers — the mental model shift is: **your tool is not the AI, Claude is the AI. Your tool is the data layer.**
+
+GitHub (MIT, free): https://github.com/jabbawocky/proposalcraft  
+Longer write-up on the SDK removal: https://github.com/jabbawocky/proposalcraft/blob/main/marketing/blog-sdk-removal.md
