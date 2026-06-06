@@ -250,3 +250,74 @@ GitHub: https://github.com/jabbawocky/proposalcraft
 Landing page: https://jabbawocky.github.io/proposalcraft/
 
 Happy to answer questions about the MCP architecture if that's interesting — removing the Anthropic SDK and letting Claude handle the drafting was a non-obvious call.
+
+---
+
+## Reddit — r/consulting
+
+**Target:** r/consulting (200k members — independent consultants, exactly the ICP)
+**Timing:** Day before or day of PH launch (June 9–10)
+**Angle:** Time-cost of proposals, no-AI-fluff pitch
+
+**Title:**
+I got tired of spending 2 hours on proposals that lose. Built something to fix it (free tool)
+
+**Body:**
+
+Quick background: I do independent consulting and was losing about 2 hours per proposal — researching the client, tailoring the pitch, trying to sound like myself instead of a ChatGPT template.
+
+The actual problem: I'd won good proposals in the past but wasn't learning from them. Each new pitch was starting from scratch.
+
+So I built **ProposalCraft** — an MCP server for Claude that drafts proposals using *your* past winning work as the template. You save 2-3 of your best proposals, paste a new brief, and it drafts in your voice.
+
+It's not magic — it's pattern-matching from your own wins. But it cuts 2 hours to about 5 minutes, and the output actually sounds like me because it's trained on my writing.
+
+**The `analyze_brief` tool** is the part I use most now. Before drafting, it extracts:
+- Estimated budget signals from the brief
+- Red flags (scope creep indicators, vague deliverables, "we just need something simple")
+- Whether to even pitch
+
+Helped me decide to pass on two RFPs that would have wasted a week of proposal writing.
+
+Free, MIT licensed, runs locally (your proposals stay on your machine). Requires Claude Desktop.
+
+GitHub: https://github.com/jabbawocky/proposalcraft
+
+Happy to discuss the architecture or the proposal workflow — genuinely curious how others approach this.
+
+---
+
+## Reddit — r/digitalnomad
+
+**Target:** r/digitalnomad (1.8M members — location-independent freelancers/consultants)
+**Timing:** Day before or day of PH launch (June 9–10)
+**Angle:** Async client work, time-zone juggling, zero setup
+
+**Title:**
+Built a free tool that drafts client proposals in your voice using Claude — no API key, runs locally
+
+**Body:**
+
+If you freelance for clients across time zones, you know the proposal bottleneck: a client emails you a brief at midnight their time, you're supposed to respond quickly, and writing a good proposal takes 2 hours you don't have.
+
+I built **ProposalCraft** to fix this for myself. It's an MCP server (plugin) for Claude Desktop that drafts proposals in your voice — using your own past winning proposals as the style guide.
+
+**How it works:**
+- Save 2-3 of your best past proposals to a local library
+- Paste the new client brief
+- Ask Claude: "draft a proposal for this brief"
+- Claude uses your past work as the voice reference and drafts in seconds
+
+There's also an `analyze_brief` tool that runs before drafting — it flags budget signals, scope risks, and red flags. Useful for quickly deciding whether a gig is worth pursuing before investing time.
+
+**Zero friction setup:**
+- No API key required (uses your existing Claude subscription)
+- No cloud — proposals stay on your laptop
+- One JSON block in your Claude config and it's live
+
+**Free, MIT licensed.** 5 drafts/month on the free tier.
+
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
+
+Anyone else using Claude Desktop for client work? Curious what workflow gaps you've found.
