@@ -43,7 +43,7 @@ function checkFreeTier() {
         return {
             allowed: false,
             used: usage.draft_count,
-            message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**ProposalCraft Pro — $19/mo**\n- Unlimited drafts — no monthly cap\n- 12 industry-specific Starter Pack templates included\n- Priority email support\n\n**[Upgrade to Pro →](${PRO_URL})**\n\n_Free tier resets on the 1st of each month. Your saved proposals and library are unaffected._`,
+            message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**ProposalCraft Pro — $19/mo**\n- Unlimited drafts — no monthly cap\n- Priority email support\n\n**[Upgrade to Pro →](${PRO_URL})**\n\n_Free tier resets on the 1st of each month. Your saved proposals and library are unaffected._`,
         };
     }
     return { allowed: true, used: usage.draft_count };
@@ -450,7 +450,7 @@ ${brief}`,
             content: [
                 {
                     type: "text",
-                    text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 **Want 12 industry-specific templates?** The Starter Pack (web design, SaaS, e-commerce, video production, paid ads + more) is included in Pro ($19/mo): [Upgrade to Pro →](${PRO_URL})`,
+                    text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 **Need unlimited drafts?** Pro ($19/mo) removes the monthly cap so you can draft as many proposals as you win. [Upgrade to Pro →](${PRO_URL})`,
                 },
             ],
         };
@@ -459,8 +459,8 @@ ${brief}`,
         const usage = getUsage();
         const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
         const status = remaining > 0
-            ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo**: unlimited drafts + 12 Starter Pack templates.\n[Upgrade to Pro →](${PRO_URL})`
-            : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts + 12 industry templates.\n[Upgrade to Pro →](${PRO_URL})`;
+            ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`
+            : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`;
         return { content: [{ type: "text", text: status }] };
     }
     throw new Error(`Unknown tool: ${name}`);
