@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 15)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 16)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Twitter card fix** — changed `twitter:card` from `summary` to `summary_large_image` and added `twitter:image` meta tag. Also flagged in launch guide: Twitter requires PNG (not SVG) for image cards — Mat needs to export `og-image.svg` → PNG before launch day (~5 min).
 - ✅ **Lobsters submission written** — LAUNCH_POSTS.md. Two options: (A) submit SDK removal blog post once hosted on dev.to/Hashnode; (B) direct GitHub repo link. Best channel for developer credibility.
 - ⚠️ **MCPize signup confirmation link expired** — account appears active (action says "logged in, onboarding done"). If Stripe connect fails, try requesting a fresh confirmation email from mcpize.com.
 - ✅ **MCPize welcome email received** (moneymachine@mc.team) — account confirmed active. Two human-gated steps remain: Connect Stripe + List ProposalCraft. Credentials in actions inbox.

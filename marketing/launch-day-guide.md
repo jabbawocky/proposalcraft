@@ -11,6 +11,7 @@
 - [ ] **NPM_TOKEN** — npmjs.com → Access Tokens → Automation → copy. GitHub → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → paste. Then: Actions tab → Publish to npm → Re-run failed jobs.
 - [ ] **MCP registry** — `mcp-publisher login github && mcp-publisher publish` (5 min, needs browser for OAuth)
 - [ ] **PH gallery** — open `docs/ph-gallery/` HTML files in Chrome, screenshot each one. Upload to PH product page.
+- [ ] **OG image PNG** — Twitter requires PNG/JPEG for `summary_large_image` cards (SVG is ignored). Open `docs/og-image.svg` in Chrome → right-click → "Save as" PNG, or use `rsvg-convert -f png -o docs/og-image.png docs/og-image.svg` then update `og:image` and `twitter:image` to point to `.png`. ~5 min. Without this, Twitter shares show text-only.
 - [ ] **Verify everything is live:** landing page loads, GitHub release shows, Glama badge renders.
 
 ---
