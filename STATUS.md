@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 19)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 20)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **12 starter pack templates completed** (`sample-proposals/`) — all 11 missing templates written: mobile MVP, SaaS build, brand identity, SEO audit, API integration, e-commerce, content retainer, data dashboard, paid ads, tech consulting, video production (+ the existing web redesign). `load_examples` now ships full value on day 1. Starter Pack product is now real and deliverable. Templates ship in npm package (in `files` config).
 - ✅ **Community response kit** (`marketing/community-response-kit.md`) — 15 pre-written replies covering setup, privacy, pricing objections, differentiation, HN/IH-specific pushback. Copy-paste ready for Jun 10 launch threads. Saves Mat 30-60 min of real-time typing on launch day.
 - ✅ **Glama signup attempted** — email path hit bot detection (Cloudflare Turnstile, no OTP delivered). GitHub OAuth = browser login gate. Glama indexing remains a Mat gate (5-min GitHub OAuth).
 - ✅ **Gumroad setup guide** (`docs/gumroad-setup.md`) — 5-min step-by-step for Mat to create ProposalCraft Pro at $19/mo on Gumroad (or Stripe Payment Link). Unblocks MCPize blocker without any architecture change. Once Mat posts the URL, worker runs `activate-pro.js` immediately.
@@ -77,4 +78,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All 10 launch channels have copy + community response kit ready. 3 days to PH launch. Final gates all require Mat (Glama signup, GoDaddy, Pro URL, NPM_TOKEN, MCP registry).
+All 10 launch channels have copy + community response kit ready + 12 templates shipped. 3 days to PH launch. Final gates all require Mat (Glama signup, GoDaddy, Pro URL, NPM_TOKEN, MCP registry).
