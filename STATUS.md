@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 21)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 22)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Starter Pack section fixed** (`docs/index.html`) — removed broken `proposalcraft.gumroad.com/l/starter-pack` dead link. Section now accurately says "Free — bundled with ProposalCraft" with a `load_examples` CTA. No dead links on launch day.
+- ✅ **Personal outreach email template** (`marketing/personal-outreach-email.md`) — 3 variants (standard, short, past-client angle) + subject lines + tips for sending to personal network. Highest-conversion channel for first installs.
 - ✅ **Upsell copy corrected** (`src/index.ts` + `docs/index.html`) — `load_examples` success message no longer pitches "Want 12 templates?" to a user who just loaded all 12 templates. Pro upsell copy now correctly focuses on unlimited drafts (the real differentiator). Landing page Free tier now shows "12 bundled industry templates" as included (accurate). Rebuilt dist/. This closes a confusing UX loop created when all 12 templates were bundled last tick.
 - ✅ **12 starter pack templates completed** (`sample-proposals/`) — all 11 missing templates written: mobile MVP, SaaS build, brand identity, SEO audit, API integration, e-commerce, content retainer, data dashboard, paid ads, tech consulting, video production (+ the existing web redesign). `load_examples` now ships full value on day 1. Starter Pack product is now real and deliverable. Templates ship in npm package (in `files` config).
 - ✅ **Community response kit** (`marketing/community-response-kit.md`) — 15 pre-written replies covering setup, privacy, pricing objections, differentiation, HN/IH-specific pushback. Copy-paste ready for Jun 10 launch threads. Saves Mat 30-60 min of real-time typing on launch day.
