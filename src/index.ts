@@ -54,7 +54,7 @@ function checkFreeTier(): { allowed: boolean; used: number; message?: string } {
     return {
       allowed: false,
       used: usage.draft_count,
-      message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**ProposalCraft Pro — $19/mo** (founding rate until June 10, 2026)\n- Unlimited drafts — no monthly cap\n- 12 industry-specific Starter Pack templates included\n- Priority email support\n\n**Upgrade:** [Reserve founding access →](${PRO_MAILTO})\n\nOr visit: ${PRO_URL}\n\n_Free tier resets on the 1st of each month. Your saved proposals and library are unaffected._`,
+      message: `You've used all ${FREE_DRAFT_LIMIT} free proposal drafts for ${usage.month}.\n\n**ProposalCraft Pro — $19/mo**\n- Unlimited drafts — no monthly cap\n- 12 industry-specific Starter Pack templates included\n- Priority email support\n\n**[Upgrade to Pro →](${PRO_URL})**\n\n_Free tier resets on the 1st of each month. Your saved proposals and library are unaffected._`,
     };
   }
   return { allowed: true, used: usage.draft_count };
@@ -328,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const usageNote =
       remaining > 0
         ? `\n\n---\n_Free plan: ${remaining} draft${remaining !== 1 ? "s" : ""} remaining this month._`
-        : `\n\n---\n_**Last free draft this month.** Upgrade to Pro ($19/mo) for unlimited: [Reserve founding access →](${PRO_MAILTO})_`;
+        : `\n\n---\n_**Last free draft this month.** Upgrade to Pro ($19/mo) for unlimited: [Upgrade to Pro →](${PRO_URL})_`;
 
     const examples = loadProposals();
     const brief = String(args!.brief);
@@ -515,7 +515,7 @@ ${brief}`,
       content: [
         {
           type: "text",
-          text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 **Want 12 industry-specific templates?** The Starter Pack (web design, SaaS, e-commerce, video production, paid ads + more) is included in Pro ($19/mo): [Reserve founding access →](${PRO_MAILTO})`,
+          text: `${summary}${skipNote}\n\nYour library now has ${totalNow} proposal${totalNow !== 1 ? "s" : ""}. Use draft_proposal with any brief to start.\n\n💡 **Want 12 industry-specific templates?** The Starter Pack (web design, SaaS, e-commerce, video production, paid ads + more) is included in Pro ($19/mo): [Upgrade to Pro →](${PRO_URL})`,
         },
       ],
     };
@@ -526,8 +526,8 @@ ${brief}`,
     const remaining = FREE_DRAFT_LIMIT - usage.draft_count;
     const status =
       remaining > 0
-        ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo** (founding rate until June 10, 2026): unlimited drafts + 12 Starter Pack templates.\n[Reserve founding access →](${PRO_MAILTO})`
-        : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts + 12 industry templates.\n[Reserve founding access →](${PRO_MAILTO})`;
+        ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo**: unlimited drafts + 12 Starter Pack templates.\n[Upgrade to Pro →](${PRO_URL})`
+        : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts + 12 industry templates.\n[Upgrade to Pro →](${PRO_URL})`;
     return { content: [{ type: "text", text: status }] };
   }
 
