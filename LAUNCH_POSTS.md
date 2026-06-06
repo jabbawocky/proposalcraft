@@ -201,3 +201,52 @@ Landing page + docs: https://jabbawocky.github.io/proposalcraft/
 GitHub: https://github.com/jabbawocky/proposalcraft
 
 If you're a freelancer using Claude Desktop — try it and tell me what's missing.
+
+---
+
+## Reddit — r/ClaudeAI
+
+**Target:** r/ClaudeAI (80k+ members — Claude Desktop users, power users, early adopters)
+**Timing:** Day of PH launch (June 10) or day before
+**Angle:** MCP server for freelancers — zero setup, works inside Claude Desktop
+
+**Title:**
+Built an MCP server that drafts client proposals in your voice — free, no API key
+
+**Body:**
+
+If you freelance or consult, you've probably used Claude to help write proposals. This takes it further.
+
+**ProposalCraft** is an MCP server that connects directly to Claude Desktop. Once installed, Claude gets 8 new tools — the main one drafts a proposal in *your voice*, from *your past winning work*.
+
+**How it works:**
+1. Save 2-3 of your best past proposals to a local library (`save_proposal`)
+2. Paste a new client brief and ask Claude to draft it
+3. Claude reads your examples and drafts in your style — not generic templates
+
+There's also `analyze_brief` which pulls out budget signals, red flags, and scope risks *before* you draft. Useful for deciding whether to even pitch.
+
+**Why MCP instead of a web app:**
+- Your proposals never leave your machine — local storage only
+- No API key needed (uses your existing Claude session)
+- No extra subscription — if you have Claude Desktop, you have this
+
+**Install is one JSON block:**
+
+```json
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
+    }
+  }
+}
+```
+
+5 free drafts/month on the free tier. MIT licensed.
+
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing page: https://jabbawocky.github.io/proposalcraft/
+
+Happy to answer questions about the MCP architecture if that's interesting — removing the Anthropic SDK and letting Claude handle the drafting was a non-obvious call.
