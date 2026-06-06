@@ -487,3 +487,35 @@ If you're learning to build MCP servers — the mental model shift is: **your to
 
 GitHub (MIT, free): https://github.com/jabbawocky/proposalcraft  
 Longer write-up on the SDK removal: https://github.com/jabbawocky/proposalcraft/blob/main/marketing/blog-sdk-removal.md
+
+---
+
+## Lobsters
+
+**Target:** Lobsters (curated programmer link aggregator, smaller but highly engaged — ~15k active users)
+**Timing:** After the blog post is live on dev.to/Hashnode (Jun 10 or 11) — submit the hosted URL, not the GitHub blob
+**Note:** Lobsters requires an account to submit. If Mat has one, use it. Otherwise skip — not worth creating one just for this.
+**Tags:** `ai`, `tools`, `typescript` (and `mcp` if it exists as a tag)
+
+**Option A — Submit the SDK removal blog post (recommended)**
+
+Link the hosted dev.to/Hashnode version of `marketing/blog-sdk-removal.md` once posted.
+
+Title:
+Why I removed the Anthropic SDK from my MCP server (and why you probably should too)
+
+No comment needed — the article title is self-explanatory. Lobsters values substance over marketing.
+
+**Option B — Direct GitHub repo submission**
+
+Title:
+ProposalCraft – MCP server that drafts client proposals from past winning work (MIT, no API key)
+
+URL: https://github.com/jabbawocky/proposalcraft
+
+Comment:
+Built this for freelancers using Claude Desktop. You save 2-3 past winning proposals, paste a new client brief, and Claude drafts the new one in your voice.
+
+The interesting part architecturally: early version used the Anthropic SDK to make its own messages.create calls — which meant users needed two API accounts. Correct MCP pattern is to return context blocks and let the host model do the reasoning. Wrote up the full mistake here: [blog-sdk-removal link]
+
+MIT, TypeScript, one JSON config block to install. Free tier, $19/mo Pro.
