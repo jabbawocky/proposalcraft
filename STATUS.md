@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 6)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 7)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **TensorBlock/awesome-mcp-servers MERGED** 🎉 — both PRs (#635 + #647) merged. ProposalCraft now listed in TensorBlock directory.
+- ✅ **r/Upwork post written** (cd10389) — 150k members, cover-letter-fatigue angle. Added to LAUNCH_POSTS.md.
 - ✅ **r/consulting + r/digitalnomad posts written** (b924508) — 200k + 1.8M member communities. Consultant-angle (analyze_brief for RFP triage) and nomad-angle (async client work, zero setup). Ready to fire Jun 9–10.
 - ✅ **r/ClaudeAI launch post written** (548ca5a) — 80k+ member community, zero-setup MCP angle, ready to fire on PH launch day (Jun 10). Added to LAUNCH_POSTS.md.
 - ✅ **Repo homepage URL fixed** — was pointing to old bradshawprojects.github.io; now jabbawocky.github.io/proposalcraft/. Affects GitHub repo page and directory listings.
@@ -35,7 +37,7 @@
 | Repo | PR |
 |---|---|
 | punkpeye/awesome-mcp-servers | #7404 ✅ all green |
-| TensorBlock/awesome-mcp-servers | #647 |
+| TensorBlock/awesome-mcp-servers | #647 ✅ MERGED |
 | habitoai/awesome-mcp-servers | #83 |
 | tolkonepiu/best-of-mcp-servers | #227 |
 | MobinX/awesome-mcp-list | #295 |
