@@ -52,6 +52,34 @@ ProposalCraft — free MCP server for Claude Desktop that turns client briefs in
 
 ---
 
+## JavaScript Weekly (250k+ subscribers)
+
+**Submission form:** https://javascriptweekly.com/issues  
+**Contact:** peter@cooperpress.com (editor)  
+**Category:** Tools / Open source
+
+**One-line pitch:**
+ProposalCraft — MIT open-source MCP server (TypeScript) that turns client briefs into ready-to-send proposals using your past winning work as the style guide. Zero API key, zero cloud, one JSON config block.
+
+**Link:** https://github.com/jabbawocky/proposalcraft
+
+**Why it's relevant to JS Weekly:** TypeScript MCP server using the official `@modelcontextprotocol/sdk`. Shows a practical, non-trivial use of the MCP SDK beyond toy examples. Useful to developers who freelance.
+
+---
+
+## Node Weekly (60k+ subscribers)
+
+**Submission form:** https://nodeweekly.com/issues  
+**Contact:** peter@cooperpress.com (same editor as JS Weekly)  
+**Category:** Tools / Open source
+
+**One-line pitch:**
+ProposalCraft — Node.js MCP server that plugs into Claude Desktop and drafts client proposals in 30 seconds from your past winning work. MIT, no backend, runs locally via `npx`.
+
+**Link:** https://github.com/jabbawocky/proposalcraft
+
+---
+
 ## Changelog.com (software podcast + newsletter)
 
 **Contact:** news@changelog.com

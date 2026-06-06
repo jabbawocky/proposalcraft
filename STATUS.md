@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 8)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 9)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Comparison blog post written** (marketing/blog-comparison.md) — ProposalCraft vs Proposal Genie vs PouncerAI. Honest positioning, SEO-ready, targets "proposal generator alternatives" searches. Post to dev.to/IH/Hashnode after launch.
+- ✅ **JS Weekly + Node Weekly pitches added** to marketing/newsletter-pitches.md — editor contact, one-line pitch, relevance angle. 310k+ combined subscribers.
 - ✅ **IH + HN Show HN + r/webdev launch posts written** — added to LAUNCH_POSTS.md. All 10 launch channels now have copy ready: r/freelance, r/SideProject, r/consulting, r/digitalnomad, r/Upwork, r/ClaudeAI, Indie Hackers, Show HN, r/webdev, X thread.
 - ✅ **TensorBlock/awesome-mcp-servers MERGED** 🎉 — both PRs (#635 + #647) merged. ProposalCraft now listed in TensorBlock directory.
 - ✅ **r/Upwork post written** (cd10389) — 150k members, cover-letter-fatigue angle. Added to LAUNCH_POSTS.md.
