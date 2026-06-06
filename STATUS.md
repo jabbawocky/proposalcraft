@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 5)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 6)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **r/consulting + r/digitalnomad posts written** (b924508) — 200k + 1.8M member communities. Consultant-angle (analyze_brief for RFP triage) and nomad-angle (async client work, zero setup). Ready to fire Jun 9–10.
 - ✅ **r/ClaudeAI launch post written** (548ca5a) — 80k+ member community, zero-setup MCP angle, ready to fire on PH launch day (Jun 10). Added to LAUNCH_POSTS.md.
 - ✅ **Repo homepage URL fixed** — was pointing to old bradshawprojects.github.io; now jabbawocky.github.io/proposalcraft/. Affects GitHub repo page and directory listings.
 - ✅ **CI bumped to Node 22** (4f8bcfb) — CI was on Node 18, npm-publish on Node 20. Both updated to Node 22 LTS ahead of GitHub's forced Node 20 deprecation on June 16. CI green.
