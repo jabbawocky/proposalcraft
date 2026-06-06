@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 6, 2026 (tick 13)
+# 💼 Money Machine — Mission Status: June 6, 2026 (tick 14)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **MCPize welcome email received** (moneymachine@mc.team) — account confirmed active. Two human-gated steps remain: Connect Stripe + List ProposalCraft. Credentials in actions inbox.
+- ✅ **npm metadata improved** — added 7 keywords (mcp-server, model-context-protocol, claude-desktop, proposal-generator, freelancer-tools, consulting, anthropic) + bugs field. Improves discoverability once NPM_TOKEN is set and package publishes.
 - ✅ **Pre-launch code fix** — paywall upgrade CTAs were pointing to `PRO_MAILTO` (Mat's work email) instead of `PRO_URL`. After `activate-pro.js` runs, `PRO_URL` gets updated to the MCPize/Gumroad link — but the in-message buttons stayed on the mailto. Fixed all 5 occurrences to use `PRO_URL`. Also removed hardcoded "until June 10, 2026" date from paywall messages. Build + smoke test pass.
 - ✅ **Launch day execution guide written** (marketing/launch-day-guide.md) — precise ordered checklist for Jun 10: night-before prep, morning post sequence, afternoon DMs, day-after follow-up. Includes engagement rules, success metrics, and fallbacks.
 - ✅ **r/learnprogramming post written** — 4M members, build-story angle (architecture mistake + fix), fires Jun 11. Deduped LAUNCH_POSTS.md (removed two stale IH/HN drafts superseded by tick 8 versions).

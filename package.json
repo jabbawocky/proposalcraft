@@ -20,10 +20,17 @@
   "mcpName": "io.github.jabbawocky/proposalcraft",
   "keywords": [
     "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "claude",
+    "claude-desktop",
     "proposal",
+    "proposal-generator",
     "freelance",
+    "freelancer-tools",
+    "consulting",
     "ai",
-    "claude"
+    "anthropic"
   ],
   "author": "Mat Carter",
   "license": "MIT",
@@ -31,6 +38,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jabbawocky/proposalcraft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jabbawocky/proposalcraft/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0"
