@@ -321,3 +321,40 @@ GitHub: https://github.com/jabbawocky/proposalcraft
 Landing page: https://jabbawocky.github.io/proposalcraft/
 
 Anyone else using Claude Desktop for client work? Curious what workflow gaps you've found.
+
+---
+
+## Reddit — r/Upwork
+
+**Target:** r/Upwork (150k members — freelancers who write proposals/covers daily)
+**Timing:** Day before or day of PH launch (June 9–10)
+**Angle:** Cover letter fatigue, writing proposals that sound like you not a bot
+
+**Title:**
+Built a free tool for writing Upwork proposals faster — uses your past winning covers as the template
+
+**Body:**
+
+If you've been on Upwork for a while, you've written hundreds of proposals. The problem isn't ideas — it's that every cover has to sound personal and tailored, not like ChatGPT wrote it.
+
+I built **ProposalCraft** to solve this. It's a plugin for Claude Desktop that drafts proposals using *your* past winning covers as the style guide.
+
+**The idea:** save 3-5 of your best-performing past proposals. When a new job comes in, paste the description and ask Claude to draft a cover. It reads your examples and matches your voice — the hooks you use, how you structure your pitch, your sign-off.
+
+It's not magic, but it's a lot better than "write a cover letter for this job" with no context.
+
+There's also an `analyze_brief` tool that reads the job description first and flags:
+- Budget signals (even when hidden)  
+- Red flags ("we just need a few tweaks", "perfect English required" but $3/hr budget)
+- Whether the scope matches what they're paying
+
+Saved me from wasting time on bad-fit jobs a few times already.
+
+**Requirements:** Claude Desktop (free or paid plan). No extra API key, no subscription, no cloud.
+
+Free, MIT licensed. 5 drafts/month free tier.
+
+GitHub: https://github.com/jabbawocky/proposalcraft  
+Docs: https://jabbawocky.github.io/proposalcraft/
+
+Does anyone else have a system for filtering Upwork jobs before applying? Curious what signals you watch for.
