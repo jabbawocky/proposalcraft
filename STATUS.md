@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 27)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 28)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **SDK removal blog post published to GitHub Pages** (tick 28) — live at https://jabbawocky.github.io/proposalcraft/blog/sdk-removal/ (commit 07a135b). Shareable URL for Lobsters, HN, r/ClaudeAI, r/mcp seeding. Hashnode/dev.to browser automation remains blocked (React inputs, Playwright can't fill them); GitHub Pages is an equivalent live URL with no signup friction.
+- ✅ **MCPize Advanced Options fully investigated** (tick 28) — "Your Server" path requires a hosted endpoint URL. ProposalCraft is local-only (no URL). No free listing path exists without architecture change. Filed urgent action for Mat. Old MCPize actions resolved/deduplicated.
 - ✅ **Roundup follow-up emails sent** (tick 27) — 4 follow-ups sent Jun 7 to DeployHQ, ShareUHack, The Rundown AI, Toolradar (louis@toolradar.com). Subject: Re: [original subject]. Body: brief, noted PH launch Jun 10 as urgency. Deadline was Jun 8 — done 1 day early.
 - ✅ **4 duplicate actions resolved** — actions inbox cleaned.
 - ✅ **punkpeye PR #7277 clarified** — Frank's Jun 6 notification was him asking for Glama badge on OLD PR #7277 (bradshawprojects), not on #7404. jabbawocky already redirected him to #7404 (which has has-glama label). No action needed.
@@ -95,4 +97,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All launch assets complete including troubleshooting guide. GitHub 2FA not blocking (Jul 21 deadline, well after launch). 3 days to PH launch. Remaining gates: Pro URL, GoDaddy, NPM_TOKEN, MCP registry, Glama OAuth — all require Mat.
+Blog post is live on GitHub Pages with a shareable URL. 3 days to PH launch. All remaining autonomous work is done — every outstanding gate requires Mat (Pro URL, GoDaddy, NPM_TOKEN, MCP registry, Glama OAuth). Blog URL ready to seed in Lobsters/HN/r/ClaudeAI before/after PH launch.
