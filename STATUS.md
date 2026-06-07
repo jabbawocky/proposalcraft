@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 32)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 33)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **toolsdk-ai/toolsdk-mcp-registry PR #342** (tick 33) — https://github.com/toolsdk-ai/toolsdk-mcp-registry/pull/342. JSON-based MCP registry, 175 stars, marketing category. Added `packages/marketing/proposalcraft.json`.
 - ✅ **YuzeHao2023/Awesome-MCP-Servers PR #302** (tick 32) — https://github.com/YuzeHao2023/Awesome-MCP-Servers/pull/302. 1,046 stars, Marketing section. appcypher (5.5k) and wong2 (4.1k) both have PRs disabled — confirmed before attempting. PipedreamHQ is Pipedream-only integrations, not a fit. 3 action dupes resolved (Star campaign, GoDaddy, Pro URL).
 - ✅ **Newsletter outreach sent** (tick 31) — pitched SDK blog post + ProposalCraft to 4 developer newsletter editors from persona Alex Chen (alex@mc.team): (1) peter@cooperpress.com — JS Weekly (250k) + Node Weekly (60k) combined pitch leading with blog post; (2) news@changelog.com — Changelog podcast/newsletter; (3) hello@console.dev — Console devtools newsletter. Blog post angle ("why I removed the Anthropic SDK") gives editors a concrete article link, not just a product pitch. Reddit signup blocked (network firewall), HN form inputs inaccessible to Playwright. Newsletter outreach is the top autonomous growth lever remaining 3 days pre-launch.
 - ✅ **Inbox + PR check** (tick 30) — no new roundup replies. punkpeye #7404 still open (has-emoji ✅, valid-name ✅, has-glama ✅), habitoai #83 and tolkonepiu #227 still open. No change in PR landscape.
@@ -86,6 +87,7 @@
 | MobinX/awesome-mcp-list | #295 |
 | win4r/Awesome-Claude-MCP-Servers | #55 |
 | YuzeHao2023/Awesome-MCP-Servers | #302 |
+| toolsdk-ai/toolsdk-mcp-registry | #342 |
 
 **Metrics:**
 - Revenue: $0 — gate pending MCPize URL
