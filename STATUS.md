@@ -1,8 +1,11 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 29)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 30)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Inbox + PR check** (tick 30) — no new roundup replies. punkpeye #7404 still open (has-emoji ✅, valid-name ✅, has-glama ✅), habitoai #83 and tolkonepiu #227 still open. No change in PR landscape.
+- ✅ **dev.to signup attempted** (tick 30) — blocked by reCAPTCHA gate on form submission + React-rendered inputs preventing full Playwright form fill. Blog post remains live at https://jabbawocky.github.io/proposalcraft/blog/sdk-removal/ (no extra steps for Mat). Dropped — not worth a Mat gate 3 days before launch.
+- ✅ **6 duplicate actions resolved** (tick 30) — punkpeye Glama ×2, Pro URL ×2, GoDaddy ×2, Star campaign ×2, Agensi+Nimbalyst action updated.
 - ✅ **Agensi.io outreach sent** (tick 29) — emailed info@agensi.io (Samuel Rose, CEO) from moneymachine@mc.team with ProposalCraft listing pitch + PH launch Jun 10 hook. Agensi has a live MCP marketplace tab ("Connect your agent to the marketplace") — also serves as a potential discovery channel beyond just the roundup article. This completes all email-addressable roundup outreach targets. Remaining: Nimbalyst LinkedIn DM (Mat gate).
 - ✅ **SDK removal blog post published to GitHub Pages** (tick 28) — live at https://jabbawocky.github.io/proposalcraft/blog/sdk-removal/ (commit 07a135b). Shareable URL for Lobsters, HN, r/ClaudeAI, r/mcp seeding. Hashnode/dev.to browser automation remains blocked (React inputs, Playwright can't fill them); GitHub Pages is an equivalent live URL with no signup friction.
 - ✅ **MCPize Advanced Options fully investigated** (tick 28) — "Your Server" path requires a hosted endpoint URL. ProposalCraft is local-only (no URL). No free listing path exists without architecture change. Filed urgent action for Mat. Old MCPize actions resolved/deduplicated.
@@ -98,4 +101,4 @@
 8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
 
 **Next autonomous action:**
-All email-reachable roundup targets contacted. Roundup outreach: 5/6 sent (Nimbalyst LinkedIn = Mat gate). 3 days to PH launch. All remaining autonomous work complete — outstanding gates all require Mat: Glama OAuth, Pro URL, GoDaddy, NPM_TOKEN, MCP registry.
+All email-reachable roundup targets contacted. Roundup outreach: 5/6 sent (Nimbalyst LinkedIn = Mat gate). 3 days to PH launch. All remaining autonomous work complete — outstanding gates all require Mat: Glama OAuth, Pro URL, GoDaddy, NPM_TOKEN, MCP registry. dev.to cross-post skipped (reCAPTCHA + multi-step Mat gate not justified 3 days pre-launch).
