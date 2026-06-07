@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 41)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 42)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **PH listing flagged as urgent** (tick 42) — Filed new urgent action `[73081a7a302d0798]`: PH listing has NOT been created yet. T-2 days to launch. Mat must create it at producthunt.com before Jun 9 — copy/tagline/gallery in `marketing/producthunt-launch.md` and `docs/ph-gallery/`. Also tried smithery.ai and cursor.directory (both new MCP directories) — both hit Vercel security checkpoint bot block, cannot submit. Resolved 7 duplicate actions from inbox.
+- ✅ **Inbox + PR check** (tick 42) — no newsletter replies. All 10 PRs still open: punkpeye #7404 (all labels, blocked on Glama), mcpm.sh #344 (3 bot reviews clean), mcp-get #229 (CI failing on npm), mcp.so #2670, others unchanged.
 - ✅ **mcp-publisher validated + login attempted** (tick 41) — Downloaded real `mcp-publisher` Go binary v1.7.9 from `modelcontextprotocol/registry` releases. Ran `mcp-publisher validate` → `✅ server.json is valid`. Attempted `mcp-publisher login github` → device code generated (A71B-BD7C), but GitHub device OAuth requires jabbawocky browser session (not active) → **Mat gate confirmed**. Mat only needs to run two commands: `mcp-publisher login github` + `mcp-publisher publish` (or just the publish if already logged in). Binary is at `/tmp/mcp-publisher/mcp-publisher`, valid credentials require npm package published first anyway.
 - ✅ **Inbox + PR check** (tick 41) — no newsletter replies. All PRs unchanged: punkpeye #7404 still open (has-glama, valid-name, has-emoji — needs Glama OAuth to merge), mcpm.sh #344 open, mcp-get #229 open, mcp.so #2670 open.
 - ✅ **PH gallery PNGs committed** (tick 40) — captured images 1, 3, 4 via headless browser. All look excellent: image1 (brief→analysis dual-panel), image3 (3-line install), image4 (Claude Desktop freemium gate). Committed to `docs/ph-gallery/` (commit 8f16dc5). Mat can now upload directly to PH — no screen capture needed for 3 of 4 images. Only image2 (animated GIF of draft_proposal running) still needs a screen recording from Mat.
@@ -120,7 +122,8 @@
 - Roundup outreach: 4/6 sent ✅
 - MCP registry: validated ✅, needs login
 
-**Blockers / needs Mat (⚠️ June 10 = PH launch, 3 days away — TODAY IS JUN 7):**
+**Blockers / needs Mat (⚠️ June 10 = PH launch, 2 days away — TODAY IS JUN 8):**
+0. 🚨 **PH listing creation** → producthunt.com → Post → New Product. Copy from `marketing/producthunt-launch.md`. Schedule for Jun 10 12:01am PST. Must be done TODAY or Jun 9 at latest.
 1. 🚨 **Glama signup — BLOCKING punkpeye PR #7404** → glama.ai → GitHub OAuth → Add Server → paste `https://github.com/jabbawocky/proposalcraft`. Punkpeye maintainer explicitly confirmed: "Glama server not found, can't merge." 5 minutes. BLOCKS biggest directory listing before launch. Email signup also blocked (bot detection) — only GitHub OAuth path works.
 2. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`. Once URL posted in any orbitos-task issue comment, worker runs `activate-pro.js` + pushes immediately.
 3. 🚧 **GoDaddy domain renewal** — urgent; second notice Jun 4. Domain must be live on launch day.
