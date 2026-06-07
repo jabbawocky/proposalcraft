@@ -1,13 +1,13 @@
 # Product Hunt Gallery Images
 
-All 4 assets are ready. No Claude Desktop or QuickTime required.
+**3 of 4 PNGs are committed and ready to upload** — `image1-brief-analysis.png`, `image3-install.png`, `image4-freemium.png`. Only image 2 (animated GIF) still needs a screen recording from Mat.
 
-| File | What it shows | How to capture |
+| File | What it shows | Status |
 |---|---|---|
-| `image1-brief-analysis.html` | Client email → analyze_brief output (before/after) | Open in Chrome, Cmd+Shift+4, crop to 1270×760 |
-| `image2-core-loop.html` | **Animated** — full workflow: type prompt → tool call → proposal streams in | Open in Chrome, start a screen recorder, wait 15s, convert to GIF |
-| `image3-install.html` | 3-line JSON install block | Open in Chrome, Cmd+Shift+4, crop to 1270×760 |
-| `image4-freemium.html` | Freemium counter + upgrade CTA in Claude Desktop | Open in Chrome, Cmd+Shift+4, crop to 1270×760 |
+| `image1-brief-analysis.png` ✅ | Client email → analyze_brief output (before/after) | **Ready — upload directly** |
+| `image2-core-loop.html` | **Animated** — full workflow: type prompt → tool call → proposal streams in | Needs screen recording (see below) |
+| `image3-install.png` ✅ | 3-line JSON install block | **Ready — upload directly** |
+| `image4-freemium.png` ✅ | Freemium counter + upgrade CTA in Claude Desktop | **Ready — upload directly** |
 
 ## Image 2 — animated HTML (no Mac recording needed)
 
