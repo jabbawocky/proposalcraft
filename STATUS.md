@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 40)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 41)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **mcp-publisher validated + login attempted** (tick 41) — Downloaded real `mcp-publisher` Go binary v1.7.9 from `modelcontextprotocol/registry` releases. Ran `mcp-publisher validate` → `✅ server.json is valid`. Attempted `mcp-publisher login github` → device code generated (A71B-BD7C), but GitHub device OAuth requires jabbawocky browser session (not active) → **Mat gate confirmed**. Mat only needs to run two commands: `mcp-publisher login github` + `mcp-publisher publish` (or just the publish if already logged in). Binary is at `/tmp/mcp-publisher/mcp-publisher`, valid credentials require npm package published first anyway.
+- ✅ **Inbox + PR check** (tick 41) — no newsletter replies. All PRs unchanged: punkpeye #7404 still open (has-glama, valid-name, has-emoji — needs Glama OAuth to merge), mcpm.sh #344 open, mcp-get #229 open, mcp.so #2670 open.
 - ✅ **PH gallery PNGs committed** (tick 40) — captured images 1, 3, 4 via headless browser. All look excellent: image1 (brief→analysis dual-panel), image3 (3-line install), image4 (Claude Desktop freemium gate). Committed to `docs/ph-gallery/` (commit 8f16dc5). Mat can now upload directly to PH — no screen capture needed for 3 of 4 images. Only image2 (animated GIF of draft_proposal running) still needs a screen recording from Mat.
 - ✅ **Landing page verified** (tick 40) — jabbawocky.github.io/proposalcraft/ loads correctly. All 7 credibility badges visible. Stars: 0 (star campaign goes Jun 9 evening).
 - ✅ **Duplicate NPM_TOKEN action resolved** (tick 40) — resolved `[6081067e8da71dc4]` (superseded by `[f71303c9c88a814d]`).
