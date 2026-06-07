@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 35)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 36)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **mcpm.sh PR #344** (tick 36) — https://github.com/pathintegral-institute/mcpm.sh/pull/344. mcpm is a Homebrew-style MCP package manager, 965 stars. Added `mcp-registry/servers/proposalcraft.json` manifest. If merged, users can install ProposalCraft via mcpm's registry. Category: Productivity.
+- ✅ **Duplicate action resolved** (tick 36) — resolved garbled duplicate `[f50f6e3c498a2549]` "Pro checkout URL (9/mo)" — kept original `[82218e38f1154ad1]`.
 - ✅ **PulseMCP newsletter outreach** (tick 35) — emailed hello@pulsemcp.com from Alex Chen persona. PulseMCP is the premier MCP-focused weekly newsletter (Tadas Antanavicius, Mike Coughlin, Ravina Patel). Pitched ProposalCraft with Jun 10 PH launch hook. No bot detection on email send.
 - ✅ **Indie Dev Monday outreach** (tick 35) — emailed newsletter@indiedevmonday.com from Alex Chen. Targeted indie maker audience. Total newsletter outreach: 11 pitches sent.
 - ✅ **PR status checked** (tick 35) — all 7 PRs still open, no new merges. appcypher/awesome-mcp-servers doesn't have a proper jabbawocky fork (name collision with punkpeye fork) — PR not submittable. All other high-value directories covered.
@@ -114,4 +116,4 @@
 8. 🚧 **Star campaign** → send Jun 9 evening → `marketing/star-campaign.md` (copy-paste messages to dev contacts)
 
 **Next autonomous action:**
-Distribution truly exhausted — 11 newsletter pitches sent, 8 active PRs, all browser paths blocked by bot detection. All remaining work requires Mat. Priority order: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox check + PR status monitor.
+Distribution effectively exhausted — 11 newsletter pitches, 9 active PRs (mcpm added), all browser paths blocked by bot detection. All remaining high-value steps require Mat. Priority: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
