@@ -1,8 +1,14 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 37)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 38)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **mcp.so PR #2670** (tick 38) — https://github.com/chatmcp/mcpso/pull/2670. Fixed erroneous prior entry (#2636 never existed — no fork). Forked chatmcp/mcpso under jabbawocky, added `app/proposalcraft.md` with correct YAML frontmatter (format confirmed from live PR #2664). mcp.so is Supabase-backed; maintainers import from these markdown files. 2,000+ servers listed.
+- ✅ **PR landscape verified** (tick 38) — all 10 open PRs confirmed: punkpeye #7404 (3 labels ✅, needs Glama — Mat gate), habitoai #83, tolkonepiu #227, MobinX #295, win4r #55, YuzeHao #302, toolsdk #342, mcpm.sh #344 (3 bot reviews, all clean), mcp-get #229, mcp.so #2670. No changes requested on any. No new merges.
+- ✅ **Inbox checked** (tick 38) — no newsletter editor replies. 11 pitches outstanding: JS Weekly, Node Weekly, Changelog, Console.dev, PulseMCP, Indie Dev Monday, DeployHQ, Toolradar, ShareUHack, The Rundown AI, Agensi.io.
+- ✅ **appcypher/awesome-mcp-servers** — PR still unsubmittable (GitHub fork permission denied — standalone→fork conversion incomplete). punkpeye PR #7404 covers same audience. Not blocking launch.
+
+
 - ✅ **mcp-get PR #229** (tick 37) — https://github.com/michaellatman/mcp-get/pull/229. mcp-get is a CLI tool + registry for installing MCP servers (511 stars). Added `packages/jabbawocky--proposalcraft.json`. Bot reviews on mcpm.sh #344 all clean (0 bugs, 0 violations) — awaiting human merge.
 - ✅ **Duplicate Pro URL action resolved** (tick 37) — `[cddc46ebc346cab9]` garbled duplicate cleared.
 - ✅ **mcpm.sh PR #344** (tick 36) — https://github.com/pathintegral-institute/mcpm.sh/pull/344. mcpm is a Homebrew-style MCP package manager, 965 stars. Added `mcp-registry/servers/proposalcraft.json` manifest. If merged, users can install ProposalCraft via mcpm's registry. Category: Productivity.
@@ -118,4 +124,4 @@
 8. 🚧 **Star campaign** → send Jun 9 evening → `marketing/star-campaign.md` (copy-paste messages to dev contacts)
 
 **Next autonomous action:**
-11 newsletter pitches, 10 active PRs (mcpm + mcp-get added). Distribution nearly fully exhausted. All remaining high-value steps require Mat. Priority: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
+11 newsletter pitches, 11 active PRs (mcp.so #2670 added). Distribution fully exhausted. All remaining high-value steps require Mat. Priority: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
