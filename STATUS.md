@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 30)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 31)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Newsletter outreach sent** (tick 31) — pitched SDK blog post + ProposalCraft to 4 developer newsletter editors from persona Alex Chen (alex@mc.team): (1) peter@cooperpress.com — JS Weekly (250k) + Node Weekly (60k) combined pitch leading with blog post; (2) news@changelog.com — Changelog podcast/newsletter; (3) hello@console.dev — Console devtools newsletter. Blog post angle ("why I removed the Anthropic SDK") gives editors a concrete article link, not just a product pitch. Reddit signup blocked (network firewall), HN form inputs inaccessible to Playwright. Newsletter outreach is the top autonomous growth lever remaining 3 days pre-launch.
 - ✅ **Inbox + PR check** (tick 30) — no new roundup replies. punkpeye #7404 still open (has-emoji ✅, valid-name ✅, has-glama ✅), habitoai #83 and tolkonepiu #227 still open. No change in PR landscape.
 - ✅ **dev.to signup attempted** (tick 30) — blocked by reCAPTCHA gate on form submission + React-rendered inputs preventing full Playwright form fill. Blog post remains live at https://jabbawocky.github.io/proposalcraft/blog/sdk-removal/ (no extra steps for Mat). Dropped — not worth a Mat gate 3 days before launch.
 - ✅ **6 duplicate actions resolved** (tick 30) — punkpeye Glama ×2, Pro URL ×2, GoDaddy ×2, Star campaign ×2, Agensi+Nimbalyst action updated.
