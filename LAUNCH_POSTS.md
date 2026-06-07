@@ -519,3 +519,73 @@ Built this for freelancers using Claude Desktop. You save 2-3 past winning propo
 The interesting part architecturally: early version used the Anthropic SDK to make its own messages.create calls — which meant users needed two API accounts. Correct MCP pattern is to return context blocks and let the host model do the reasoning. Wrote up the full mistake here: [blog-sdk-removal link]
 
 MIT, TypeScript, one JSON config block to install. Free tier, $19/mo Pro.
+
+---
+
+## Reddit — r/mcp
+
+**Target:** r/mcp (the MCP/Model Context Protocol subreddit — direct audience for this product)
+**Timing:** Jun 10 at PH launch time or shortly after
+**Note:** No payment reference — safe to fire regardless of Pro status. Pure tool share.
+
+**Title:** ProposalCraft — MCP server that drafts client proposals in your voice (free, no API key)
+
+**Body:**
+Built this for freelancers using Claude Desktop: **ProposalCraft** turns client briefs into ready-to-send proposals learned from your past winning work.
+
+**Tools:**
+- `analyze_brief` — extracts budget signals, red flags, scope creep risks, and the 3–5 questions to ask the client first
+- `draft_proposal` — generates a full proposal in your tone and pricing format
+- `save_proposal` / `load_examples` — build a library from your wins; 12 starter templates included
+
+**Install (one JSON block):**
+```json
+{
+  "mcpServers": {
+    "proposalcraft": {
+      "command": "npx",
+      "args": ["-y", "github:jabbawocky/proposalcraft"]
+    }
+  }
+}
+```
+
+Zero API key, zero cloud, everything local. MIT license.
+
+GitHub: https://github.com/jabbawocky/proposalcraft
+Landing: https://jabbawocky.github.io/proposalcraft/
+
+Happy to answer questions about the MCP design — I wrote about one interesting architectural decision (removing the Anthropic SDK) here: https://jabbawocky.github.io/proposalcraft/blog/sdk-removal/
+
+---
+
+## Reddit — r/freelancewriters
+
+**Target:** r/freelancewriters (active freelance community, proposal-heavy workflows)
+**Timing:** Jun 10 or 11 — after r/freelance post is live
+**Note:** Writers pitch clients constantly — very relevant ICP. Don't reference Pro tier in this post.
+
+**Title:** Built an AI tool that writes proposals in your voice — free, runs locally, no account needed
+
+**Body:**
+Fellow freelancers — I built something that finally fixed my proposal problem.
+
+**ProposalCraft** is an MCP server for Claude Desktop. You paste a client brief, it drafts a proposal in *your* voice — learned from the proposals that already won you work.
+
+Here's how it works:
+1. Save 2-3 of your past winning proposals as examples
+2. Paste a new client brief
+3. Get a full draft that sounds like you — matched to your tone, structure, and typical pricing format
+
+It also has an `analyze_brief` tool that reads the brief first and flags:
+- Budget signals (even if the client didn't name a number)
+- Scope creep risks
+- The 3-5 questions you should ask before even quoting
+
+Nothing leaves your machine. No API key, no cloud database, no accounts.
+
+Free tier: 5 drafts/month. Install is one JSON block in your Claude Desktop config.
+
+GitHub (MIT): https://github.com/jabbawocky/proposalcraft
+
+Happy to share the install instructions if anyone wants to try it.
