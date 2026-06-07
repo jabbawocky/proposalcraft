@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 43)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 44)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **ever-works/awesome-mcp-servers PR #118** (tick 44) — https://github.com/ever-works/awesome-mcp-servers/pull/118. New directory with live website at mcpserver.works (73 stars, active PR history). Added to Productivity & Business section + `details/proposalcraft.md`. 5 more duplicate actions resolved. 11 total active PRs now.
 - ✅ **Landing page + stars verified** (tick 43) — jabbawocky.github.io/proposalcraft/ loads correctly. Stars: **0** — star campaign is urgent tonight or Jun 9 evening before launch. PH copy in `marketing/producthunt-launch.md` is complete and ready to paste. 6 duplicate actions resolved. PRs: all still open, no overnight activity.
 - ✅ **PH listing flagged as urgent** (tick 42) — Filed new urgent action `[73081a7a302d0798]`: PH listing has NOT been created yet. T-2 days to launch. Mat must create it at producthunt.com before Jun 9 — copy/tagline/gallery in `marketing/producthunt-launch.md` and `docs/ph-gallery/`. Also tried smithery.ai and cursor.directory (both new MCP directories) — both hit Vercel security checkpoint bot block, cannot submit. Resolved 7 duplicate actions from inbox.
 - ✅ **Inbox + PR check** (tick 42) — no newsletter replies. All 10 PRs still open: punkpeye #7404 (all labels, blocked on Glama), mcpm.sh #344 (3 bot reviews clean), mcp-get #229 (CI failing on npm), mcp.so #2670, others unchanged.
@@ -108,6 +109,7 @@
 **PR status (all OPEN, no change requests):**
 | Repo | PR |
 |---|---|
+| ever-works/awesome-mcp-servers | #118 |
 | punkpeye/awesome-mcp-servers | #7404 ✅ all green |
 | TensorBlock/awesome-mcp-servers | #647 ✅ MERGED |
 | habitoai/awesome-mcp-servers | #83 |
