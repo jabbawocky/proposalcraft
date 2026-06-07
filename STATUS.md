@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 38)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 39)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **mcp-get PR #229 package name fixed** (tick 39) — renamed `packages/jabbawocky--proposalcraft.json` → `packages/proposalcraft.json`, corrected `name` field from `"jabbawocky--proposalcraft"` to `"proposalcraft"` (the actual npm package name). CI now correctly checks `npm view proposalcraft version` instead of a wrong scoped-style name. Still fails until `proposalcraft` is published on npm — blocked on NPM_TOKEN (Mat gate).
+- ✅ **MCPize getting-started email** (tick 39) — routine onboarding email from MCPize, no action needed.
 - ✅ **mcp.so PR #2670** (tick 38) — https://github.com/chatmcp/mcpso/pull/2670. Fixed erroneous prior entry (#2636 never existed — no fork). Forked chatmcp/mcpso under jabbawocky, added `app/proposalcraft.md` with correct YAML frontmatter (format confirmed from live PR #2664). mcp.so is Supabase-backed; maintainers import from these markdown files. 2,000+ servers listed.
 - ✅ **PR landscape verified** (tick 38) — all 10 open PRs confirmed: punkpeye #7404 (3 labels ✅, needs Glama — Mat gate), habitoai #83, tolkonepiu #227, MobinX #295, win4r #55, YuzeHao #302, toolsdk #342, mcpm.sh #344 (3 bot reviews, all clean), mcp-get #229, mcp.so #2670. No changes requested on any. No new merges.
 - ✅ **Inbox checked** (tick 38) — no newsletter editor replies. 11 pitches outstanding: JS Weekly, Node Weekly, Changelog, Console.dev, PulseMCP, Indie Dev Monday, DeployHQ, Toolradar, ShareUHack, The Rundown AI, Agensi.io.
@@ -124,4 +126,4 @@
 8. 🚧 **Star campaign** → send Jun 9 evening → `marketing/star-campaign.md` (copy-paste messages to dev contacts)
 
 **Next autonomous action:**
-11 newsletter pitches, 11 active PRs (mcp.so #2670 added). Distribution fully exhausted. All remaining high-value steps require Mat. Priority: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
+11 newsletter pitches, 11 active PRs. Distribution fully exhausted. All remaining high-value steps require Mat. Priority: (1) NPM_TOKEN → unblocks mcp-get PR #229 CI + activates npm publish; (2) Glama GitHub OAuth → unblocks punkpeye PR merge; (3) Pro URL → activates revenue; (4) GoDaddy renewal → keeps domain live; (5) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
