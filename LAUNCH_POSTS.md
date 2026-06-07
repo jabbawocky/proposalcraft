@@ -589,3 +589,62 @@ Free tier: 5 drafts/month. Install is one JSON block in your Claude Desktop conf
 GitHub (MIT): https://github.com/jabbawocky/proposalcraft
 
 Happy to share the install instructions if anyone wants to try it.
+
+---
+
+## Launch Eve (Jun 9) — Pre-announcement Sequence
+
+**Purpose:** Build PH momentum BEFORE midnight launch. These go out Jun 9 evening (8-10pm PST).
+
+---
+
+### Jun 9 Teaser Tweet (fire ~8-10pm PST)
+
+Tomorrow I'm launching ProposalCraft on @ProductHunt.
+
+It's a free MCP server that drafts client proposals in your voice — no API key, no cloud, runs in Claude Desktop.
+
+Link drops at midnight. If you're a freelancer, I think you'll find it useful.
+
+https://jabbawocky.github.io/proposalcraft/
+
+---
+
+### Jun 9 DM to close contacts asking for upvotes (send individually, personalise opener)
+
+Hey [Name] — launching ProposalCraft on Product Hunt tomorrow (Jun 10).
+
+It's a free tool that drafts client proposals in Claude Desktop using your own past winning proposals as the style guide. I think you'd actually use it.
+
+Would mean a lot if you could upvote it when the link goes live at midnight PST — I'll send it to you directly.
+
+Thanks in advance
+
+---
+
+### Jun 10 Upvote request (send when PH post is live — paste the actual PH URL)
+
+It's live! ProposalCraft is on Product Hunt today:
+[PASTE PH URL HERE]
+
+If you have 10 seconds — an upvote goes a long way. You need a free PH account.
+
+Thanks
+
+---
+
+### Product Hunt launch-day comment (post as the first comment on your own PH listing within 5 minutes of launch)
+
+Hi PH — I'm the maker. Happy to answer anything.
+
+**The problem I was solving:** I was spending 2-4 hours per proposal and winning around 25% of pitches — so basically 8-12 hours of unpaid work per client signed. Most AI proposal tools are generic (they don't know how YOU write), subscription-based, and store your data on their servers.
+
+**What ProposalCraft does differently:**
+- Runs fully local — nothing leaves your machine
+- Learns from *your* past winning proposals as style examples
+- `analyze_brief` flags budget signals, scope risks, and questions to ask before quoting
+- Free tier: 5 drafts/month. Pro: unlimited.
+
+Install is one JSON block — no account, no API key. Try it and let me know what's missing. I read every comment.
+
+**Timing note:** Saw a few folks mentioning MCPs feel complex — the install takes about 3 minutes if you already have Claude Desktop. Happy to walk anyone through it in the comments.
