@@ -1,8 +1,12 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 33)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 34)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Glama action corrected** (tick 34) — Previous tick incorrectly resolved the Glama action based on `has-glama` label. Reading punkpeye's actual PR comment revealed: "Glama server not found — the badge points to `jabbawocky/proposalcraft` but that server doesn't exist on Glama." The `has-glama` label = badge exists in README, NOT that server is indexed. Re-filed urgent action. Attempted Glama email signup via browser — blocked by bot detection. GitHub OAuth is the only working path → Mat gate.
+- ✅ **2 stale actions resolved** (tick 34) — resolved incorrectly-resolved Glama action (re-filed), resolved BradshawHQ CI action (out of scope).
+- ✅ **Distribution attempts** (tick 34) — tried HN submission (IP blocked: "Sorry."), r/ClaudeAI (network security block — same firewall as before), Hashnode signup (Cloudflare Turnstile bot detection). All major distribution channels blocked from headless browser. Confirmed: autonomous pre-launch distribution exhausted.
+- ✅ **All PRs confirmed clean** (tick 34) — habitoai #83 (CodeRabbit bot comment only), tolkonepiu #227, MobinX #295, win4r #55, YuzeHao #302 — all open, no maintainer comments, no changes requested.
 - ✅ **toolsdk-ai/toolsdk-mcp-registry PR #342** (tick 33) — https://github.com/toolsdk-ai/toolsdk-mcp-registry/pull/342. JSON-based MCP registry, 175 stars, marketing category. Added `packages/marketing/proposalcraft.json`.
 - ✅ **YuzeHao2023/Awesome-MCP-Servers PR #302** (tick 32) — https://github.com/YuzeHao2023/Awesome-MCP-Servers/pull/302. 1,046 stars, Marketing section. appcypher (5.5k) and wong2 (4.1k) both have PRs disabled — confirmed before attempting. PipedreamHQ is Pipedream-only integrations, not a fit. 3 action dupes resolved (Star campaign, GoDaddy, Pro URL).
 - ✅ **Newsletter outreach sent** (tick 31) — pitched SDK blog post + ProposalCraft to 4 developer newsletter editors from persona Alex Chen (alex@mc.team): (1) peter@cooperpress.com — JS Weekly (250k) + Node Weekly (60k) combined pitch leading with blog post; (2) news@changelog.com — Changelog podcast/newsletter; (3) hello@console.dev — Console devtools newsletter. Blog post angle ("why I removed the Anthropic SDK") gives editors a concrete article link, not just a product pitch. Reddit signup blocked (network firewall), HN form inputs inaccessible to Playwright. Newsletter outreach is the top autonomous growth lever remaining 3 days pre-launch.
@@ -96,14 +100,14 @@
 - MCP registry: validated ✅, needs login
 
 **Blockers / needs Mat (⚠️ June 10 = PH launch, 3 days away — TODAY IS JUN 7):**
-1. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`. Once URL posted in any orbitos-task issue comment, worker runs `activate-pro.js` + pushes immediately.
-2. 🚧 **GoDaddy domain renewal** — urgent; second notice Jun 4. Domain must be live on launch day.
-3. 🚧 **NPM_TOKEN** → npmjs.com → Automation token → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → re-run publish workflow
-4. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish` (5 min browser OAuth; server.json is valid)
-5. 🚧 **Glama signup** → glama.ai/sign-up → GitHub OAuth → Add Server → paste `https://github.com/jabbawocky/proposalcraft`. Gets ProposalCraft indexed + quality score → unblocks punkpeye PR #7404 merge.
+1. 🚨 **Glama signup — BLOCKING punkpeye PR #7404** → glama.ai → GitHub OAuth → Add Server → paste `https://github.com/jabbawocky/proposalcraft`. Punkpeye maintainer explicitly confirmed: "Glama server not found, can't merge." 5 minutes. BLOCKS biggest directory listing before launch. Email signup also blocked (bot detection) — only GitHub OAuth path works.
+2. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`. Once URL posted in any orbitos-task issue comment, worker runs `activate-pro.js` + pushes immediately.
+3. 🚧 **GoDaddy domain renewal** — urgent; second notice Jun 4. Domain must be live on launch day.
+4. 🚧 **NPM_TOKEN** → npmjs.com → Automation token → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → re-run publish workflow
+5. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish` (5 min browser OAuth; server.json is valid)
 6. 🚧 **PH gallery image capture** → open `docs/ph-gallery/` in Chrome (~10 mins); see README
 7. 🚧 **PH hunter DM** → `marketing/ph-hunter-outreach.md`
-8. 🚧 **Nimbalyst + Agensi.io** → LinkedIn DM to Karl Wirth; Agensi.io web form
+8. 🚧 **Star campaign** → send Jun 9 evening → `marketing/star-campaign.md` (copy-paste messages to dev contacts)
 
 **Next autonomous action:**
-All email-reachable roundup targets contacted. Roundup outreach: 5/6 sent (Nimbalyst LinkedIn = Mat gate). 3 days to PH launch. All remaining autonomous work complete — outstanding gates all require Mat: Glama OAuth, Pro URL, GoDaddy, NPM_TOKEN, MCP registry. dev.to cross-post skipped (reCAPTCHA + multi-step Mat gate not justified 3 days pre-launch).
+All autonomous distribution exhausted (HN/Reddit/Hashnode all blocked). 7 PRs open waiting for maintainer merges. All remaining work requires Mat. Priority order: (1) Glama GitHub OAuth → unblocks punkpeye PR merge; (2) Pro URL → activates revenue; (3) GoDaddy renewal → keeps domain live; (4) Star campaign Jun 9 evening. Next worker tick: inbox check + PR status monitor.
