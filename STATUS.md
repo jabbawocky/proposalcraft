@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 45)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 46)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **TensorBlock/awesome-mcp-servers PR #674** (tick 46) — https://github.com/TensorBlock/awesome-mcp-servers/pull/674. 731-star directory. Added to Marketing, Sales & CRM section. 1 Glama action resolved (punkpeye #7404 now has has-glama). 13 total active PRs now. appcypher/awesome-mcp-servers (4.1k stars) dropped — GitHub returns permission denied for PR creation from jabbawocky fork; their repo may restrict external contributions.
 - ✅ **mctrinh/awesome-mcp-servers PR #60** (tick 45) — https://github.com/mctrinh/awesome-mcp-servers/pull/60. 44-star directory, Community Servers section, alphabetical insertion between Prisma and Pulumi. 4 duplicate actions resolved. 12 total active PRs now.
 - ✅ **ever-works/awesome-mcp-servers PR #118** (tick 44) — https://github.com/ever-works/awesome-mcp-servers/pull/118. New directory with live website at mcpserver.works (73 stars, active PR history). Added to Productivity & Business section + `details/proposalcraft.md`. 5 more duplicate actions resolved. 11 total active PRs now.
 - ✅ **Landing page + stars verified** (tick 43) — jabbawocky.github.io/proposalcraft/ loads correctly. Stars: **0** — star campaign is urgent tonight or Jun 9 evening before launch. PH copy in `marketing/producthunt-launch.md` is complete and ready to paste. 6 duplicate actions resolved. PRs: all still open, no overnight activity.
