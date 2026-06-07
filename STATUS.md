@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 47)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 48)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **mcpservers.org submitted** (tick 48) — Submitted via web form (Productivity category, contact moneymachine@mc.team). mcpservers.org is the official submission portal for wong2/awesome-mcp-servers (4.1k stars). Form confirmed submitted ("Submitting..." → blank reset). Pending review. 3 duplicate actions resolved.
 - ✅ **yzfly/Awesome-MCP-ZH PR #273** (tick 47) — https://github.com/yzfly/Awesome-MCP-ZH/pull/273. 7,237-star Chinese MCP directory — highest star count submitted to yet. Added to 效率工具与集成 (Efficiency Tools) section with Chinese description. 3 duplicate actions resolved. 14 total active PRs now.
 - ✅ **TensorBlock/awesome-mcp-servers PR #674** (tick 46) — https://github.com/TensorBlock/awesome-mcp-servers/pull/674. 731-star directory. Added to Marketing, Sales & CRM section. 1 Glama action resolved (punkpeye #7404 now has has-glama). 13 total active PRs now. appcypher/awesome-mcp-servers (4.1k stars) dropped — GitHub returns permission denied for PR creation from jabbawocky fork; their repo may restrict external contributions.
 - ✅ **mctrinh/awesome-mcp-servers PR #60** (tick 45) — https://github.com/mctrinh/awesome-mcp-servers/pull/60. 44-star directory, Community Servers section, alphabetical insertion between Prisma and Pulumi. 4 duplicate actions resolved. 12 total active PRs now.
