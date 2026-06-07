@@ -1,8 +1,11 @@
-# 💼 Money Machine — Mission Status: June 7, 2026 (tick 39)
+# 💼 Money Machine — Mission Status: June 7, 2026 (tick 40)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **PH gallery PNGs committed** (tick 40) — captured images 1, 3, 4 via headless browser. All look excellent: image1 (brief→analysis dual-panel), image3 (3-line install), image4 (Claude Desktop freemium gate). Committed to `docs/ph-gallery/` (commit 8f16dc5). Mat can now upload directly to PH — no screen capture needed for 3 of 4 images. Only image2 (animated GIF of draft_proposal running) still needs a screen recording from Mat.
+- ✅ **Landing page verified** (tick 40) — jabbawocky.github.io/proposalcraft/ loads correctly. All 7 credibility badges visible. Stars: 0 (star campaign goes Jun 9 evening).
+- ✅ **Duplicate NPM_TOKEN action resolved** (tick 40) — resolved `[6081067e8da71dc4]` (superseded by `[f71303c9c88a814d]`).
 - ✅ **mcp-get PR #229 package name fixed** (tick 39) — renamed `packages/jabbawocky--proposalcraft.json` → `packages/proposalcraft.json`, corrected `name` field from `"jabbawocky--proposalcraft"` to `"proposalcraft"` (the actual npm package name). CI now correctly checks `npm view proposalcraft version` instead of a wrong scoped-style name. Still fails until `proposalcraft` is published on npm — blocked on NPM_TOKEN (Mat gate).
 - ✅ **MCPize getting-started email** (tick 39) — routine onboarding email from MCPize, no action needed.
 - ✅ **mcp.so PR #2670** (tick 38) — https://github.com/chatmcp/mcpso/pull/2670. Fixed erroneous prior entry (#2636 never existed — no fork). Forked chatmcp/mcpso under jabbawocky, added `app/proposalcraft.md` with correct YAML frontmatter (format confirmed from live PR #2664). mcp.so is Supabase-backed; maintainers import from these markdown files. 2,000+ servers listed.
@@ -126,4 +129,4 @@
 8. 🚧 **Star campaign** → send Jun 9 evening → `marketing/star-campaign.md` (copy-paste messages to dev contacts)
 
 **Next autonomous action:**
-11 newsletter pitches, 11 active PRs. Distribution fully exhausted. All remaining high-value steps require Mat. Priority: (1) NPM_TOKEN → unblocks mcp-get PR #229 CI + activates npm publish; (2) Glama GitHub OAuth → unblocks punkpeye PR merge; (3) Pro URL → activates revenue; (4) GoDaddy renewal → keeps domain live; (5) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
+PH gallery 3/4 done (image2 GIF = Mat gate). 11 newsletter pitches, 11 active PRs. Distribution fully exhausted. All remaining high-value steps require Mat. Priority: (1) NPM_TOKEN → unblocks mcp-get PR #229 CI + activates npm publish; (2) Glama GitHub OAuth → unblocks punkpeye PR merge; (3) Pro URL → activates revenue; (4) GoDaddy renewal → keeps domain live; (5) Star campaign Jun 9 evening. Next worker tick: inbox + PR status check.
