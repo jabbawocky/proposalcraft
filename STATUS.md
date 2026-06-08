@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 64)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 65)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **CONTRIBUTING.md added** (tick 65) — repo now has contribution guide: setup, test workflow, code style rules (no SDK in dep tree, local-only storage), bug report guidance, security contact. Visible to every PH visitor who clicks GitHub — signals maturity and open-source health pre-launch.
 - ✅ **eudk/awesome-ai-tools PR #327** (tick 64) — https://github.com/eudk/awesome-ai-tools/pull/327. 509★ general AI tools list with active Claude Code section and MCP references. Added to Additional AI and Productivity Tools section.
 - ✅ **mahseema/awesome-ai-tools PR #1497** (tick 63) — https://github.com/mahseema/awesome-ai-tools/pull/1497. 5,413★ general AI tools list (highly active: 5+ PRs/day). Added ProposalCraft to Productivity section. rohitg00 PR #507 CodeRabbit now clean ("No actionable comments 🎉") after count fix — MERGEABLE, awaiting maintainer. Stars: still 0, launch T-2.
 - ✅ **LAUNCH_POSTS.md created** (tick 62) — `marketing/LAUNCH_POSTS.md` did not exist but was referenced throughout `launch-day-guide.md` for 10+ launch channels. Created with complete, copy-paste-ready posts for: Show HN (title + body + 4 prepared responses), r/freelance, r/SideProject, Indie Hackers, X/Twitter 5-tweet thread, r/consulting, r/digitalnomad, r/Upwork, r/webdev, r/learnprogramming. Each post is tailored to its community voice. Guide is now fully executable on Jun 10.
