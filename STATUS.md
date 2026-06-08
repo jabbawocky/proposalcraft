@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 56)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 57)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **GitHub Discussions enabled + pre-launch announcement posted** (tick 57) — Enabled GitHub Discussions on the repo. Posted "Show and tell" announcement at https://github.com/jabbawocky/proposalcraft/discussions/349 titled "ProposalCraft is launching on Product Hunt — June 10". Includes install snippet, free tier info, Pro waitlist link. Indexed by GitHub search, linkable from PH on launch day. 4 duplicate actions resolved (Glama ×1, PH listing ×1, NPM_TOKEN ×1, star campaign ×1). All PRs still OPEN/MERGEABLE — no merges this tick.
 - ✅ **Dev.to article READY** (tick 56) — `marketing/devto-article.md` is the complete, copy-paste-ready article "I Built an MCP Server That Drafts Client Proposals in My Voice — Here's Why MCP Was the Right Call" (tags: mcp, claude, freelance, productivity, typescript). Attempted autonomous publication: Dev.to blocked by reCAPTCHA; Hashnode blocked by OAuth-only signup. Both require Mat's GitHub or Google OAuth. Mat action filed — sign into Dev.to or Hashnode via GitHub, create post, paste content. This is pre-launch SEO/backlink worth filing.
 - ✅ **README Pro pricing live** (tick 56, commit d28ce9f) — README now shows `**Pro ($19/mo):** Unlimited drafts. [Get early access →](https://tally.so/r/eqzYqE)`. Previously said "Coming at launch — see landing page." Direct Tally link added since form went live tick 54.
 - ✅ **Docker MCP Registry PR submitted** (tick 55, docker/mcp-registry#3910) — ProposalCraft submitted to Docker's official MCP registry (500★). Dockerfile already existed in repo. Created `servers/proposalcraft/server.yaml` with MIT license, stdio transport, no secrets needed. If merged, ProposalCraft appears in Docker Desktop's MCP catalog. Glama "Add Server" confirmed Mat gate (requires GitHub OAuth with jabbawocky account — Mat must go to glama.ai → Sign Up with GitHub → Add Server → select jabbawocky/proposalcraft). Also commented on punkpeye PR #7404 to keep it alive. Stars: 0. 12 PRs open.
