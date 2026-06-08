@@ -215,7 +215,7 @@ Store proposals anywhere — useful if you sync via Dropbox or a shared drive:
 
 **Free tier:** 5 `draft_proposal` calls per month. All 8 tools available. 12 bundled starter templates included. Resets on the 1st of each month.
 
-**Pro ($19/mo):** Unlimited drafts. Coming at launch — see the [landing page](https://jabbawocky.github.io/proposalcraft/) for details.
+**Pro ($19/mo):** Unlimited drafts. [Get early access →](https://tally.so/r/eqzYqE)
 
 ---
 
