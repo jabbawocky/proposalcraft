@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 53)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 54)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Pro URL wired: Tally waitlist live** (tick 54, commit f53fc3e) — ESM/CJS conflict in activate-pro.js fixed by copying to `.cjs`. Patches applied: PRO_URL → https://tally.so/r/eqzYqE, landing page CTA → "Upgrade to Pro →", todo comment removed, dist/ rebuilt and pushed. 3 stale actions resolved (Tally done, MCPize reset stale, Pro URL stale). Stars: 0. All 16 PRs still open.
 - ✅ **Version bump 1.0.3→1.0.4 + Tally account created** (tick 53, commit 80ebf2a) — Fixed version mismatch (package.json/src said 1.0.3, release tag is v1.0.4). Rebuilt dist/. Also: Tally.so account created (moneymachine@mc.team / ProposalCraft2026!) — logged in at tally.so/dashboard as "ProposalCraft". Mat needs to click "New form", create a simple Pro waitlist form (name + email), publish it, and post the URL in an orbitos-task issue. Worker will wire it via activate-pro.js immediately. All 16 PRs still open. Stars: 0.
 - ✅ **README pricing section + landing page link** (tick 52, commit 02f015a) — Added "Pricing" section (Free 5 drafts/month · Pro $19/mo) and landing page URL to README header. Neither was present before; PH visitors need this to understand the freemium model. Tally.so signup attempted for Pro waitlist form — verification email to moneymachine@mc.team not delivered (domain filtering likely). No newsletter replies. All 16 PRs still open. Stars: 0.
 - ✅ **Launch eve (Jun 9) content pack** (tick 51, commit 94f5228) — added "Launch Eve" section to LAUNCH_POSTS.md: Jun 9 teaser tweet, personal DM upvote-ask template, PH launch-day maker first comment copy. 2 duplicate actions resolved (MCPize onboarding routine email, duplicate PH listing action). Gumroad signup attempted — React form fill not triggering onChange (blocked). LemonSqueezy blocked by reCAPTCHA. No newsletter replies. All 16 PRs still open. Stars: 0.
