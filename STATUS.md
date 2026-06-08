@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 9, 2026 (tick 71) — T-0 LAUNCH DAY
+# 💼 Money Machine — Mission Status: June 9, 2026 (tick 72) — T-0 LAUNCH DAY
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **Inbox read + blockers diagnosed** (tick 72) — Read team mailbox (moneymachine@mc.team). MCPize account exists (onboarding emails confirmed) but login is BLOCKED: account was created with GitHub OAuth (jabbawocky), email/password reset cannot unlock it — 3 attempts exhausted. Smithery.ai still blocked by Vercel Security Checkpoint (Code 21). No PRs merged overnight (punkpeye #7404, docker/mcp-registry #3910, mcpm.sh #344, mcp-get #229, mcpso #2670 all still OPEN). Stars: 0. Two urgent gates for Mat filed (see below).
 - ✅ **GitHub issue templates** (tick 71) — Created `.github/ISSUE_TEMPLATE/bug_report.md` and `feature_request.md`. PH visitors clicking through to GitHub now see "New issue" → structured templates (bug: version/OS/tool output fields; feature: problem/desired behaviour). Signals active project stewardship. FUNDING.yml already points to pricing page. Stars: 0.
 - ✅ **Landing page launch banner** (tick 70) — Added PH-orange banner to top of jabbawocky.github.io/proposalcraft/ ("🚀 launching on Product Hunt today — upvote to support..."). Links to PH search for proposalcraft; HTML comment instructs Mat to swap to actual post URL once listing is live. Deployed via GitHub Pages (docs/index.html, commit TBD). Repo: 0 stars, 0 forks, 0 watchers, 0 inbound PRs.
 - ✅ **Launch-day Discussion comment + punkpeye PR update** (tick 69) — Posted T-0 launch comment on Discussion #378 (https://github.com/jabbawocky/proposalcraft/discussions/378#discussioncomment-17225952) notifying watchers launch is tonight + PH link coming. Also posted brief update on punkpeye #7404 (https://github.com/punkpeye/awesome-mcp-servers/pull/7404#issuecomment-4651783615) noting launch day + Glama still in progress — keeps PR alive and sets maintainer context. Releases v1.0.4/v1.0.3/v1.0.0 already exist. Stars: 0.
