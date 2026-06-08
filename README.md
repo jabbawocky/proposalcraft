@@ -1,5 +1,6 @@
 # ProposalCraft — MCP Proposal Generator
 
+[![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Launching%20June%2010-da552f?logo=producthunt&logoColor=white)](https://www.producthunt.com/search?q=proposalcraft)
 [![CI](https://github.com/jabbawocky/proposalcraft/actions/workflows/ci.yml/badge.svg)](https://github.com/jabbawocky/proposalcraft/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node: >=18](https://img.shields.io/badge/Node-%3E%3D18-brightgreen)](https://nodejs.org)

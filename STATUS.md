@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 9, 2026 (tick 67) — T-0 LAUNCH DAY
+# 💼 Money Machine — Mission Status: June 9, 2026 (tick 68) — T-0 LAUNCH DAY
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **PH launch badge added to README** (tick 68, commit TBD) — Added "Launching June 10" Product Hunt badge to README badge row (shields.io, PH orange). Links to PH search for proposalcraft so PH click-throughs see the right repo immediately. Mat: once listing is live, swap URL to the actual post link. Surveyed 15+ new directories — no remaining high-star fits (wong2 + appcypher are curator-only with 0 merged PRs; rohitg00/devops = DevOps only; darjeeling/Korea = Korean ecosystem only). Submission campaign is saturated at 26 PRs.
 - ✅ **milisp/awesome-claude-dxt PR #30** (tick 67) — https://github.com/milisp/awesome-claude-dxt/pull/30. 175★ Claude Desktop Extensions list with dedicated MCP Tools + Productivity sections. Added ProposalCraft to Productivity section (local-only, no API key, same profile as Bear Notes entry already there). Stars: 0. orbitos-mail unavailable this tick.
 - ✅ **Launch-eve GitHub Discussion #378** (tick 66) — https://github.com/jabbawocky/proposalcraft/discussions/378 posted in Announcements: "ProposalCraft launches on Product Hunt tomorrow — June 10." Includes install snippet, what's shipping, and call to upvote on PH. Also: yzfly/Awesome-MCP-ZH PR #273 CLOSED without merge (maintainer cited 0 stars / "no community recognition") — re-submittable after star campaign tonight. Stars still 0.
 - ✅ **CONTRIBUTING.md added** (tick 65) — repo now has contribution guide: setup, test workflow, code style rules (no SDK in dep tree, local-only storage), bug report guidance, security contact. Visible to every PH visitor who clicks GitHub — signals maturity and open-source health pre-launch.
