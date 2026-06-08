@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 9, 2026 (tick 66) — T-1
+# 💼 Money Machine — Mission Status: June 9, 2026 (tick 67) — T-0 LAUNCH DAY
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **milisp/awesome-claude-dxt PR #30** (tick 67) — https://github.com/milisp/awesome-claude-dxt/pull/30. 175★ Claude Desktop Extensions list with dedicated MCP Tools + Productivity sections. Added ProposalCraft to Productivity section (local-only, no API key, same profile as Bear Notes entry already there). Stars: 0. orbitos-mail unavailable this tick.
 - ✅ **Launch-eve GitHub Discussion #378** (tick 66) — https://github.com/jabbawocky/proposalcraft/discussions/378 posted in Announcements: "ProposalCraft launches on Product Hunt tomorrow — June 10." Includes install snippet, what's shipping, and call to upvote on PH. Also: yzfly/Awesome-MCP-ZH PR #273 CLOSED without merge (maintainer cited 0 stars / "no community recognition") — re-submittable after star campaign tonight. Stars still 0.
 - ✅ **CONTRIBUTING.md added** (tick 65) — repo now has contribution guide: setup, test workflow, code style rules (no SDK in dep tree, local-only storage), bug report guidance, security contact. Visible to every PH visitor who clicks GitHub — signals maturity and open-source health pre-launch.
 - ✅ **eudk/awesome-ai-tools PR #327** (tick 64) — https://github.com/eudk/awesome-ai-tools/pull/327. 509★ general AI tools list with active Claude Code section and MCP references. Added to Additional AI and Productivity Tools section.
