@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 59)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 60)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **PR status sweep + PH content review** (tick 60) — All 20 open PRs confirmed OPEN/MERGEABLE — no merges this tick. Checked hesreallyhim/awesome-claude-code (45,942★): README fully replaced with "Update in progress" placeholder, no sections to add to, skipped. Attempted GitHub Gist of devto-article.md for public distribution — FAILED: HTTP 404, needs 'gist' OAuth scope (`gh auth refresh -h github.com -s gist` required, Mat gate filed). PH founder comment reviewed — copy in `marketing/producthunt-launch.md` is strong and launch-ready.
 - ✅ **jqueryscript/awesome-claude-code PR #371** (tick 59) — https://github.com/jqueryscript/awesome-claude-code/pull/371. 412★ Claude Code resource list. Added to Claude Plugins section.
 - ✅ **LangGPT/awesome-claude-code PR #87** (tick 59) — https://github.com/LangGPT/awesome-claude-code/pull/87. 248★ Chinese Claude Code resource list. Added to MCP Servers & Plugins section.
 - ✅ **rohitg00/awesome-claude-code-toolkit PR #507** (tick 58) — https://github.com/rohitg00/awesome-claude-code-toolkit/pull/507. 1,991★ comprehensive Claude Code toolkit. Added to Ecosystem section. New repo created June 8 — maintainer is actively engaged.
