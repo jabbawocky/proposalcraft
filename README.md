@@ -10,7 +10,8 @@
 
 **Category:** Productivity · Freelance · Business Writing  
 **Works with:** Claude Desktop, Claude Code, Cursor, Windsurf, any MCP-compatible client  
-**Install:** `npx -y github:jabbawocky/proposalcraft` (no API key needed)
+**Install:** `npx -y github:jabbawocky/proposalcraft` (no API key needed)  
+**Pricing:** Free (5 drafts/month) · Pro $19/mo unlimited · [Landing page](https://jabbawocky.github.io/proposalcraft/)
 
 The average freelancer spends 2–4 hours writing a proposal and wins ~25% of pitches — 6–12 hours of unbilled time per closed deal. ProposalCraft turns that into 30 seconds.
 
@@ -207,6 +208,14 @@ Store proposals anywhere — useful if you sync via Dropbox or a shared drive:
   }
 }
 ```
+
+---
+
+## Pricing
+
+**Free tier:** 5 `draft_proposal` calls per month. All 8 tools available. 12 bundled starter templates included. Resets on the 1st of each month.
+
+**Pro ($19/mo):** Unlimited drafts. Coming at launch — see the [landing page](https://jabbawocky.github.io/proposalcraft/) for details.
 
 ---
 
