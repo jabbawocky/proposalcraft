@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 8, 2026 (tick 63)
+# 💼 Money Machine — Mission Status: June 8, 2026 (tick 64)
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **eudk/awesome-ai-tools PR #327** (tick 64) — https://github.com/eudk/awesome-ai-tools/pull/327. 509★ general AI tools list with active Claude Code section and MCP references. Added to Additional AI and Productivity Tools section.
 - ✅ **mahseema/awesome-ai-tools PR #1497** (tick 63) — https://github.com/mahseema/awesome-ai-tools/pull/1497. 5,413★ general AI tools list (highly active: 5+ PRs/day). Added ProposalCraft to Productivity section. rohitg00 PR #507 CodeRabbit now clean ("No actionable comments 🎉") after count fix — MERGEABLE, awaiting maintainer. Stars: still 0, launch T-2.
 - ✅ **LAUNCH_POSTS.md created** (tick 62) — `marketing/LAUNCH_POSTS.md` did not exist but was referenced throughout `launch-day-guide.md` for 10+ launch channels. Created with complete, copy-paste-ready posts for: Show HN (title + body + 4 prepared responses), r/freelance, r/SideProject, Indie Hackers, X/Twitter 5-tweet thread, r/consulting, r/digitalnomad, r/Upwork, r/webdev, r/learnprogramming. Each post is tailored to its community voice. Guide is now fully executable on Jun 10.
 - ✅ **First merge + repo discoverability improvements** (tick 61) — AlexMili/Awesome-MCP PR #125 **MERGED** at 09:19 UTC Jun 8 (142★ general MCP directory — first merge of the campaign). rohitg00/awesome-claude-code-toolkit PR #507: CodeRabbit flagged ecosystem count (53→54), fix pushed to PR branch to unblock merge. Added 3 new repo topics (anthropic, productivity, proposal-writing — now 13 total). Created GitHub Discussion #362 "What kind of proposals do you write?" (Q&A category) at https://github.com/jabbawocky/proposalcraft/discussions/362 to seed pre-launch community engagement. Stars: still 0 — star campaign must go out Jun 9 evening.
