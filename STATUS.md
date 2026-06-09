@@ -3,6 +3,7 @@
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **improve_proposal tool shipped** (tick 87) — New 9th tool: reviews a proposal draft and returns structured improvements (strengths, critical fixes with revised text, polish suggestions; optional focus param). No draft-limit cost. README updated. Commit 6c7e813. Also: launch-day nudge posted on punkpeye #7404. Stars: 0. All Mat gates unchanged.
 - ✅ **Demo GIF added to README** (tick 86) — Embedded `image2-core-loop.gif` in Demo section: GitHub visitors now see the brief→proposal animation immediately on repo load. Fazier backlink live in footer; signup spinner fired but no confirmation email arrived (possible bot-guard). gh gist scope blocked permanently by GH_TOKEN env. Commit 6e800a3. Stars: 0. All Mat gates unchanged.
 - ✅ **CHANGELOG.md created** (tick 85) — Full version history v1.0.0–v1.0.4 in Keep a Changelog format. Fazier backlink added to landing page footer (required for free Fazier listing — account signup attempted, confirmation email pending). Commit 63bcd2a. Stars: 0. All PRs open. All Mat gates unchanged.
 - ✅ **SECURITY.md created** (tick 84) — Added `SECURITY.md` with supported versions, responsible disclosure contact, and security model explanation (local-only, no network requests, no credentials). Resolves the GitHub "Security policy" missing indicator. mcp.so direct-submit form requires Google/GitHub OAuth on click — another blocked channel. Stars: 0. All PRs open.
