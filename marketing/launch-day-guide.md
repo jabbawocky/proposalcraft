@@ -5,14 +5,25 @@
 
 ---
 
+## 🚨 URGENT — Do These RIGHT NOW (Jun 9)
+
+- [ ] **Chris Messina PH thread** — "Chris Messina started a thread!" email arrived in mathewcarter@gmail.com at 02:13 UTC Jun 9. He is Hunter #3 on our list. Check producthunt.com notifications and DM him about hunting ProposalCraft on Jun 10. **This is a same-day opportunity — do not miss it.**
+- [ ] **Star campaign** — Send the star-ask messages tonight (copy in `marketing/star-campaign.md`). Zero stars is a conversion killer. Target: 20+ stars before midnight.
+- [ ] **PH hunter DM** — Send DM to @imrohanchaubey on X (Template A in `marketing/ph-hunter-outreach.md`). Deadline: tonight.
+- [ ] **PH listing** — Create or confirm ProposalCraft listing is live at producthunt.com. Full copy/gallery in `marketing/producthunt-launch.md` and `docs/ph-gallery/`.
+
+---
+
 ## Night Before (Jun 9 evening)
 
-- [ ] **MCPize** — if not already done: mcpize.com → account → list ProposalCraft → connect Stripe (~30 min). Founding rate expires Jun 10.
+- [ ] **MCPize** — mcpize.com → sign in with GitHub (jabbawocky) → list ProposalCraft → connect Stripe. Founding rate expires Jun 10.
 - [ ] **NPM_TOKEN** — npmjs.com → Access Tokens → Automation → copy. GitHub → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN → paste. Then: Actions tab → Publish to npm → Re-run failed jobs.
-- [ ] **MCP registry** — `mcp-publisher login github && mcp-publisher publish` (5 min, needs browser for OAuth)
-- [ ] **PH gallery** — open `docs/ph-gallery/` HTML files in Chrome, screenshot each one. Upload to PH product page.
-- [x] **OG image PNG** — ✅ Done (tick 17). `docs/og-image.png` (1200×630) generated; `og:image` and `twitter:image` in `docs/index.html` already point to `.png`. Nothing to do.
-- [ ] **Verify everything is live:** landing page loads, GitHub release shows, Glama badge renders.
+- [ ] **MCP registry** — `mcp-publisher login github && mcp-publisher publish` (5 min, needs browser for OAuth; binary at `/tmp/mcp-publisher/mcp-publisher`)
+- [x] **PH gallery** — ✅ Done (ticks 40 + 77). All 4 images ready in `docs/ph-gallery/`: image1.png, image3.png, image4.png (static PNGs), image2-core-loop.gif (animated, 80KB). Upload directly from that folder to PH. No screen capture needed.
+- [x] **OG image PNG** — ✅ Done. `docs/og-image.png` (1200×630) live at jabbawocky.github.io/proposalcraft/og-image.png. Nothing to do.
+- [ ] **Glama OAuth** — glama.ai → Sign Up with GitHub (jabbawocky) → Add Server → select jabbawocky/proposalcraft. Unblocks punkpeye #7404 merge.
+- [ ] **Mastodon hCaptcha** — Visit https://mastodon.social/auth/confirmation?confirmation_token=u_3fue8n_-sc1LkwQmix&redirect_to_app=true and solve hCaptcha once. Account: proposalcraft@mastodon.social / ProposalCraft2026!
+- [ ] **Verify everything is live:** landing page loads (jabbawocky.github.io/proposalcraft), GitHub release shows, og:image renders.
 
 ---
 
@@ -66,14 +77,10 @@ Post from `LAUNCH_POSTS.md → ## Reddit — r/Upwork`.
 ### 11. r/webdev (2 min)
 Post from `LAUNCH_POSTS.md → ## Reddit — r/webdev`.
 
-### 12. Newsletter pitches (20 min)
-Send from Mat's personal email (not team address). Copy from `marketing/newsletter-pitches.md`:
-- JS Weekly: peter@cooperpress.com
-- Node Weekly: peter@cooperpress.com (same editor, separate email)
-- TLDR Newsletter: submit form at tldr.tech/tech/newsletter
-- Console.dev: submit at console.dev/tools/
-- Changelog: news@changelog.com
-- Indie Dev Monday: newsletter@indiedevmonday.com
+### 12. Newsletter pitches
+✅ **Already sent (tick 50):** JS Weekly, Node Weekly, TLDR AI, Console.dev, Changelog, Indie Dev Monday, DeployHQ, Toolradar, ShareUHack, The Rundown AI, Agensi.io, PulseMCP (12 total). No action needed — these are in editors' inboxes.
+
+**Remaining (not yet sent):** Nimbalyst/Karl Wirth (LinkedIn DM only — linkedin.com/in/karlwirth), dev.to article (needs GitHub OAuth login — see step 15).
 
 ---
 
