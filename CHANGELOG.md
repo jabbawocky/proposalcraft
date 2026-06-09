@@ -6,6 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.0.5] — 2026-06-10
+
+### Added
+- `improve_proposal` tool — reviews a proposal draft and returns structured critique: strengths, critical fixes with drop-in revised text, and polish suggestions. Optional `focus` parameter targets a specific section (pricing, opening hook, why-me, scope). Does not count against the monthly draft limit.
+- `client_followup` tool — writes a short, non-pushy follow-up for proposals awaiting a response. Adapts urgency and tone to elapsed time. No filler openers, no apologies.
+- `CHANGELOG.md` — full version history in Keep a Changelog format
+- `SECURITY.md` — responsible disclosure policy and security model documentation
+- Animated demo GIF in README — visual of the brief→proposal workflow
+- Fazier backlink in landing page footer
+
 ## [1.0.4] — 2026-06-06
 
 ### Added
@@ -72,6 +82,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 - Local-only storage in `~/.proposalcraft/` — no API key, no cloud, no data sent anywhere
 - Claude Desktop config snippet in README
 
+[1.0.5]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.5
 [1.0.4]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.4
 [1.0.3]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.3
 [1.0.2]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.2
