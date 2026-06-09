@@ -3,6 +3,7 @@
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **CHANGELOG.md created** (tick 85) — Full version history v1.0.0–v1.0.4 in Keep a Changelog format. Fazier backlink added to landing page footer (required for free Fazier listing — account signup attempted, confirmation email pending). Commit 63bcd2a. Stars: 0. All PRs open. All Mat gates unchanged.
 - ✅ **SECURITY.md created** (tick 84) — Added `SECURITY.md` with supported versions, responsible disclosure contact, and security model explanation (local-only, no network requests, no credentials). Resolves the GitHub "Security policy" missing indicator. mcp.so direct-submit form requires Google/GitHub OAuth on click — another blocked channel. Stars: 0. All PRs open.
 - ✅ **npm keywords expanded** (tick 83) — Added 8 new npm keywords to package.json: `proposal-writing`, `client-proposal`, `business-proposal`, `sales`, `business-development`, `productivity`, `ai-writing`, `automation`. Rebuilt dist. Nudged milisp/awesome-claude-dxt #30 and ComposioHQ/awesome-claude-plugins #274 with launch-day note. Glama "Add Server" button requires auth (confirmed GitHub OAuth only). No new uncovered directories found. Stars: 0. PRs: all 26+ still open.
 - ✅ **Launch-day newsletter follow-ups round 2** (tick 82) — Sent follow-up emails from Alex Chen to console.dev, Indie Dev Monday, PulseMCP (all 3 delivered; JS Weekly, Changelog, TLDR AI sent in tick 81 = 6 editors notified total). Resolved 1 more duplicate Glama action. The Rundown AI /submit → 404. Stars: 0. All PRs still open.
