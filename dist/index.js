@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.0.7" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.0.8" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -277,6 +277,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal"],
+            },
+        },
+        {
+            name: "project_kickoff_email",
+            description: "Write a professional project kickoff email to send after winning a project. Confirms deliverables and timeline, introduces your working process, sets clear expectations, and makes the client feel confident they made the right choice. Use this immediately after the client says yes — before the scope of work is signed. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    proposal: {
+                        type: "string",
+                        description: "The accepted proposal text (used to extract project details, deliverables, and price)",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name or 'team' (used in the greeting)",
+                    },
+                    start_date: {
+                        type: "string",
+                        description: "Optional: the agreed project start date (e.g. 'June 17' or 'next Monday')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                    working_process: {
+                        type: "string",
+                        description: "Optional: a brief description of how you work (e.g. 'weekly check-ins via Slack, feedback rounds via Loom'). If omitted, a standard process is suggested.",
+                    },
+                },
+                required: ["proposal", "client_name"],
             },
         },
     ],
@@ -708,6 +738,51 @@ Rules:
 - Use clear, plain language — no legal jargon beyond what is necessary for enforceability.
 - Do not add deliverables or obligations not implied by the proposal.
 - Keep the document to one page if possible.
+
+---
+
+ACCEPTED PROPOSAL:
+
+${proposal}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_kickoff_email") {
+        const proposal = String(args.proposal);
+        const clientName = String(args.client_name);
+        const startDate = args.start_date ? String(args.start_date) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const workingProcess = args.working_process ? String(args.working_process) : null;
+        const startLine = startDate
+            ? `Project start: ${startDate}.`
+            : "No start date was specified — suggest one in the email or confirm it as a next step.";
+        const processLine = workingProcess
+            ? `Working process the freelancer uses: ${workingProcess}`
+            : "Working process: suggest a sensible default (e.g. a short kick-off call, async feedback via comments, weekly update cadence).";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a project kickoff email from the accepted proposal below.
+
+Client first name: ${clientName}
+${startLine}
+Sign-off name: ${yourName}
+${processLine}
+
+The email should:
+1. Open warmly — acknowledge the project is happening, make the client feel good about their decision (one sentence, no filler).
+2. Confirm what was agreed — restate the key deliverables, timeline, and total price in 2–3 bullet points. Keep it brief; the SOW covers detail.
+3. Introduce the working process — explain how you'll communicate, when the client can expect updates, and what you need from them to start. Max 3 bullet points.
+4. List immediate next steps — a numbered list of the next 2–3 actions (e.g. "I'll send a calendar invite for our kick-off call", "Please send over your brand assets by Friday", "Invoice for the first instalment is attached").
+5. Close with confidence — one sentence that reassures the client and sets a positive tone.
+
+Rules:
+- Maximum 250 words total.
+- No corporate filler ("I'm thrilled to partner with you on this exciting journey").
+- Specific and concrete — name the actual deliverables, not generic categories.
+- Output format: Subject: [line]\\n\\n[email body]
 
 ---
 

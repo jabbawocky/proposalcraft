@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.0.8] — 2026-06-10
+
+### Added
+- `project_kickoff_email` tool — writes a professional project kickoff email to send immediately after winning a project. Confirms deliverables, timeline, and price; introduces your working process; lists the next 2–3 immediate actions. Completes the full workflow: brief → proposal → win → kickoff → scope of work. Does not count against the monthly draft limit.
+
+[1.0.8]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.8
+
 ## [1.0.7] — 2026-06-10
 
 ### Added
