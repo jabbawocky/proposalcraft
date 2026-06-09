@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.0.5" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.0.6" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -185,6 +185,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             inputSchema: {
                 type: "object",
                 properties: {},
+            },
+        },
+        {
+            name: "scope_of_work",
+            description: "Generate a formal Scope of Work document from an accepted proposal. Produces a structured SOW with deliverables, timeline, payment schedule, revision policy, and a change-order clause — ready to paste into a contract or send directly to the client.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    proposal: {
+                        type: "string",
+                        description: "The accepted proposal text to base the SOW on",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "The client's name or company name",
+                    },
+                    start_date: {
+                        type: "string",
+                        description: "Expected project start date (e.g. 'June 17, 2026' or 'two weeks from contract signing')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name or business name (the service provider / contractor)",
+                    },
+                },
+                required: ["proposal", "client_name"],
             },
         },
         {
@@ -578,6 +604,50 @@ One sentence of reasoning.
 ---
 
 PROPOSAL TO REVIEW:
+
+${proposal}`,
+                },
+            ],
+        };
+    }
+    if (name === "scope_of_work") {
+        const proposal = String(args.proposal);
+        const clientName = String(args.client_name);
+        const startDate = args.start_date ? String(args.start_date) : "as agreed";
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name / Company]";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Generate a formal Scope of Work document from the accepted proposal below.
+
+Parties: ${yourName} (Service Provider) and ${clientName} (Client).
+Project start: ${startDate}.
+
+Structure the SOW with these sections:
+
+**1. Project Overview** — one paragraph summarising the engagement.
+
+**2. Deliverables** — numbered list of specific, measurable outputs. Each item should be concrete enough that completion is unambiguous.
+
+**3. Timeline** — milestone table: Milestone | Due Date | Deliverable(s). Derive dates from the proposal scope; where none are given, suggest reasonable durations starting from ${startDate}.
+
+**4. Payment Schedule** — map payments to milestones (e.g. 50% on signing, 50% on delivery). Use the price from the proposal. If no price is stated, leave a [TBC] placeholder.
+
+**5. Revision Policy** — state number of revision rounds included; define what constitutes a revision vs. a change in scope.
+
+**6. Change Order Clause** — one short paragraph: any scope changes must be agreed in writing; additional work is billed at [hourly rate or day rate — leave as placeholder if not in proposal].
+
+**7. Acceptance** — signature block: Service Provider name/date and Client name/date.
+
+Rules:
+- Use clear, plain language — no legal jargon beyond what is necessary for enforceability.
+- Do not add deliverables or obligations not implied by the proposal.
+- Keep the document to one page if possible.
+
+---
+
+ACCEPTED PROPOSAL:
 
 ${proposal}`,
                 },

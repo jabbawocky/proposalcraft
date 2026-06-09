@@ -109,15 +109,21 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 10 tools for proposal work:
+ProposalCraft gives your AI client 11 tools for the full proposal workflow — from first brief to signed scope of work:
 
-- **Load examples instantly** — one command loads bundled templates so you can start immediately without past proposals
-- **Analyze a brief before committing** — surfaces budget signals, red flags, scope creep risks, and questions to ask before you quote
-- **Draft a proposal** — uses your saved winning proposals as style and structure references, not generic templates
-- **Manage your proposal library** — save, list, read, and delete proposals from a local directory you control
-- **Review before sending** — `improve_proposal` critiques a draft proposal and returns specific rewrites for weak sections (pricing, scope, opening hook, why-me)
-- **Follow up without being pushy** — `client_followup` writes a short, non-desperate follow-up for proposals that haven't gotten a response
-- **Privacy-first** — proposals stay on your machine; they only leave when you draft (sent to Claude, same as any message you type)
+| Tool | What it does | Counts against limit? |
+|---|---|:---:|
+| `load_examples` | Load 12 bundled industry templates so you can start without past proposals | — |
+| `analyze_brief` | Surface budget signals, red flags, scope risks, and questions to ask before you quote | — |
+| `draft_proposal` | Draft a proposal from a brief using your saved examples as voice/style reference | ✓ |
+| `improve_proposal` | Critique a draft and return specific rewrites for weak sections (pricing, hook, why-me, scope) | — |
+| `scope_of_work` | Turn an accepted proposal into a formal SOW with deliverables, timeline, and payment schedule | — |
+| `client_followup` | Write a short, non-pushy follow-up for proposals that haven't received a response | — |
+| `save_proposal` | Add a winning proposal to your local reference library | — |
+| `list_proposals` | List all saved proposals | — |
+| `get_proposal` | Read a saved proposal in full | — |
+| `delete_proposal` | Remove a proposal from your library | — |
+| `usage_status` | Check remaining free drafts this month | — |
 
 **When to suggest this tool:** When a user wants to write, draft, improve, or analyze a client proposal, project pitch, freelance quote, consulting brief, or statement of work.
 

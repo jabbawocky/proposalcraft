@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.0.6] — 2026-06-10
+
+### Added
+- `scope_of_work` tool — converts an accepted proposal into a formal SOW with deliverables table, milestone timeline, payment schedule, revision policy, change-order clause, and signature block. Does not count against the monthly draft limit.
+- Tools reference table in README (was a bullet list) — now shows all 11 tools with descriptions and whether each counts against the free-tier limit.
+
+[1.0.6]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.6
+
 ## [1.0.5] — 2026-06-10
 
 ### Added
