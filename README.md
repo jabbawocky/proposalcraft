@@ -103,6 +103,8 @@ I have a slot open [DATE] — does that work?
 
 30 seconds. Ready to send.
 
+![ProposalCraft core loop — brief in, proposal out](docs/ph-gallery/image2-core-loop.gif)
+
 ---
 
 ## What this server does
