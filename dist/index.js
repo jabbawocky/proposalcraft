@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.0.6" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.0.7" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -185,6 +185,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             inputSchema: {
                 type: "object",
                 properties: {},
+            },
+        },
+        {
+            name: "proposal_to_email",
+            description: "Convert a formal proposal document into a concise, scannable pitch email. Distills the key points — problem, solution, price, and next step — into a short email the client can read in 60 seconds and forward to decision-makers. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    proposal: {
+                        type: "string",
+                        description: "The full proposal text to convert",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name or 'team' (used in the greeting)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name (used in the sign-off)",
+                    },
+                    cta: {
+                        type: "string",
+                        description: "Optional: the specific call to action (e.g. 'book a 20-min call', 'reply with any questions', 'sign off on the attached proposal'). If omitted, one is inferred from the proposal.",
+                    },
+                },
+                required: ["proposal"],
             },
         },
         {
@@ -604,6 +630,44 @@ One sentence of reasoning.
 ---
 
 PROPOSAL TO REVIEW:
+
+${proposal}`,
+                },
+            ],
+        };
+    }
+    if (name === "proposal_to_email") {
+        const proposal = String(args.proposal);
+        const clientName = args.client_name ? String(args.client_name) : "there";
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const cta = args.cta ? String(args.cta) : null;
+        const ctaLine = cta
+            ? `The call to action should be: ${cta}`
+            : "Infer an appropriate call to action from the proposal (e.g. book a call, reply to confirm, review the attached, sign off).";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Convert the proposal below into a short pitch email. The client's name is ${clientName}. Sign off as ${yourName}.
+
+Rules:
+- Maximum 150 words in the email body. Shorter is better.
+- Open with a one-sentence statement of what you're proposing and why it matters to them specifically.
+- Include: the core solution (1–2 sentences), the price or range (one line), and a single clear call to action.
+- Do NOT paste the full proposal. Do NOT use bullet lists — write in short paragraphs.
+- No filler phrases ("I hope this email finds you well", "Please don't hesitate", "I wanted to reach out").
+- The email should read like a confident professional wrote it, not a template.
+- ${ctaLine}
+- Subject line: write one concise, specific subject line (not "Proposal for [Project]" — something that conveys the value).
+
+Output format:
+Subject: [subject line]
+
+[email body]
+
+---
+
+PROPOSAL TO CONVERT:
 
 ${proposal}`,
                 },

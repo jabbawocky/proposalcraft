@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.0.7] — 2026-06-10
+
+### Added
+- `proposal_to_email` tool — converts a full proposal into a ≤150-word pitch email with subject line. Distills problem, solution, price, and call to action into something a client can read in 60 seconds and forward to decision-makers. Does not count against the monthly draft limit.
+
+[1.0.7]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.7
+
 ## [1.0.6] — 2026-06-10
 
 ### Added
