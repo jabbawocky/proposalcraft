@@ -217,6 +217,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {},
       },
     },
+    {
+      name: "improve_proposal",
+      description:
+        "Review a proposal draft and get specific, actionable improvements. Surfaces weak sections, unclear pricing, vague scope, and missed persuasion opportunities. Run after draft_proposal or on any proposal you're about to send. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          proposal: {
+            type: "string",
+            description: "The full text of the proposal draft to review",
+          },
+          focus: {
+            type: "string",
+            description:
+              "Optional: a specific area to focus on (e.g. 'pricing clarity', 'opening hook', 'why-me section', 'scope definition'). If omitted, a full review is given.",
+          },
+        },
+        required: ["proposal"],
+      },
+    },
   ],
 }));
 
@@ -529,6 +549,50 @@ ${brief}`,
         ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`
         : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`;
     return { content: [{ type: "text", text: status }] };
+  }
+
+  if (name === "improve_proposal") {
+    const proposal = String(args!.proposal);
+    const focus = args!.focus ? String(args!.focus) : null;
+
+    const focusInstruction = focus
+      ? `Pay particular attention to: **${focus}**. Lead with improvements in that area before covering anything else.`
+      : "Cover all major dimensions: opening hook, scope clarity, pricing presentation, why-me/differentiation, and call to action.";
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Review the following proposal draft and produce a structured improvement report.
+
+${focusInstruction}
+
+For each issue you find, give:
+- The **specific text** that is weak (quote it)
+- **Why** it weakens the proposal
+- A **revised version** the sender can drop in directly
+
+Structure your review as:
+
+**Strengths** — 2–3 things working well that should be kept as-is.
+
+**Critical fixes** (must address before sending)
+List each as: [Section] → problem → revised text
+
+**Polish suggestions** (nice to have)
+Shorter list of optional improvements.
+
+**Overall verdict** — one of: Send as-is / Minor edits needed / Significant rewrite recommended
+One sentence of reasoning.
+
+---
+
+PROPOSAL TO REVIEW:
+
+${proposal}`,
+        },
+      ],
+    };
   }
 
   throw new Error(`Unknown tool: ${name}`);
