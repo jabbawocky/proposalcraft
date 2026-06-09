@@ -3,6 +3,7 @@
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **CHANGELOG v1.0.5 + Discussion update** (tick 90) — Added v1.0.5 entry to CHANGELOG.md (commit 063b3c1). Posted v1.0.5 announcement to GitHub Discussion #378 (https://github.com/jabbawocky/proposalcraft/discussions/378#discussioncomment-17238616). No new PR merges. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.0.5 released** (tick 89) — Bumped to v1.0.5, created GitHub release https://github.com/jabbawocky/proposalcraft/releases/tag/v1.0.5 documenting improve_proposal + client_followup. Notifies repo watchers, signals active launch-day development to directory crawlers. Resolved 2 DMARC alert actions (mc.team scope, Mat gate). Stars: 0. All ProposalCraft gates unchanged.
 - ✅ **client_followup tool shipped** (tick 88) — New 10th tool: writes a short follow-up for proposals that haven't received a response. Adapts tone/urgency to elapsed time. Landing page + README updated to 10 tools. Commit 5077212. Stars: 0. All Mat gates unchanged.
 - ✅ **improve_proposal tool shipped** (tick 87) — New 9th tool: reviews a proposal draft and returns structured improvements (strengths, critical fixes with revised text, polish suggestions; optional focus param). No draft-limit cost. README updated. Commit 6c7e813. Also: launch-day nudge posted on punkpeye #7404. Stars: 0. All Mat gates unchanged.
