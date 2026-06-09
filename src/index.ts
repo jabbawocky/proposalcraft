@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.0.8" },
+  { name: "proposalcraft", version: "1.0.9" },
   { capabilities: { tools: {} } }
 );
 
@@ -348,6 +348,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["proposal", "client_name"],
+      },
+    },
+    {
+      name: "change_order",
+      description:
+        "Write a professional change order document when a client requests work outside the original project scope. Clearly defines what was agreed, what is being added, the additional cost and timeline impact, and requires client sign-off before work begins. Protects you from scope creep. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          original_scope: {
+            type: "string",
+            description: "Brief description of the original agreed project scope (or paste the SOW deliverables section)",
+          },
+          change_requested: {
+            type: "string",
+            description: "Description of what the client is now asking for that falls outside the original scope",
+          },
+          additional_cost: {
+            type: "string",
+            description: "Optional: the additional fee for this change (e.g. '$800', '4 hours at $150/hr'). Leave blank to generate a placeholder.",
+          },
+          timeline_impact: {
+            type: "string",
+            description: "Optional: how this change affects the delivery date (e.g. '+3 business days', 'no impact', 'pushes launch to Jul 15')",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's name (for the header and sign-off block)",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name or company name",
+          },
+        },
+        required: ["original_scope", "change_requested", "client_name"],
       },
     },
   ],
@@ -884,6 +919,86 @@ Rules:
 ACCEPTED PROPOSAL:
 
 ${proposal}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "change_order") {
+    const originalScope = String(args!.original_scope);
+    const changeRequested = String(args!.change_requested);
+    const clientName = String(args!.client_name);
+    const additionalCost = args!.additional_cost ? String(args!.additional_cost) : null;
+    const timelineImpact = args!.timeline_impact ? String(args!.timeline_impact) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your Name / Company]";
+
+    const costLine = additionalCost
+      ? `Additional cost: ${additionalCost}`
+      : "Additional cost: [TBC — leave as a placeholder for the freelancer to fill in]";
+
+    const timelineLine = timelineImpact
+      ? `Timeline impact: ${timelineImpact}`
+      : "Timeline impact: assess from the change description and state the impact, or use '[TBC]' if insufficient information";
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Generate a professional Change Order document with the following details.
+
+Parties: ${yourName} (Service Provider) and ${clientName} (Client).
+${costLine}
+${timelineLine}
+
+Structure the document as:
+
+**CHANGE ORDER #[CO-001]**
+Date: [today's date]
+Project: [infer a short project name from the original scope]
+Client: ${clientName}
+Service Provider: ${yourName}
+
+**1. Original Scope Summary**
+One paragraph summarising what was originally agreed (paraphrase the scope below — do not reproduce it verbatim).
+
+**2. Change Requested**
+Clear, specific description of the additional work being requested. Be concrete — name the deliverable, feature, or task. If the request was vague, flag that specifics need to be confirmed.
+
+**3. Why This Is Out of Scope**
+One sentence explaining that this work was not included in the original agreement and constitutes an addition to the contract.
+
+**4. Change Order Details**
+| Item | Detail |
+|---|---|
+| Additional Deliverable(s) | [list what will be produced] |
+| Additional Cost | ${additionalCost || "[TBC]"} |
+| Timeline Impact | ${timelineImpact || "[TBC]"} |
+| Payment Terms | [e.g. invoiced on approval, paid before work begins] |
+
+**5. Revised Delivery Date**
+[State the new expected delivery date if timeline is affected, or confirm original date stands]
+
+**6. Approval**
+By signing below, the client authorises the Service Provider to proceed with the change described above and agrees to the additional cost and timeline adjustment.
+
+| | Service Provider | Client |
+|---|---|---|
+| Name | ${yourName} | ${clientName} |
+| Signature | _______________ | _______________ |
+| Date | _______________ | _______________ |
+
+Rules:
+- Plain, direct language — no legal jargon.
+- The change order should be self-contained: someone who hasn't read the original proposal should understand what changed.
+- Keep to one page.
+
+---
+
+ORIGINAL SCOPE:
+${originalScope}
+
+CHANGE REQUESTED:
+${changeRequested}`,
         },
       ],
     };
