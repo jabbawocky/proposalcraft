@@ -218,6 +218,31 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "client_followup",
+      description:
+        "Write a follow-up message for a proposal that hasn't received a response. Generates a short, non-pushy follow-up that reopens the conversation without sounding desperate. Provide the original proposal summary and how long it's been since you sent it.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          proposal_summary: {
+            type: "string",
+            description:
+              "A brief summary of the proposal you sent: what you offered, to whom, and the approximate value/scope",
+          },
+          days_since_sent: {
+            type: "number",
+            description: "How many days ago you sent the original proposal",
+          },
+          context: {
+            type: "string",
+            description:
+              "Optional: any context about the client or situation that might affect the follow-up tone (e.g. 'they seemed enthusiastic on the call', 'cold inbound lead', 'long-term client')",
+          },
+        },
+        required: ["proposal_summary", "days_since_sent"],
+      },
+    },
+    {
       name: "improve_proposal",
       description:
         "Review a proposal draft and get specific, actionable improvements. Surfaces weak sections, unclear pricing, vague scope, and missed persuasion opportunities. Run after draft_proposal or on any proposal you're about to send. Does not count against your monthly draft limit.",
@@ -549,6 +574,51 @@ ${brief}`,
         ? `**ProposalCraft — Free Plan**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. **${remaining} remaining.**\n\n**Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`
         : `**ProposalCraft — Free Plan: Limit Reached**\n${usage.draft_count}/${FREE_DRAFT_LIMIT} drafts used in ${usage.month}. Resets 1st of next month.\n\n**Upgrade to Pro — $19/mo**: unlimited drafts, no monthly cap.\n[Upgrade to Pro →](${PRO_URL})`;
     return { content: [{ type: "text", text: status }] };
+  }
+
+  if (name === "client_followup") {
+    const summary = String(args!.proposal_summary);
+    const days = Number(args!.days_since_sent);
+    const context = args!.context ? String(args!.context) : null;
+
+    const urgencyNote =
+      days <= 3
+        ? "It's only been a few days — keep the follow-up very light and give them an easy out."
+        : days <= 7
+          ? "A week is a natural follow-up window. Be friendly and direct."
+          : days > 14
+            ? "It's been over two weeks — acknowledge the gap briefly, don't be apologetic, and make it easy to restart."
+            : "Follow up professionally; assume they're busy, not disinterested.";
+
+    const contextNote = context
+      ? `\nClient context: ${context}\nLet this context shape the tone — warmer for enthusiastic/existing clients, more neutral for cold leads.`
+      : "";
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Write a short follow-up message for a proposal that has not received a response.
+
+Rules:
+- Maximum 4 sentences. No fluff.
+- Do NOT open with "I hope this finds you well" or any similar filler.
+- Do NOT apologise for following up.
+- Give them a clear, low-friction way to respond (yes/no/not now are all acceptable outcomes).
+- Match the tone to the client relationship and elapsed time.
+- End with a single concrete question or call to action.
+
+${urgencyNote}${contextNote}
+
+PROPOSAL SUMMARY:
+${summary}
+
+Days since sent: ${days}
+
+Write the follow-up now. Output only the message text — no subject line, no commentary.`,
+        },
+      ],
+    };
   }
 
   if (name === "improve_proposal") {

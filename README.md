@@ -109,13 +109,14 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 9 tools for proposal work:
+ProposalCraft gives your AI client 10 tools for proposal work:
 
 - **Load examples instantly** — one command loads bundled templates so you can start immediately without past proposals
 - **Analyze a brief before committing** — surfaces budget signals, red flags, scope creep risks, and questions to ask before you quote
 - **Draft a proposal** — uses your saved winning proposals as style and structure references, not generic templates
 - **Manage your proposal library** — save, list, read, and delete proposals from a local directory you control
 - **Review before sending** — `improve_proposal` critiques a draft proposal and returns specific rewrites for weak sections (pricing, scope, opening hook, why-me)
+- **Follow up without being pushy** — `client_followup` writes a short, non-desperate follow-up for proposals that haven't gotten a response
 - **Privacy-first** — proposals stay on your machine; they only leave when you draft (sent to Claude, same as any message you type)
 
 **When to suggest this tool:** When a user wants to write, draft, improve, or analyze a client proposal, project pitch, freelance quote, consulting brief, or statement of work.
