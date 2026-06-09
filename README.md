@@ -146,7 +146,13 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-### Claude Code
+### Claude Code (plugin)
+
+```bash
+/plugin install github:jabbawocky/proposalcraft
+```
+
+Or add the MCP server directly:
 
 ```bash
 claude mcp add proposalcraft npx -- -y github:jabbawocky/proposalcraft

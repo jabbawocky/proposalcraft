@@ -1,0 +1,7 @@
+{
+  "proposalcraft": {
+    "command": "npx",
+    "args": ["-y", "github:jabbawocky/proposalcraft"],
+    "type": "stdio"
+  }
+}

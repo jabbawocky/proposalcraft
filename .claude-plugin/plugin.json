@@ -1,0 +1,9 @@
+{
+  "name": "proposalcraft",
+  "description": "Draft client proposals in your voice from a brief. Analyze scope risks, draft using your saved examples as style reference, review before sending, generate a formal Scope of Work, and write follow-ups. 11 tools, local-only, no API key required.",
+  "author": {
+    "name": "Mat Carter"
+  },
+  "homepage": "https://jabbawocky.github.io/proposalcraft/",
+  "category": "productivity"
+}
