@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.5" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.6" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "rejection_response",
+            description: "Write a professional response to a client who has chosen another provider. Keeps the door open for future work without being bitter, clingy, or sycophantic. Short, gracious, and memorable. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_type: {
+                        type: "string",
+                        description: "Brief description of the project you pitched (e.g. 'website redesign', 'the mobile app build', 'content retainer')",
+                    },
+                    rejection_reason: {
+                        type: "string",
+                        description: "Optional: what the client said (e.g. 'went with a cheaper option', 'chose someone with more industry experience', 'decided to go in-house', 'no reason given'). Helps tailor the tone.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                    keep_door_open: {
+                        type: "boolean",
+                        description: "Optional: true (default) to include a light, non-pushy mention of future work; false to keep it purely gracious with no forward ask.",
+                    },
+                },
+                required: ["client_name", "project_type"],
             },
         },
         {
@@ -1087,6 +1117,47 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "rejection_response") {
+        const clientName = String(args.client_name);
+        const projectType = String(args.project_type);
+        const rejectionReason = args.rejection_reason ? String(args.rejection_reason) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const keepDoorOpen = args.keep_door_open !== false;
+        const reasonContext = rejectionReason
+            ? `The stated reason for not proceeding: "${rejectionReason}". Acknowledge this briefly if appropriate — don't dwell on it.`
+            : "No reason was given for not proceeding.";
+        const doorLine = keepDoorOpen
+            ? "End with one light, non-pushy line keeping the door open for future work — no grovelling, no 'please reconsider', just a natural 'if something comes up later' tone."
+            : "Do not include any forward ask — end cleanly after wishing them well with the project.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a rejection response email from ${yourName} to ${clientName}.
+
+Context:
+- Project pitched: ${projectType}
+- ${reasonContext}
+- ${doorLine}
+
+Structure:
+1. Thank them for letting you know — one sentence. No effusive "thank you so much."
+2. Wish them well with the project — one sentence, genuine not performative.
+3. ${keepDoorOpen ? "One light mention of future availability — framed as an offer, not a plea. Don't say 'please keep me in mind' (passive) — say something active but low-key." : "End here — no forward ask."}
+4. Short sign-off.
+
+Rules:
+- Under 80 words.
+- No subject line — just the body.
+- No bitterness, no fishing for feedback (unless you want to add an optional gentle ask — but only if it feels natural given the reason).
+- Do not over-apologise or ask what you did wrong.
+- Do not say "I completely understand" — it sounds scripted.
+- The goal: leave them with a positive impression of you so they think of you first next time.
+- Tone: professional, warm, brief. Like a handshake at the end of a meeting.`,
                 },
             ],
         };

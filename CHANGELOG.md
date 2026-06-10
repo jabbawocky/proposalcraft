@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.6] — 2026-06-10
+
+### Added
+- `rejection_response` tool — writes a professional reply when a client picks another provider. Gracious, brief (≤80 words), keeps the door open without grovelling. Closes the full proposal lifecycle: pitch → rejection → gracious response → future opportunity. Does not count against the monthly draft limit.
+
+[1.1.6]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.6
+
 ## [1.1.5] — 2026-06-10
 
 ### Added
