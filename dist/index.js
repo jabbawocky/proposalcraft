@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.2.4" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.2.5" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -840,6 +840,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["original_scope", "change_requested", "client_name"],
+            },
+        },
+        {
+            name: "case_study_outline",
+            description: "Turn a completed project into a structured portfolio case study. Most freelancers know they should document their work but never do — this generates a complete outline (challenge, approach, results, learnings) ready to paste into your website, LinkedIn, or proposal as a credibility sample. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    project_type: {
+                        type: "string",
+                        description: "What kind of project it was (e.g. 'brand identity for a SaaS startup', 'e-commerce website for a fashion brand', 'SEO audit for a B2B consultancy')",
+                    },
+                    client_industry: {
+                        type: "string",
+                        description: "The client's industry or sector (e.g. 'fintech', 'retail', 'healthcare')",
+                    },
+                    problem: {
+                        type: "string",
+                        description: "The core problem or challenge the client hired you to solve",
+                    },
+                    approach: {
+                        type: "string",
+                        description: "How you tackled it — your process, methods, or key decisions",
+                    },
+                    results: {
+                        type: "string",
+                        description: "The outcomes: metrics, qualitative wins, or what the client said. Be specific if you have numbers (e.g. '40% faster load time', 'launched on time under budget').",
+                    },
+                    anonymise: {
+                        type: "boolean",
+                        description: "Optional: set to true to keep the client anonymous (uses 'a [industry] company' instead of their name). Default: false.",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "Optional: the client or company name, used in the case study heading if not anonymised.",
+                    },
+                },
+                required: ["project_type", "client_industry", "problem", "approach", "results"],
             },
         },
     ],
@@ -2184,6 +2222,62 @@ Any signals from the brief that warrant a pointed follow-up during the call (vag
 
 BRIEF:
 ${brief}${analysis}`,
+                },
+            ],
+        };
+    }
+    if (name === "case_study_outline") {
+        const projectType = String(args.project_type);
+        const clientIndustry = String(args.client_industry);
+        const problem = String(args.problem);
+        const approach = String(args.approach);
+        const results = String(args.results);
+        const anonymise = args.anonymise === true;
+        const clientName = args.client_name ? String(args.client_name) : null;
+        const clientRef = anonymise || !clientName
+            ? `a ${clientIndustry} company`
+            : clientName;
+        const heading = anonymise || !clientName
+            ? `Case Study: ${projectType.charAt(0).toUpperCase() + projectType.slice(1)}`
+            : `Case Study: ${clientName} — ${projectType}`;
+        const outline = `${heading}
+
+**Client**
+${clientRef.charAt(0).toUpperCase() + clientRef.slice(1)} (${clientIndustry})
+
+**Project**
+${projectType}
+
+---
+
+**The Challenge**
+${problem}
+
+**The Approach**
+${approach}
+
+**The Results**
+${results}
+
+---
+
+**What I'd do differently**
+[Add one honest reflection here — what you learned or what you'd change next time. Clients and prospects respect candour; it signals you think rigorously about your craft.]
+
+**Technologies / methods used**
+[List tools, frameworks, or methodologies relevant to your audience]
+
+**Testimonial**
+[Paste the client quote here if you have one, or use the \`testimonial_request\` tool to request one]
+
+---
+
+*Ready to turn a brief like this into a winning proposal in under 60 seconds? Try ProposalCraft: [github.com/jabbawocky/proposalcraft](https://github.com/jabbawocky/proposalcraft)*`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: outline,
                 },
             ],
         };
