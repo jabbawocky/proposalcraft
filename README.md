@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 15 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 16 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -123,6 +123,7 @@ ProposalCraft gives your AI client 15 tools for the full proposal workflow — f
 | `client_followup` | Write a short, non-pushy follow-up for proposals that haven't received a response | — |
 | `project_kickoff_email` | Write a professional kickoff email to send when you win the project | — |
 | `change_order` | Generate a formal change order when a client requests out-of-scope work | — |
+| `testimonial_request` | Write a short, personal testimonial-request email after project delivery | — |
 | `save_proposal` | Add a winning proposal to your local reference library | — |
 | `list_proposals` | List all saved proposals | — |
 | `get_proposal` | Read a saved proposal in full | — |

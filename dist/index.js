@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.0" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.1" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "testimonial_request",
+            description: "Write a short, personal email asking a client for a testimonial after successful project delivery. Not a form, not a survey link — a genuine, specific ask that gets responses. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_summary: {
+                        type: "string",
+                        description: "Brief description of what you delivered (e.g. 'the Shopify redesign', 'the API integration project')",
+                    },
+                    specific_win: {
+                        type: "string",
+                        description: "Optional: a concrete result or outcome from the project (e.g. 'the site launched on time and conversion rate is up 18%'). Makes the ask more personal and specific.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                    where_to_post: {
+                        type: "string",
+                        description: "Optional: where you'd like the testimonial posted (e.g. 'LinkedIn', 'your website', 'Google'). Leave blank to keep it open.",
+                    },
+                },
+                required: ["client_name", "project_summary"],
             },
         },
         {
@@ -921,6 +951,47 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "testimonial_request") {
+        const clientName = String(args.client_name);
+        const projectSummary = String(args.project_summary);
+        const specificWin = args.specific_win ? String(args.specific_win) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const whereToPost = args.where_to_post ? String(args.where_to_post) : null;
+        const winLine = specificWin
+            ? `The project had a concrete win: ${specificWin}`
+            : "No specific metric was provided — infer a plausible positive outcome from the project type, or reference the on-time / smooth delivery.";
+        const postLine = whereToPost
+            ? `The sender would like the testimonial posted on ${whereToPost}.`
+            : "Keep the ask open — don't specify a platform; let the client choose what's easiest.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a short testimonial-request email. It should feel like a genuine message from one person to another — not a form, not a survey, not "if you have a moment."
+
+Details:
+- Client: ${clientName}
+- Project: ${projectSummary}
+- ${winLine}
+- ${postLine}
+- Sender: ${yourName}
+
+Structure:
+1. One opening line that references the specific project by name and acknowledges it went well (or a specific outcome). No filler.
+2. Two sentences maximum explaining what you're asking for and why — a short paragraph or a few sentences they can share. Be honest: testimonials help you win new clients.
+3. Tell them exactly what to do next (reply to this email, post on X, leave a Google review — whatever was specified). Make it a single, easy action.
+4. Short sign-off.
+
+Rules:
+- Under 150 words total.
+- No subject line — just the email body.
+- No "I hope this finds you well." No "no pressure." No "if you have a moment."
+- Do not offer to write it for them — that feels transactional. Let them write it in their own words.
+- Friendly but direct. The best testimonial requests feel like a friend asking a favour.`,
                 },
             ],
         };

@@ -6,7 +6,7 @@ ProposalCraft is a local stdio MCP server for Claude Desktop. It uses your saved
 
 ## Features
 
-- 15 tools covering the full proposal workflow
+- 16 tools covering the full proposal workflow
 - Local-only: no API key, no account, no data sent anywhere
 - Freemium: 5 free drafts/month, Pro at $19/mo for unlimited
 - Install: `npx -y github:jabbawocky/proposalcraft`
@@ -16,6 +16,7 @@ ProposalCraft is a local stdio MCP server for Claude Desktop. It uses your saved
 - `discovery_call_prep` — prepares a discovery call guide (agenda, must-confirm items, questions, tone notes, red flags) from a brief
 - `project_kickoff_email` — writes a professional kickoff email to send after winning a project
 - `change_order` — formal change order document when client requests out-of-scope work
+- `testimonial_request` — short personal email asking client for a testimonial after delivery
 - `proposal_to_email` — converts a full proposal into a ≤150-word pitch email with subject line
 - `analyze_brief` — surfaces budget signals, red flags, scope risks before you quote
 - `draft_proposal` — generates a proposal from a brief using your saved examples (counts against free limit)
