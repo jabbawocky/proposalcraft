@@ -6,7 +6,7 @@ ProposalCraft is a local stdio MCP server for Claude Desktop. It uses your saved
 
 ## Features
 
-- 25 tools covering the full proposal workflow
+- 26 tools covering the full proposal workflow
 - Local-only: no API key, no account, no data sent anywhere
 - Freemium: 5 free drafts/month, Pro at $19/mo for unlimited
 - Install: `npx -y github:jabbawocky/proposalcraft`
@@ -25,6 +25,7 @@ ProposalCraft is a local stdio MCP server for Claude Desktop. It uses your saved
 - `project_status_update` — weekly/biweekly status update email: completed, next steps, blockers, timeline
 - `nda_template` — plain-English NDA, one-way or mutual, configurable duration and governing law jurisdiction
 - `contract_template` — plain-English Freelance Services Agreement: services, payment, IP transfer, revisions, termination, liability cap
+- `referral_request` — short warm email asking a happy client to refer you to new clients, under 120 words, one clear ask
 - `proposal_to_email` — converts a full proposal into a ≤150-word pitch email with subject line
 - `analyze_brief` — surfaces budget signals, red flags, scope risks before you quote
 - `draft_proposal` — generates a proposal from a brief using your saved examples (counts against free limit)

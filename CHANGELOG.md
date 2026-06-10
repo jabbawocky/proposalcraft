@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.2.1] — 2026-06-10
+
+### Added
+- `referral_request` tool — short, warm email asking a happy client to refer you to others in their network. Different from `testimonial_request` (which asks for a written review) — this asks for an introduction to potential new clients. Under 120 words, one clear ask, no awkwardness. Completes the full client lifecycle: proposal → win → deliver → testimonial → referral. Does not count against the monthly draft limit.
+
+[1.2.1]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.1
+
 ## [1.2.0] — 2026-06-10
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "proposalcraft",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "MCP server that drafts winning proposals in your voice from a client brief",
   "type": "module",
   "bin": {

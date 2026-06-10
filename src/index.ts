@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.2.0" },
+  { name: "proposalcraft", version: "1.2.1" },
   { capabilities: { tools: {} } }
 );
 
@@ -348,6 +348,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["proposal", "client_name"],
+      },
+    },
+    {
+      name: "referral_request",
+      description:
+        "Write a short, warm email asking a happy client to refer you to others in their network. Different from testimonial_request (which asks for a written review) — this asks for an introduction or recommendation to potential new clients. Under 120 words, one clear ask, no pressure. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          your_name: {
+            type: "string",
+            description: "Your name (used in the sign-off)",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_summary: {
+            type: "string",
+            description:
+              "Brief description of what you delivered (e.g. 'website redesign', 'brand identity project', 'three months of SEO consulting')",
+          },
+          your_specialty: {
+            type: "string",
+            description:
+              "What you do in plain terms — what you want the referral for (e.g. 'web design for professional services firms', 'brand identity for early-stage startups', 'freelance copywriting')",
+          },
+          timing: {
+            type: "string",
+            description:
+              "Optional: when relative to project completion you're sending this (e.g. 'two weeks after delivery', 'at handover'). Defaults to after final delivery.",
+          },
+        },
+        required: ["your_name", "client_name", "project_summary", "your_specialty"],
       },
     },
     {
@@ -1374,6 +1408,36 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "referral_request") {
+    const yourName = String(args!.your_name);
+    const clientName = String(args!.client_name);
+    const projectSummary = String(args!.project_summary);
+    const yourSpecialty = String(args!.your_specialty);
+
+    const email = `Subject: A small favour — anyone you'd recommend me to?
+
+Hi ${clientName},
+
+Really glad the ${projectSummary} came together well.
+
+I wanted to ask — do you know anyone else who might need ${yourSpecialty}? You'd know better than most what the finished product looks like, so a word from you carries a lot of weight.
+
+If someone comes to mind, an introduction or even just passing on my details would mean a lot. Happy to do the same for you anytime.
+
+Thanks again for a great project.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
         },
       ],
     };
