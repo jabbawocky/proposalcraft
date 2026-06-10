@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.3.1" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.3.2" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1064,6 +1064,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "completed_project", "upsell_service"],
+            },
+        },
+        {
+            name: "project_pause_email",
+            description: "Write a professional email when a project needs to pause — whether the client asked to stop, you're waiting on their content or feedback, or something on your end has come up. Documents the current state, what's outstanding, and what restarts the work. Keeps the relationship intact and protects both parties. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The name or short description of the project (e.g. 'the website redesign', 'the brand identity project')",
+                    },
+                    paused_by: {
+                        type: "string",
+                        enum: ["client", "me", "mutual"],
+                        description: "Who is initiating the pause: 'client' (they asked), 'me' (you need to pause), or 'mutual' (agreed by both). Affects tone.",
+                    },
+                    reason: {
+                        type: "string",
+                        description: "Brief honest reason for the pause (e.g. 'budget freeze on your end', 'waiting on content from you', 'I have a capacity constraint', 'scope needs to be clarified before we continue')",
+                    },
+                    completed_work: {
+                        type: "string",
+                        description: "Summary of what has been delivered or completed so far",
+                    },
+                    outstanding_items: {
+                        type: "string",
+                        description: "What still needs to be done to complete the project",
+                    },
+                    resumption_trigger: {
+                        type: "string",
+                        description: "Optional: what needs to happen before work resumes (e.g. 'when you send the content', 'when budget is confirmed', 'when you'\''re ready to restart — just let me know')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "paused_by", "reason", "completed_work", "outstanding_items"],
             },
         },
     ],
@@ -2788,6 +2831,61 @@ The other reason now is the right time: the momentum from ${completedProject} is
 I'm not suggesting a massive commitment — happy to start with a trial month or a defined scope to see if it's a fit.
 
 Worth a quick call to discuss? No obligation — just an idea worth 15 minutes if it's the right time.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: email,
+                },
+            ],
+        };
+    }
+    if (name === "project_pause_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const pausedBy = args.paused_by ? String(args.paused_by) : "client";
+        const reason = String(args.reason);
+        const completedWork = String(args.completed_work);
+        const outstandingItems = String(args.outstanding_items);
+        const resumptionTrigger = args.resumption_trigger
+            ? String(args.resumption_trigger)
+            : "when you'\''re ready to restart — just reach out and I'\''ll pick this back up";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        let openingLine;
+        let ownershipLine;
+        if (pausedBy === "me") {
+            openingLine = `I need to let you know that I'\''m putting ${projectName} on hold temporarily.`;
+            ownershipLine = `This is on my end — ${reason}. I don'\''t want this to disrupt your timeline more than necessary, so I wanted to be straight with you now rather than slow-walking delivery.`;
+        }
+        else if (pausedBy === "mutual") {
+            openingLine = `As we discussed, ${projectName} is going on hold for now.`;
+            ownershipLine = `Reason: ${reason}. This makes sense given where things stand — I'\''m glad we'\''re aligned on pausing rather than pushing forward in a direction that isn'\''t ready.`;
+        }
+        else {
+            openingLine = `Understood — I'\''m pausing work on ${projectName} as requested.`;
+            ownershipLine = `For context: ${reason}. No problem — projects evolve and timelines shift.`;
+        }
+        const email = `Subject: ${projectName.charAt(0).toUpperCase() + projectName.slice(1)} — paused
+
+Hi ${clientName},
+
+${openingLine}
+
+${ownershipLine}
+
+Here'\''s where things stand so we have a clear record:
+
+**Completed:**
+${completedWork}
+
+**Outstanding (to be picked up on restart):**
+${outstandingItems}
+
+**To restart:** ${resumptionTrigger}.
+
+All files and work completed to date are preserved and ready to hand over whenever we pick this back up. If you need anything in the meantime — access to files, a handover to someone else, or a final invoice for work completed — just say the word.
 
 ${yourName}`;
         return {
