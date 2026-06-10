@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 10, 2026 (tick 112) — LAUNCH DAY 🚀
+# 💼 Money Machine — Mission Status: June 11, 2026 (tick 113)
 
-**Phase**: DEPLOY
+**Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **v1.2.4: availability_announcement tool** (tick 113) — 29th tool: warm sub-120-word email to a past client announcing capacity is opening up. Frames as "wanted you to hear it first", not "please hire me". Past clients = highest-converting leads. Resolved 2 stale PH launch-day deadline actions (Jun 10 passed). Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.4. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.2.3: project_closure_email tool** (tick 112) — 28th tool: final delivery email confirming deliverables, client handover actions, optional support period, optional future-work hook. Warm close. Completes the full lifecycle: kickoff → status updates → closure → testimonial → referral. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.3. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.2.2: meeting_recap_email tool** (tick 111) — 27th tool: professional post-meeting recap email for discovery, kickoff, check-in, review, or sales calls. Adapts subject and opening to meeting type. Sections: what was covered, decisions confirmed (opt), next steps (opt), follow-up date (opt). Creates paper trail, confirms alignment. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.2. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.2.1: referral_request tool** (tick 110) — 26th tool: short warm email asking a happy client to refer you to new clients. Under 120 words, one clear ask, no pressure. Different from testimonial_request (review) — this asks for introductions. Completes the full client lifecycle: propose → win → deliver → testimonial → referral. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.1. Stars: 0. All Mat gates unchanged.
@@ -197,15 +198,15 @@
 - Roundup outreach: 4/6 sent ✅
 - MCP registry: validated ✅, needs login
 
-**Blockers / needs Mat (⚠️ TODAY IS JUNE 10 = PH LAUNCH DAY):**
-0. 🚨 **PH listing STILL IN DRAFT** — listing was set up but new-account restriction blocks self-launch. Get a hunter (DM @imrohanchaubey on X, copy from `marketing/ph-hunter-outreach.md`) OR confirm account now qualifies to self-launch. Copy at `marketing/producthunt-launch.md`. TIME-SENSITIVE — PH day is NOW.
-1. 🚨 **Star campaign** — deadline was last night (Jun 9). Stars still 0. Send DMs NOW: `marketing/star-campaign.md`.
-2. 🚨 **Reddit posts** — ALL launch posts ready in `LAUNCH_POSTS.md` but Reddit is bot-blocked from worker (network security wall). Mat must post manually: r/ClaudeAI, r/consulting, r/freelance, r/webdev (all copy ready).
-3. 🚨 **Dev.to article** — `marketing/devto-article.md` ready, just needs jabbawocky GitHub sign-in at dev.to.
-4. 🚧 **Mastodon @proposalcraft** — account created (moneymachine@mc.team / ProposalCraft2026!), just needs hCaptcha solve at: https://mastodon.social/auth/confirmation?confirmation_token=u_3fue8n_-sc1LkwQmix&redirect_to_app=true
-5. 🚧 **NPM_TOKEN** → npmjs.com → Automation token → jabbawocky/proposalcraft → Settings → Secrets → Actions → NPM_TOKEN
-6. 🚧 **Anthropic plugin marketplace** → submit at claude.ai/settings/plugins/submit (highest-value remaining distribution)
-7. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish` (5 min browser OAuth)
+**Blockers / needs Mat:**
+0. 🚨 **PH listing still in draft** — Jun 10 launch window missed. Listing can still go live any day. Self-launch or hunter path unchanged. Copy at `marketing/producthunt-launch.md`.
+1. 🚨 **Reddit posts** — all copy ready in `LAUNCH_POSTS.md`. Reddit blocks worker. Mat must post: r/ClaudeAI (80k), r/consulting (200k), r/freelance, r/webdev (1.7M). High value, still very relevant post-launch.
+2. 🚧 **Star campaign** — stars still 0. Send DMs: `marketing/star-campaign.md`. 10 minutes, 20 targets.
+3. 🚧 **Dev.to article** — ready at `marketing/devto-article.md`. Sign in via GitHub at dev.to.
+4. 🚧 **Mastodon @proposalcraft** — hCaptcha gate: https://mastodon.social/auth/confirmation?confirmation_token=u_3fue8n_-sc1LkwQmix&redirect_to_app=true (moneymachine@mc.team / ProposalCraft2026!)
+5. 🚧 **NPM_TOKEN** → npmjs.com → Access Tokens → Automation → GitHub repo → Settings → Secrets → NPM_TOKEN
+6. 🚧 **Anthropic plugin marketplace** → claude.ai/settings/plugins/submit (highest-value distribution remaining)
+7. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish`
 8. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
