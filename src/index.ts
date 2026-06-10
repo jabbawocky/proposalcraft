@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.2.9" },
+  { name: "proposalcraft", version: "1.3.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -1088,6 +1088,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "deliverable", "original_deadline", "new_deadline"],
+      },
+    },
+    {
+      name: "client_onboarding_checklist",
+      description:
+        "Generate a tailored list of everything you need from a client before work can start — access, assets, decisions, approvals. Adapt by project type so the client knows exactly what to send and in what order. Send this after the kickoff email, before starting work. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          project_type: {
+            type: "string",
+            description: "The type of project (e.g. 'website redesign', 'brand identity', 'copywriting', 'mobile app', 'SEO audit', 'video production', 'e-commerce build')",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          deliverables: {
+            type: "string",
+            description: "Optional: comma-separated list of specific deliverables so the checklist can be more targeted (e.g. 'homepage, about page, contact form, blog')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["project_type", "client_name"],
       },
     },
   ],
@@ -2817,6 +2844,118 @@ ${yourName}`;
         {
           type: "text",
           text: email,
+        },
+      ],
+    };
+  }
+
+  if (name === "client_onboarding_checklist") {
+    const projectType = String(args!.project_type).toLowerCase();
+    const clientName = String(args!.client_name);
+    const deliverables = args!.deliverables ? String(args!.deliverables) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    // Build access section based on project type
+    let accessItems: string[] = [];
+    if (/web|site|cms|wordpress|shopify|e.?commerce|squarespace/.test(projectType)) {
+      accessItems = [
+        "Hosting/server access (FTP, cPanel, or SSH credentials)",
+        "CMS admin login (WordPress, Shopify, etc.) — please create a separate account rather than sharing your main one",
+        "Domain registrar access (if DNS changes are needed)",
+        "Google Analytics / Search Console — invite [your email] as editor",
+      ];
+    } else if (/app|mobile|ios|android|saas|software/.test(projectType)) {
+      accessItems = [
+        "GitHub/GitLab repo access — invite [your email] as collaborator",
+        "Staging environment credentials",
+        "API keys for any third-party services already in use",
+        "App Store / Google Play developer account access (if publishing updates)",
+      ];
+    } else if (/brand|logo|identity|design/.test(projectType)) {
+      accessItems = [
+        "Current logo files (AI, EPS, SVG, or PNG at highest resolution)",
+        "Any existing brand guidelines or style guides",
+        "Fonts currently in use (names and/or files)",
+        "Colour codes (HEX, CMYK, Pantone) if known",
+      ];
+    } else if (/copy|content|writ|blog|article/.test(projectType)) {
+      accessItems = [
+        "CMS/blog platform login to publish (or confirm delivery format: Google Doc / Word / Markdown)",
+        "Any existing tone of voice or style guide documents",
+        "Competitors you want to differentiate from",
+      ];
+    } else if (/seo|search|keyword/.test(projectType)) {
+      accessItems = [
+        "Google Analytics — invite [your email] as editor",
+        "Google Search Console — invite [your email] as full user",
+        "CMS login if on-page changes are in scope",
+        "Existing keyword research or ranking reports (if any)",
+      ];
+    } else if (/video|film|product/.test(projectType)) {
+      accessItems = [
+        "Dropbox/Drive folder for raw assets and deliverable transfer",
+        "Existing brand assets (logo files, lower-third specs, music preferences)",
+        "Any footage or photos you want included",
+      ];
+    } else {
+      accessItems = [
+        "Login / access credentials for any platforms relevant to this project",
+        "Access to existing files or previous work we'll be building on",
+      ];
+    }
+
+    // Content / materials section
+    const contentItems = [
+      "Written content (text, copy, messaging) — or confirmation that copywriting is in scope",
+      "Photography and images — high-res, or stock preferences and budget",
+      "Any existing marketing materials (brochures, presentations, previous website screenshots)",
+      "Competitor examples and/or inspiration references (3–5 links or files)",
+    ];
+
+    // Decisions needed before work starts
+    const decisionItems = [
+      "Confirm the primary goal: what does success look like at the end of this project?",
+      "Who is the single point of contact for approvals? (One name helps avoid conflicting feedback)",
+      "Review and revision process: how many rounds are included, and who signs off?",
+      deliverables
+        ? `Confirm final deliverable list: ${deliverables} — anything to add or remove?`
+        : "Confirm the final deliverable list — anything to add or remove before we lock scope?",
+    ];
+
+    const deliverableList = deliverables
+      ? `\n\nA note on scope: this checklist is based on the agreed deliverables (${deliverables}). If anything changes, we'll handle it via a change order before adjusting the work.`
+      : "";
+
+    const checklist = `Subject: ${projectType.charAt(0).toUpperCase() + projectType.slice(1)} — what I need to get started
+
+Hi ${clientName},
+
+Excited to kick this off. To hit the ground running without hold-ups, here's what I need from you before I start.${deliverableList}
+
+---
+
+**1. Access and logins**
+${accessItems.map((item) => `☐ ${item}`).join("\n")}
+
+**2. Content and materials**
+${contentItems.map((item) => `☐ ${item}`).join("\n")}
+
+**3. Decisions to confirm before I start**
+${decisionItems.map((item) => `☐ ${item}`).join("\n")}
+
+---
+
+The fastest way to send files is [Google Drive / Dropbox — whichever you prefer]. For logins, please use a password manager share rather than emailing passwords in plain text.
+
+Once I have everything above, I'll confirm receipt and give you a firm start date.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: checklist,
         },
       ],
     };
