@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 10, 2026 (tick 103) — LAUNCH DAY 🚀
+# 💼 Money Machine — Mission Status: June 10, 2026 (tick 104) — LAUNCH DAY 🚀
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.1.5: cold_pitch tool** (tick 104) — 20th tool: cold outbound pitch email to a target company. Takes the specific signal spotted (site problem, job listing, recent launch), generates subject + ≤120-word email opening on them not the sender, one ask. Completes the BD loop. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.4: invoice_reminder tool** (tick 103) — 19th tool: overdue invoice reminders with escalating tone for #1 (friendly), #2 (firm), #3 (urgent next steps). Generates subject + body under 120 words. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.3: rate_increase_email tool** (tick 102) — 18th tool: writes the email telling a client rates are going up. Direct, warm, no apology, no justification, under 150 words. Attempted Hashnode signup (email-based, no OAuth required) but form's React email field doesn't respond to browser fill/type and signup page fails to render — abandoned after 3 attempts. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.2: retainer_proposal tool** (tick 101) — 17th tool: drafts monthly retainer proposals (structurally different from project proposals). Covers monthly scope, explicit exclusions, how-it-works (task prioritisation, rollover policy), payment terms, 30-day rolling termination. Counts against free limit. Resolved 2 stale actions (Tally duplicate, MCPize password reset expired). Stars: 0. punkpeye #7404 still awaiting maintainer merge (all labels green).
