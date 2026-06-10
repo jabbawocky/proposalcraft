@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.0] — 2026-06-10
+
+### Added
+- `discovery_call_prep` tool — prepares a discovery call guide from a client brief. Generates a call agenda, the 3 must-confirm items before proposing, grouped questions (budget, timeline, problem, scope, competitor), tone notes, and red flags to probe. Closes the gap between `analyze_brief` and `draft_proposal`. Does not count against the monthly draft limit.
+
+[1.1.0]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.0
+
 ## [1.0.9] — 2026-06-10
 
 ### Added

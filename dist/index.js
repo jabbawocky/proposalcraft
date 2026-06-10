@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.0.9" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.0" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,28 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "discovery_call_prep",
+            description: "Prepare for a discovery call with a potential client. Given a brief, generates sharp questions to ask (budget, timeline, decision-maker, success criteria, pain points), a short call agenda, and the 2-3 things you must confirm before committing to a proposal. Use between analyze_brief and draft_proposal. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    brief: {
+                        type: "string",
+                        description: "The client brief or enquiry email",
+                    },
+                    analysis: {
+                        type: "string",
+                        description: "Optional: output from analyze_brief, if already run. Avoids repeating work.",
+                    },
+                    your_service: {
+                        type: "string",
+                        description: "Optional: a one-line description of what you offer (e.g. 'UX design for SaaS products'). Helps tailor questions to your specialism.",
+                    },
+                },
+                required: ["brief"],
             },
         },
         {
@@ -899,6 +921,52 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "discovery_call_prep") {
+        const brief = String(args.brief);
+        const analysis = args.analysis ? `\n\nANALYSIS ALREADY RUN:\n${String(args.analysis)}` : "";
+        const serviceContext = args.your_service
+            ? `\nFreelancer's specialism: ${String(args.your_service)}`
+            : "";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Prepare a discovery call guide from the brief below. The freelancer is about to speak with this client before writing a proposal.${serviceContext}
+
+Structure the output as:
+
+**Discovery Call Prep**
+
+**Call agenda (15–30 min)**
+A short 3-4 bullet agenda the freelancer can follow. Include: quick intro, understanding the problem, budget and timeline, next steps.
+
+**Must-confirm before proposing**
+3 things that, if left unclear, would make a proposal impossible to price accurately. Each item: what it is + why it matters.
+
+**Questions to ask**
+Group into:
+- *Budget & authority* — 2-3 questions to surface the real budget and who signs off
+- *Timeline & urgency* — 2 questions to understand what's driving the deadline
+- *Problem & success* — 3 questions to understand what "done well" looks like and what's failed before
+- *Scope boundaries* — 2 questions to pre-empt scope creep
+- *Competitor & status* — 1-2 questions to understand if they're talking to others and how far along they are
+
+Keep questions open-ended. Do not include filler or preamble. No question should be answerable with yes/no alone.
+
+**Tone notes**
+1-2 sentences on how to calibrate your tone for THIS client based on the brief (formal/casual, technical/plain, confident/consultative).
+
+**Red flags to probe**
+Any signals from the brief that warrant a pointed follow-up during the call (vague scope, missing stakeholder, unrealistic timeline, etc.).
+
+---
+
+BRIEF:
+${brief}${analysis}`,
                 },
             ],
         };
