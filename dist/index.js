@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.4" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.5" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "cold_pitch",
+            description: "Write a cold outbound pitch email to a potential client you've identified but who hasn't contacted you. Different from inbound proposal work — this is proactive business development. Short, specific, and ends with a single easy ask. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    target_company: {
+                        type: "string",
+                        description: "The company or person you're pitching to",
+                    },
+                    contact_name: {
+                        type: "string",
+                        description: "Optional: the specific person's name (first name is fine)",
+                    },
+                    what_you_do: {
+                        type: "string",
+                        description: "What you do — your service or specialism (e.g. 'UX design for SaaS onboarding', 'copywriting for B2B tech', 'React development')",
+                    },
+                    why_them: {
+                        type: "string",
+                        description: "Why you're reaching out to THIS company specifically — a signal you spotted, a problem they likely have, something you noticed (e.g. 'your pricing page has 3 steps that add friction', 'you just launched a mobile app but the onboarding is unclear', 'your job listing mentions struggling with X')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name or company for the sign-off",
+                    },
+                    ask: {
+                        type: "string",
+                        description: "Optional: what you want from this email (default: a 15-minute call). E.g. 'a quick call to see if there's a fit', 'to send a short audit', 'to share a relevant case study'",
+                    },
+                },
+                required: ["target_company", "what_you_do", "why_them"],
             },
         },
         {
@@ -1053,6 +1087,49 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "cold_pitch") {
+        const targetCompany = String(args.target_company);
+        const contactName = args.contact_name ? String(args.contact_name) : null;
+        const whatYouDo = String(args.what_you_do);
+        const whyThem = String(args.why_them);
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const ask = args.ask ? String(args.ask) : "a 15-minute call to see if there's a fit";
+        const greeting = contactName ? `Hi ${contactName},` : `Hi,`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a cold outbound pitch email from ${yourName} to ${contactName || "a contact"} at ${targetCompany}.
+
+Opening: ${greeting}
+
+Details:
+- What the sender does: ${whatYouDo}
+- Why this specific company: ${whyThem}
+- Ask: ${ask}
+
+Structure the email as:
+1. **Subject line**: specific, not generic. Reference the company or the specific problem (not "Quick question" or "Partnership opportunity"). Under 8 words.
+2. **Opening line**: one sentence that references the specific signal or problem you noticed about THEM. No "I came across your company" or "I hope this finds you well." Open with the observation, not with yourself.
+3. **What you do**: one sentence. Name your specialism and one concrete outcome you deliver. Lead with the outcome, not the process.
+4. **Relevant proof**: one sentence — a comparable client, a result, or a specific example that makes this relevant to them. Do not use vague claims ("helped many companies like yours").
+5. **The ask**: one sentence. Make it small and low-commitment. End with a question mark.
+6. Sign-off: short. Just name and optionally a one-line link.
+
+Rules:
+- Under 120 words (body, not counting subject line).
+- Do not introduce yourself in the first sentence.
+- Do not apologise for reaching out.
+- No "I wanted to reach out" or "I know you're busy."
+- The best cold emails read like someone did their homework, not like a mail-merge.
+- One ask only. No "let me know if you're interested OR I could also send more info OR happy to connect on LinkedIn."
+
+WHY THEM (use this as the hook for the opening line):
+${whyThem}`,
                 },
             ],
         };

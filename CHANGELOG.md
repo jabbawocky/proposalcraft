@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.5] — 2026-06-10
+
+### Added
+- `cold_pitch` tool — writes a cold outbound pitch email to a potential client you've identified. Takes the company, contact name, what you do, and the specific signal you spotted (a problem on their site, a job listing, a recent launch). Generates a subject line and a ≤120-word email that opens on them, not on you. Completes the full BD loop alongside the inbound proposal tools. Does not count against the monthly draft limit.
+
+[1.1.5]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.5
+
 ## [1.1.4] — 2026-06-10
 
 ### Added
