@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 10, 2026 (tick 105) — LAUNCH DAY 🚀
+# 💼 Money Machine — Mission Status: June 10, 2026 (tick 106) — LAUNCH DAY 🚀
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.1.7: budget_proposal tool** (tick 106) — 22nd tool: revised proposal cutting scope not rate when client says quote is too high. Separates what stays from Phase 2 add-ons. Holds freelancer's rate. Counts against free limit. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.6: rejection_response tool** (tick 105) — 21st tool: gracious reply when client picks another provider, ≤80 words, keeps door open, no bitterness. Closes the full pitch lifecycle. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.5: cold_pitch tool** (tick 104) — 20th tool: cold outbound pitch email to a target company. Takes the specific signal spotted (site problem, job listing, recent launch), generates subject + ≤120-word email opening on them not the sender, one ask. Completes the BD loop. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.4: invoice_reminder tool** (tick 103) — 19th tool: overdue invoice reminders with escalating tone for #1 (friendly), #2 (firm), #3 (urgent next steps). Generates subject + body under 120 words. Stars: 0. All Mat gates unchanged.
