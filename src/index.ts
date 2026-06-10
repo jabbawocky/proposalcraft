@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.2.2" },
+  { name: "proposalcraft", version: "1.2.3" },
   { capabilities: { tools: {} } }
 );
 
@@ -348,6 +348,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["proposal", "client_name"],
+      },
+    },
+    {
+      name: "project_closure_email",
+      description:
+        "Write the final email when a project is fully delivered and complete. Confirms what was delivered, handles any handover items, expresses genuine thanks, and plants seeds for future work. Different from project_kickoff_email (which starts the engagement) — this closes it professionally. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          your_name: {
+            type: "string",
+            description: "Your name (sign-off)",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description:
+              "Brief name or description of the project (e.g. 'the Acme Corp website redesign', 'the brand identity project')",
+          },
+          what_was_delivered: {
+            type: "string",
+            description:
+              "What you delivered — list the key deliverables (e.g. '5-page Webflow site, style guide, mobile-optimised')",
+          },
+          handover_items: {
+            type: "string",
+            description:
+              "Optional: anything the client still needs to action (e.g. 'update your DNS records', 'add your own copy to the About page', 'set your own admin password')",
+          },
+          warranty_period: {
+            type: "string",
+            description:
+              "Optional: any support or bug-fix period you're offering (e.g. '14 days of bug fixes included', '30-day support window')",
+          },
+          future_work_hook: {
+            type: "string",
+            description:
+              "Optional: a natural next-step or future work opportunity to mention (e.g. 'SEO setup', 'quarterly content updates', 'Phase 2 mobile app')",
+          },
+        },
+        required: ["your_name", "client_name", "project_name", "what_was_delivered"],
       },
     },
     {
@@ -1453,6 +1497,43 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_closure_email") {
+    const yourName = String(args!.your_name);
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const whatWasDelivered = String(args!.what_was_delivered);
+    const handoverItems = args!.handover_items ? String(args!.handover_items) : null;
+    const warrantyPeriod = args!.warranty_period ? String(args!.warranty_period) : null;
+    const futureWorkHook = args!.future_work_hook ? String(args!.future_work_hook) : null;
+
+    let body = `Subject: ${projectName} — all done ✓\n\nHi ${clientName},\n\nThat's a wrap on ${projectName}.\n\n`;
+
+    body += `**What was delivered**\n${whatWasDelivered}\n\n`;
+
+    if (handoverItems) {
+      body += `**A few things on your end**\n${handoverItems}\n\nLet me know if you need help with any of these.\n\n`;
+    }
+
+    if (warrantyPeriod) {
+      body += `**Support period**\n${warrantyPeriod}. If anything doesn't look right or behave as expected, just send it through and I'll sort it.\n\n`;
+    }
+
+    if (futureWorkHook) {
+      body += `When you're ready, ${futureWorkHook} would be the natural next step — happy to put a proposal together whenever it makes sense.\n\n`;
+    }
+
+    body += `It's been a pleasure working with you on this. Really enjoyed it.\n\n${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: body,
         },
       ],
     };

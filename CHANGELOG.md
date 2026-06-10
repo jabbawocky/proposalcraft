@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.2.3] — 2026-06-10
+
+### Added
+- `project_closure_email` tool — final email when a project is fully delivered. Confirms deliverables, lists any client-side handover actions, states the support/bug-fix period (optional), and plants a natural hook for future work (optional). Warm but professional. Different from `project_kickoff_email` (which starts the engagement) — this closes it. Does not count against the monthly draft limit.
+
+[1.2.3]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.3
+
 ## [1.2.2] — 2026-06-10
 
 ### Added
