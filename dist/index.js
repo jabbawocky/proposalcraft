@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.1" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.2" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "retainer_proposal",
+            description: "Draft a proposal for an ongoing monthly retainer engagement. Retainer proposals are structurally different from project proposals — they define a monthly scope, what is and isn't included, a rollover/unused-hours policy, and a 30-day termination clause. Counts against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    brief: {
+                        type: "string",
+                        description: "The client brief or your notes on what ongoing work they need",
+                    },
+                    monthly_scope: {
+                        type: "string",
+                        description: "What is included each month (e.g. '10 hours of design work', 'up to 3 blog posts', 'ongoing technical support')",
+                    },
+                    monthly_fee: {
+                        type: "string",
+                        description: "Optional: the monthly fee (e.g. '$2,500/mo'). Leave blank to generate a placeholder.",
+                    },
+                    minimum_term: {
+                        type: "string",
+                        description: "Optional: minimum commitment period (e.g. '3 months', '6 months'). Leave blank to use a standard 30-day rolling structure.",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "Optional: the client's name or company",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name or company for the sign-off",
+                    },
+                },
+                required: ["brief", "monthly_scope"],
             },
         },
         {
@@ -951,6 +985,82 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "retainer_proposal") {
+        const usage = getUsage();
+        if (usage.draft_count >= FREE_DRAFT_LIMIT) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `You've used all ${FREE_DRAFT_LIMIT} free drafts this month.\n\nUpgrade to ProposalCraft Pro ($19/mo) for unlimited drafts: ${PRO_URL}`,
+                    },
+                ],
+            };
+        }
+        incrementUsage(usage);
+        const brief = String(args.brief);
+        const monthlyScope = String(args.monthly_scope);
+        const monthlyFee = args.monthly_fee ? String(args.monthly_fee) : null;
+        const minimumTerm = args.minimum_term ? String(args.minimum_term) : null;
+        const clientName = args.client_name ? String(args.client_name) : "the client";
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name / Company]";
+        const feeLine = monthlyFee
+            ? `Monthly investment: ${monthlyFee}`
+            : "Monthly investment: [insert fee — leave a clear placeholder for the freelancer to fill in]";
+        const termLine = minimumTerm
+            ? `Minimum commitment: ${minimumTerm}, then rolling month-to-month`
+            : "Term: rolling month-to-month with 30 days written notice to cancel";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Draft a retainer proposal using the brief and scope below. A retainer proposal is different from a project proposal — it defines an ongoing relationship, not a one-off delivery.
+
+Client: ${clientName}
+Your name/company: ${yourName}
+Monthly scope: ${monthlyScope}
+${feeLine}
+${termLine}
+
+Structure the proposal as:
+
+**[Opening — 2 sentences]**
+Reference a specific problem the client has that benefits from ongoing support rather than a one-off project. Don't open with "I". No filler.
+
+**What's included each month**
+Bullet list of exactly what the retainer covers. Be specific — name the deliverables, hours, or service types. Add a line: "Additional work beyond this scope is quoted separately."
+
+**What's not included**
+3–5 bullet points of things explicitly excluded — scope creep protection. Match what's likely to be asked for based on the brief.
+
+**How it works**
+2–3 short paragraphs covering:
+- How work is prioritised and requested each month (e.g. shared task board, weekly check-in)
+- Rollover policy: unused capacity does/doesn't roll over (choose the simpler one and be explicit)
+- Revision rounds included per deliverable, if relevant
+
+**Investment**
+${feeLine}
+${termLine}
+Payment terms: [e.g. invoiced on the 1st of each month, due within 7 days]
+
+**Getting started**
+One clear next step (e.g. "Reply to confirm, and I'll send the agreement and first invoice").
+
+Rules:
+- Conversational and direct — retainers are ongoing relationships, not formal contracts.
+- The proposal should read as if written by someone who has done this before.
+- No long sentences. No hedge words ("might", "could potentially").
+- Under 400 words.
+
+---
+
+CLIENT BRIEF / NOTES:
+${brief}`,
                 },
             ],
         };

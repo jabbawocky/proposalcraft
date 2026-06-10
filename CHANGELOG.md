@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.2] — 2026-06-10
+
+### Added
+- `retainer_proposal` tool — drafts a proposal for an ongoing monthly retainer engagement. Covers monthly scope, explicit exclusions, how-it-works (task prioritisation, rollover policy), payment terms, and a 30-day rolling termination clause. Structurally different from project proposals — designed for freelancers who want to lock in recurring monthly revenue. Counts against the monthly draft limit.
+
+[1.1.2]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.2
+
 ## [1.1.1] — 2026-06-10
 
 ### Added

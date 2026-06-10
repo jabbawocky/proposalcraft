@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 16 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 17 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -117,6 +117,7 @@ ProposalCraft gives your AI client 16 tools for the full proposal workflow — f
 | `analyze_brief` | Surface budget signals, red flags, scope risks, and questions to ask before you quote | — |
 | `discovery_call_prep` | Prepare for a client discovery call — agenda, must-confirm items, grouped questions, tone notes, red flags | — |
 | `draft_proposal` | Draft a proposal from a brief using your saved examples as voice/style reference | ✓ |
+| `retainer_proposal` | Draft a monthly retainer proposal with scope, exclusions, rollover policy, and termination clause | ✓ |
 | `improve_proposal` | Critique a draft and return specific rewrites for weak sections (pricing, hook, why-me, scope) | — |
 | `proposal_to_email` | Distill a full proposal into a ≤150-word pitch email with subject line | — |
 | `scope_of_work` | Turn an accepted proposal into a formal SOW with deliverables, timeline, and payment schedule | — |
