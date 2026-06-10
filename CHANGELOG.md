@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.8] — 2026-06-10
+
+### Added
+- `project_status_update` tool — professional status update email covering what was completed, what's next, blockers needing client decisions, and current timeline status. Keeps clients informed during longer engagements without a meeting. Under 200 words with scannable headings. Does not count against the monthly draft limit.
+
+[1.1.8]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.8
+
 ## [1.1.7] — 2026-06-10
 
 ### Added

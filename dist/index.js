@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.7" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.8" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "project_status_update",
+            description: "Write a professional project status update email to send a client during a longer engagement. Covers what was completed, what's next, any blockers or decisions needed, and the current timeline. Keeps clients informed without requiring a meeting. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Short name or description of the project (e.g. 'the Shopify redesign', 'the API integration')",
+                    },
+                    completed_this_period: {
+                        type: "string",
+                        description: "What was done since the last update — bullet points or free text",
+                    },
+                    next_steps: {
+                        type: "string",
+                        description: "What's happening next — bullet points or free text",
+                    },
+                    blockers: {
+                        type: "string",
+                        description: "Optional: anything blocked or decisions needed from the client. Leave blank if none.",
+                    },
+                    timeline_status: {
+                        type: "string",
+                        description: "Optional: overall timeline status — e.g. 'on track', 'ahead of schedule', 'slightly behind — see note below', 'launch date moving to Jul 18'",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "completed_this_period", "next_steps"],
             },
         },
         {
@@ -1147,6 +1185,47 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_status_update") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const completed = String(args.completed_this_period);
+        const nextSteps = String(args.next_steps);
+        const blockers = args.blockers ? String(args.blockers) : null;
+        const timelineStatus = args.timeline_status ? String(args.timeline_status) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const blockersSection = blockers
+            ? `\n**Blockers / decisions needed from client:**\n${blockers}`
+            : "";
+        const timelineSection = timelineStatus
+            ? `\n**Timeline:** ${timelineStatus}`
+            : "";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a project status update email from ${yourName} to ${clientName} about ${projectName}.
+
+Details:
+- Completed this period: ${completed}
+- Next steps: ${nextSteps}${blockersSection}${timelineSection}
+
+Structure:
+1. **Subject line**: "Update: [Project Name] — [brief status]" — e.g. "Update: Shopify Redesign — Week 2 complete, on track"
+2. **Opening**: one sentence, no filler. Reference the project by name.
+3. **Completed this period** (use a heading): bullet list of what was done. Concrete, specific — not "worked on design" but "completed mobile homepage wireframes (3 variants)."
+4. **Up next** (use a heading): what's happening in the next period. 3-5 bullets.
+${blockers ? '5. **Needs from you** (use a heading): specific decisions or inputs needed from the client. Frame each as a clear question or action. Give a deadline if relevant.\n' : ''}${timelineStatus ? `${blockers ? '6' : '5'}. **Timeline**: one sentence on current status.\n` : ''}${blockers || timelineStatus ? `${blockers && timelineStatus ? '7' : '6'}` : '5'}. **Sign-off**: brief and direct. No "let me know if you have any questions" — say "reply if you need anything before [next milestone]" or similar.
+
+Rules:
+- Under 200 words (body, not subject).
+- Use short paragraphs and clear headings — clients scan these.
+- Past tense for completed items, future tense for next steps.
+- If there are blockers, make them impossible to miss.
+- No padding. No "we've been making great progress" unless it's true and specific.`,
                 },
             ],
         };
