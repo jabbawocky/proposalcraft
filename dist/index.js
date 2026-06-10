@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.3.2" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.3.3" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1107,6 +1107,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name", "paused_by", "reason", "completed_work", "outstanding_items"],
+            },
+        },
+        {
+            name: "partnership_outreach",
+            description: "Write a peer-to-peer outreach email to a complementary service provider — a designer reaching out to a copywriter, a developer to a designer, a consultant to an agency. Proposes a referral partnership where you both send clients each other's way. Warm, not transactional, under 150 words. Referral partnerships are one of the highest-ROI growth moves a freelancer can make — one good partner can generate years of warm inbound. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    recipient_name: {
+                        type: "string",
+                        description: "Their first name",
+                    },
+                    recipient_service: {
+                        type: "string",
+                        description: "What they do (e.g. 'copywriting', 'brand strategy', 'UX design', 'paid ads', 'SEO')",
+                    },
+                    your_service: {
+                        type: "string",
+                        description: "What you do (e.g. 'web design', 'mobile development', 'social media management')",
+                    },
+                    shared_client_type: {
+                        type: "string",
+                        description: "The type of client you both serve (e.g. 'SaaS startups', 'e-commerce brands', 'professional services firms', 'small creative agencies')",
+                    },
+                    connection_hook: {
+                        type: "string",
+                        description: "Optional: how you found them or what specifically caught your attention (e.g. 'saw your work on the Acme rebrand', 'we have a mutual client in the fintech space', 'came across your portfolio via LinkedIn'). Makes the email feel specific rather than templated.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["recipient_name", "recipient_service", "your_service", "shared_client_type"],
             },
         },
     ],
@@ -2886,6 +2920,40 @@ ${outstandingItems}
 **To restart:** ${resumptionTrigger}.
 
 All files and work completed to date are preserved and ready to hand over whenever we pick this back up. If you need anything in the meantime — access to files, a handover to someone else, or a final invoice for work completed — just say the word.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: email,
+                },
+            ],
+        };
+    }
+    if (name === "partnership_outreach") {
+        const recipientName = String(args.recipient_name);
+        const recipientService = String(args.recipient_service);
+        const yourService = String(args.your_service);
+        const sharedClientType = String(args.shared_client_type);
+        const connectionHook = args.connection_hook ? String(args.connection_hook) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const hookLine = connectionHook
+            ? `${connectionHook} — that's what prompted me to reach out.`
+            : `I work with ${sharedClientType} on the ${yourService} side, and I've been keeping an eye out for a solid ${recipientService} person to refer clients to.`;
+        const email = `Subject: ${yourService} + ${recipientService} — worth a quick chat?
+
+Hi ${recipientName},
+
+${hookLine}
+
+I do ${yourService} for ${sharedClientType}. Almost every project I take on eventually needs ${recipientService} — and when clients ask for a recommendation, I'd rather send them to someone I actually know and trust.
+
+I imagine you run into the same thing in reverse.
+
+Not pitching anything — just think there could be a natural fit to refer work each other's way when it makes sense. Happy to jump on a 15-minute call if you'd like to compare notes on who we work with.
+
+Worth a quick chat?
 
 ${yourName}`;
         return {
