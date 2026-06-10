@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.4] — 2026-06-10
+
+### Added
+- `invoice_reminder` tool — writes a polite but firm reminder for an overdue invoice. Pass `reminder_number` 1, 2, or 3 to get the right escalating tone: #1 assumes an oversight, #2 asks for confirmation of payment date, #3 flags next steps without threats. Generates a subject line and email body under 120 words. Does not count against the monthly draft limit.
+
+[1.1.4]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.4
+
 ## [1.1.3] — 2026-06-10
 
 ### Added

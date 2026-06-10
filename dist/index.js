@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.3" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.4" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "invoice_reminder",
+            description: "Write a polite but firm reminder for an overdue or unpaid invoice. Generates the right tone for the reminder number — first reminder is friendly and assumes an oversight, second is firmer, third adds urgency. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name or company name",
+                    },
+                    invoice_number: {
+                        type: "string",
+                        description: "Invoice number or reference (e.g. 'Invoice #042', 'INV-2026-06')",
+                    },
+                    amount: {
+                        type: "string",
+                        description: "The amount owed (e.g. '$3,500', '£1,200')",
+                    },
+                    due_date: {
+                        type: "string",
+                        description: "Original due date (e.g. 'June 1', '30 days ago')",
+                    },
+                    reminder_number: {
+                        type: "number",
+                        description: "Which reminder this is: 1 (friendly, assume oversight), 2 (firm, request confirmation), or 3 (urgent, flag next steps). Default: 1.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "invoice_number", "amount", "due_date"],
             },
         },
         {
@@ -1019,6 +1053,48 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "invoice_reminder") {
+        const clientName = String(args.client_name);
+        const invoiceNumber = String(args.invoice_number);
+        const amount = String(args.amount);
+        const dueDate = String(args.due_date);
+        const reminderNumber = args.reminder_number ? Number(args.reminder_number) : 1;
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const toneGuide = reminderNumber === 1
+            ? "Friendly and brief. Assume it was an oversight or got lost in their inbox. No accusation, no lecture. One mention of the payment details, one easy call to action (reply to confirm or pay the link). Tone: colleague-to-colleague."
+            : reminderNumber === 2
+                ? "Firm but professional. Acknowledge they may be busy, but make clear this is overdue and needs to be resolved this week. Ask for a specific response: either confirmation of payment date or a note if there's an issue. Tone: professional, not aggressive."
+                : "Urgent and direct. This is the third reminder. State clearly that you need payment or a confirmed payment plan by a specific date (3 business days from now). Mention — without threatening — that you may need to pause further work or involve a collections process if unresolved. Tone: serious but not hostile.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write invoice reminder #${reminderNumber} from ${yourName} to ${clientName}.
+
+Invoice details:
+- Reference: ${invoiceNumber}
+- Amount: ${amount}
+- Original due date: ${dueDate}
+
+Tone guide for reminder #${reminderNumber}: ${toneGuide}
+
+Structure:
+1. Subject line: short and factual (e.g. "Reminder: ${invoiceNumber} — ${amount} overdue")
+2. Email body:
+   - Opening: one sentence, no filler opener
+   - Payment details: invoice number, amount, original due date — all in one sentence or a short table
+   - Call to action: one clear ask
+   - Sign-off
+
+Rules:
+- Under 120 words (body only, not subject).
+- No "I hope this finds you well." No "per my last email" (passive-aggressive). No "as per our agreement."
+- Do not apologise for following up.
+- The goal is to get paid, not to make a point.`,
                 },
             ],
         };
