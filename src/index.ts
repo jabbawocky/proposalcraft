@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.2.8" },
+  { name: "proposalcraft", version: "1.2.9" },
   { capabilities: { tools: {} } }
 );
 
@@ -1053,6 +1053,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["project_type", "client_industry", "problem", "approach", "results"],
+      },
+    },
+    {
+      name: "late_delivery_apology",
+      description:
+        "Write a professional email when you are going to miss a deadline or are already late. Takes ownership without over-apologising, gives a clear revised timeline, and keeps the client's trust intact. The tone is direct and accountable — no excuses, no grovelling. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          deliverable: {
+            type: "string",
+            description: "What is late (e.g. 'the homepage designs', 'the API integration', 'the first draft')",
+          },
+          original_deadline: {
+            type: "string",
+            description: "The deadline you missed or are about to miss (e.g. 'Friday 13 June', 'end of week')",
+          },
+          new_deadline: {
+            type: "string",
+            description: "The revised delivery date you are committing to (be specific — 'Monday 16 June by 5pm')",
+          },
+          reason: {
+            type: "string",
+            description: "Optional: a brief, honest reason — one line only. Omit if no clean explanation exists. Do NOT blame the client.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "deliverable", "original_deadline", "new_deadline"],
       },
     },
   ],
@@ -2741,6 +2776,47 @@ ${results}
         {
           type: "text",
           text: outline,
+        },
+      ],
+    };
+  }
+
+  if (name === "late_delivery_apology") {
+    const clientName = String(args!.client_name);
+    const deliverable = String(args!.deliverable);
+    const originalDeadline = String(args!.original_deadline);
+    const newDeadline = String(args!.new_deadline);
+    const reason = args!.reason ? String(args!.reason) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const reasonLine = reason
+      ? `The delay is down to ${reason}.`
+      : `I don't have a clean excuse — this one is on me.`;
+
+    const email = `Subject: ${deliverable.charAt(0).toUpperCase() + deliverable.slice(1)} — revised delivery date
+
+Hi ${clientName},
+
+I need to be straight with you: ${deliverable} won't be ready by ${originalDeadline} as agreed.
+
+${reasonLine}
+
+Here's where things stand and what I'm committing to:
+
+**New delivery date:** ${newDeadline}
+**What you'll receive:** ${deliverable}, complete and ready for your review
+
+I've cleared my schedule to focus on this. You'll have it by ${newDeadline} — if anything changes between now and then, I'll tell you immediately rather than letting it slide.
+
+I'm sorry for the disruption to your timeline. If ${newDeadline} creates a problem on your end, tell me and we'll work out a solution.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
         },
       ],
     };
