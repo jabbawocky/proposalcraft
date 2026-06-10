@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.2" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.3" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "rate_increase_email",
+            description: "Write an email telling an existing client you are raising your rates. One of the most anxiety-inducing tasks for freelancers. Generates a direct, professional email that gives enough notice, explains the new rate without over-explaining, and preserves the relationship. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    current_rate: {
+                        type: "string",
+                        description: "Your current rate (e.g. '$85/hr', '$3,000/project', '$2,000/mo retainer')",
+                    },
+                    new_rate: {
+                        type: "string",
+                        description: "Your new rate",
+                    },
+                    effective_date: {
+                        type: "string",
+                        description: "When the new rate takes effect (e.g. 'August 1', 'next quarter', 'after this project')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                    relationship_context: {
+                        type: "string",
+                        description: "Optional: brief note on the working relationship (e.g. 'we've worked together for 2 years', 'ongoing monthly retainer', 'occasional project work'). Helps calibrate tone.",
+                    },
+                },
+                required: ["client_name", "current_rate", "new_rate", "effective_date"],
             },
         },
         {
@@ -985,6 +1019,49 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "rate_increase_email") {
+        const clientName = String(args.client_name);
+        const currentRate = String(args.current_rate);
+        const newRate = String(args.new_rate);
+        const effectiveDate = String(args.effective_date);
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const relationshipContext = args.relationship_context
+            ? String(args.relationship_context)
+            : null;
+        const contextLine = relationshipContext
+            ? `Relationship context: ${relationshipContext}`
+            : "No specific relationship context provided — write for a professional ongoing client relationship.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a rate-increase email from ${yourName} to ${clientName}.
+
+Details:
+- Current rate: ${currentRate}
+- New rate: ${newRate}
+- Effective: ${effectiveDate}
+- ${contextLine}
+
+Structure:
+1. One opening line that acknowledges the working relationship specifically (not generically). Reference the work, not just "working together."
+2. State the rate change plainly: what it is, when it takes effect. One or two sentences. Do not over-explain or apologise.
+3. One sentence confirming you'll honour the current rate for work in flight / until the effective date.
+4. One sentence making it easy to discuss if they want to — a genuine offer, not a hedge.
+5. Short sign-off.
+
+Rules:
+- Under 150 words.
+- No subject line — just the email body.
+- No "I wanted to reach out." No "I hope this finds you well." No "I've really valued our partnership."
+- Do not justify the raise with inflation, market rates, or your costs — it comes across as defensive. The raise stands on its own.
+- Do not apologise. Don't write "I'm sorry to" or "I hate to."
+- Tone: warm but matter-of-fact. Like telling a friend, not filing a legal notice.
+- The goal is to keep the client, not to brace for rejection.`,
                 },
             ],
         };
