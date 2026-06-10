@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.2.6" },
+  { name: "proposalcraft", version: "1.2.7" },
   { capabilities: { tools: {} } }
 );
 
@@ -915,6 +915,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["original_scope", "change_requested", "client_name"],
+      },
+    },
+    {
+      name: "scope_clarification_email",
+      description:
+        "Write a professional email to a prospective client asking for the information you need before you can quote accurately. Most freelancers either guess (wrong) or send a list of demands (off-putting). This generates a short, confidence-building email with 2–4 targeted questions that signal expertise, not confusion. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_type: {
+            type: "string",
+            description: "What kind of project it is (e.g. 'website redesign', 'brand identity', 'SEO audit')",
+          },
+          missing_info: {
+            type: "string",
+            description: "What you don't know yet and need to understand before quoting (e.g. 'budget range, number of pages, whether copy is provided', 'whether they need ongoing support or a one-off build', 'timeline and existing brand assets')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+          context: {
+            type: "string",
+            description: "Optional: brief context about what they did share (e.g. 'You mentioned you need a new website for your yoga studio launching in September'). Used to show you read their message.",
+          },
+        },
+        required: ["client_name", "project_type", "missing_info", "your_name"],
       },
     },
     {
@@ -2457,6 +2488,42 @@ BRIEF:
 ${brief}${analysis}`,
         },
       ],
+    };
+  }
+
+  if (name === "scope_clarification_email") {
+    const clientName = String(args!.client_name);
+    const projectType = String(args!.project_type);
+    const missingInfo = String(args!.missing_info);
+    const yourName = String(args!.your_name);
+    const context = args!.context ? String(args!.context) : null;
+
+    const contextLine = context
+      ? `Thanks for reaching out about the ${projectType}. ${context}\n\nBefore I put a proposal together, I have a few questions that'll help me scope this accurately:`
+      : `Thanks for reaching out about the ${projectType} — sounds like an interesting project.\n\nBefore I put together a proposal, a few questions that'll help me scope this accurately:`;
+
+    const questions = missingInfo
+      .split(/[,;]/)
+      .map((q) => q.trim())
+      .filter(Boolean)
+      .slice(0, 4)
+      .map((q, i) => `${i + 1}. ${q.charAt(0).toUpperCase() + q.slice(1)}?`)
+      .join("\n");
+
+    const email = `Subject: A couple of questions before I quote
+
+Hi ${clientName},
+
+${contextLine}
+
+${questions}
+
+Once I have those, I can turn around a detailed proposal within 24 hours.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
