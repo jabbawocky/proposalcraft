@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.2.7" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.2.8" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -840,6 +840,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["original_scope", "change_requested", "client_name"],
+            },
+        },
+        {
+            name: "discount_request_response",
+            description: "Write a response when a client asks for a lower price. Caving too easily devalues your work; being defensive loses the deal. This generates a firm, warm reply in one of three modes: hold the rate (with reasoning), offer scope reduction instead, or offer payment terms instead. Protects your rate without burning the relationship. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                    original_price: {
+                        type: "string",
+                        description: "Your quoted price (e.g. '$4,500', '£3,200')",
+                    },
+                    response_mode: {
+                        type: "string",
+                        enum: ["hold_rate", "reduce_scope", "payment_terms"],
+                        description: "'hold_rate' = decline the discount and explain why the price is right; 'reduce_scope' = offer a smaller version at their budget; 'payment_terms' = keep the full price but split payments to ease cashflow. Default: hold_rate.",
+                    },
+                    their_budget: {
+                        type: "string",
+                        description: "Optional: what budget they mentioned (e.g. '$3,000'). Used in reduce_scope and payment_terms modes.",
+                    },
+                    context: {
+                        type: "string",
+                        description: "Optional: any context about the project or relationship that should shape the tone (e.g. 'long-term client', 'startup with limited budget', 'they said the project is on hold if we can't find a middle ground')",
+                    },
+                },
+                required: ["client_name", "your_name", "original_price"],
             },
         },
         {
@@ -2285,6 +2320,79 @@ BRIEF:
 ${brief}${analysis}`,
                 },
             ],
+        };
+    }
+    if (name === "discount_request_response") {
+        const clientName = String(args.client_name);
+        const yourName = String(args.your_name);
+        const originalPrice = String(args.original_price);
+        const mode = args.response_mode ? String(args.response_mode) : "hold_rate";
+        const theirBudget = args.their_budget ? String(args.their_budget) : null;
+        const context = args.context ? String(args.context) : null;
+        const contextNote = context ? ` (${context})` : "";
+        let body;
+        if (mode === "reduce_scope") {
+            const budgetLine = theirBudget
+                ? `If ${theirBudget} is the ceiling, here's what I can deliver within that:`
+                : `If we need to bring the investment down, here's what I can deliver at a reduced scope:`;
+            body = `Subject: Re: Proposal — adjusted scope option
+
+Hi ${clientName},
+
+Thanks for the honest feedback${contextNote}.
+
+My rate stays the same — it reflects the time and quality the full project needs. But I don't want budget to be the reason we don't work together.
+
+${budgetLine}
+
+[List 2–3 deliverables you'd remove or reduce — be specific about what's OUT]
+
+That brings the total to [reduced price]. Everything else stays the same: timeline, quality, and my involvement.
+
+If that works, I can update the proposal and we can get started. Otherwise, the original scope is still on the table if the budget shifts.
+
+${yourName}`;
+        }
+        else if (mode === "payment_terms") {
+            const budgetLine = theirBudget
+                ? `I hear you on the ${theirBudget} — cashflow is a real thing.`
+                : `I understand cashflow can be a constraint.`;
+            body = `Subject: Re: Proposal — payment structure
+
+Hi ${clientName},
+
+${budgetLine}${contextNote ? ` ${contextNote}.` : ""}
+
+I'm not able to adjust the total — ${originalPrice} is what the project needs to be done properly. But I can split the payments to make it easier:
+
+- 30% on project kick-off
+- 40% at the midpoint milestone
+- 30% on final delivery
+
+Same scope, same quality, same timeline — just spread across the project rather than upfront.
+
+Does that work for you?
+
+${yourName}`;
+        }
+        else {
+            // hold_rate (default)
+            body = `Subject: Re: Proposal
+
+Hi ${clientName},
+
+Thanks for coming back to me${contextNote ? ` — ${contextNote}` : ""}.
+
+I'm not able to move on the price. ${originalPrice} reflects the time this project actually takes to do well — I've scoped it carefully and there's no fat in it.
+
+What I can tell you is that you get my full attention on this, work I stand behind, and someone who'll flag problems before they become expensive.
+
+If the budget genuinely isn't there, I'd rather we have that conversation now than cut corners on either side. But if you want to move forward, I'm ready to start.
+
+${yourName}`;
+        }
+        return {
+            content: [{ type: "text", text: body }],
         };
     }
     if (name === "scope_clarification_email") {
