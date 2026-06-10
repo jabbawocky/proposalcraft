@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.2.4] — 2026-06-11
+
+### Added
+- `availability_announcement` tool — warm, non-desperate email to a past client announcing you have capacity opening up. Under 120 words, one soft ask. Past clients are the highest-converting leads — this re-activates the relationship without cold-pitching. Does not count against the monthly draft limit.
+
+[1.2.4]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.4
+
 ## [1.2.3] — 2026-06-10
 
 ### Added

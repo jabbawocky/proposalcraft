@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.2.3" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.2.4" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "availability_announcement",
+            description: "Write a warm, non-desperate email to past clients announcing you have capacity opening up. Past clients are the highest-converting leads — this email re-activates relationships without cold-pitching. Under 120 words, one soft ask. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    your_name: {
+                        type: "string",
+                        description: "Your name (sign-off)",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    past_project: {
+                        type: "string",
+                        description: "Brief reference to the project you did together (e.g. 'the rebrand we did last year', 'your e-commerce site')",
+                    },
+                    available_from: {
+                        type: "string",
+                        description: "When you have capacity (e.g. 'from July', 'mid-June', 'end of this month')",
+                    },
+                    capacity_type: {
+                        type: "string",
+                        description: "Optional: what kind of work you have capacity for (e.g. 'a new project', 'a retainer', 'a few days of consulting'). Default: new project work.",
+                    },
+                },
+                required: ["your_name", "client_name", "past_project", "available_from"],
             },
         },
         {
@@ -1368,6 +1398,34 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "availability_announcement") {
+        const yourName = String(args.your_name);
+        const clientName = String(args.client_name);
+        const pastProject = String(args.past_project);
+        const availableFrom = String(args.available_from);
+        const capacityType = args.capacity_type ? String(args.capacity_type) : "a new project";
+        const email = `Subject: Coming up for air — capacity opening ${availableFrom}
+
+Hi ${clientName},
+
+Hope things are going well since ${pastProject}.
+
+I have capacity opening up ${availableFrom} and wanted to reach out to people I've enjoyed working with before seeing what else comes my way.
+
+If you have ${capacityType} on the horizon — or know someone who might — I'd love to hear about it.
+
+No pressure either way. Just wanted you to hear it from me first.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: email,
                 },
             ],
         };
