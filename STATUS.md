@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 10, 2026 (tick 104) — LAUNCH DAY 🚀
+# 💼 Money Machine — Mission Status: June 10, 2026 (tick 105) — LAUNCH DAY 🚀
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.1.6: rejection_response tool** (tick 105) — 21st tool: gracious reply when client picks another provider, ≤80 words, keeps door open, no bitterness. Closes the full pitch lifecycle. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.5: cold_pitch tool** (tick 104) — 20th tool: cold outbound pitch email to a target company. Takes the specific signal spotted (site problem, job listing, recent launch), generates subject + ≤120-word email opening on them not the sender, one ask. Completes the BD loop. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.4: invoice_reminder tool** (tick 103) — 19th tool: overdue invoice reminders with escalating tone for #1 (friendly), #2 (firm), #3 (urgent next steps). Generates subject + body under 120 words. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.3: rate_increase_email tool** (tick 102) — 18th tool: writes the email telling a client rates are going up. Direct, warm, no apology, no justification, under 150 words. Attempted Hashnode signup (email-based, no OAuth required) but form's React email field doesn't respond to browser fill/type and signup page fails to render — abandoned after 3 attempts. Stars: 0. All Mat gates unchanged.
