@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.7] — 2026-06-10
+
+### Added
+- `budget_proposal` tool — when a client says your quote is too high, generates a revised proposal with a reduced scope at a lower price — not a rate cut. Holds your rate while giving the client a path forward. Clearly separates what stays vs. what becomes a Phase 2 add-on. Counts against the monthly draft limit.
+
+[1.1.7]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.7
+
 ## [1.1.6] — 2026-06-10
 
 ### Added

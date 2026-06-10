@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.1.6" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.1.7" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "budget_proposal",
+            description: "When a client says your quote is too high, write a revised proposal offering a reduced scope at a lower price — not a rate cut. Helps freelancers hold their rate while giving the client a path forward. Counts against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    original_proposal: {
+                        type: "string",
+                        description: "The original proposal or scope summary that was rejected as too expensive",
+                    },
+                    client_feedback: {
+                        type: "string",
+                        description: "What the client said about the budget (e.g. 'your quote is double our budget', 'we were thinking more like $3k', 'we only have $5k to spend')",
+                    },
+                    target_budget: {
+                        type: "string",
+                        description: "Optional: the budget the client mentioned, if any (e.g. '$5,000', '$3k'). Helps calibrate what to cut.",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "Optional: the client's first name",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["original_proposal", "client_feedback"],
             },
         },
         {
@@ -1117,6 +1147,72 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "budget_proposal") {
+        const usage = getUsage();
+        if (usage.draft_count >= FREE_DRAFT_LIMIT) {
+            return {
+                content: [
+                    {
+                        type: "text",
+                        text: `You've used all ${FREE_DRAFT_LIMIT} free drafts this month.\n\nUpgrade to ProposalCraft Pro ($19/mo) for unlimited drafts: ${PRO_URL}`,
+                    },
+                ],
+            };
+        }
+        incrementUsage(usage);
+        const originalProposal = String(args.original_proposal);
+        const clientFeedback = String(args.client_feedback);
+        const targetBudget = args.target_budget ? String(args.target_budget) : null;
+        const clientName = args.client_name ? String(args.client_name) : "the client";
+        const yourName = args.your_name ? String(args.your_name) : "[Your Name]";
+        const budgetLine = targetBudget
+            ? `Target budget mentioned by client: ${targetBudget}. Aim to hit or get close to this with the reduced scope.`
+            : "No specific budget was given — propose a scope reduction of roughly 30-40% and let the client see the trade-off.";
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Write a revised "budget proposal" response to a client who said the original quote was too expensive.
+
+Context:
+- Client: ${clientName}
+- Client feedback: ${clientFeedback}
+- ${budgetLine}
+
+The principle: cut scope, not rate. Never apologise for your original price or imply it was wrong.
+
+Structure the response as:
+
+**Opening (2 sentences)**
+Acknowledge you heard them on budget. Confirm your rate stays the same — but offer a path to fit their number by narrowing scope. Do not say "I understand" or "totally get it."
+
+**What's in the reduced scope**
+Bullet list of what the revised version includes. Be specific — name exactly what stays. This should feel like a focused, complete version of the project, not a stripped-down afterthought.
+
+**What's removed**
+Short bullet list of what's cut vs the original. Frame each cut as optional/phaseable ("Phase 2", "add-on later") — not as something they're losing.
+
+**Revised investment**
+${targetBudget ? `Revised price targeting ${targetBudget}` : "Revised price — clearly lower than original, still reflects your rate applied to the reduced scope"}
+Payment terms: same as original proposal.
+
+**Note on quality**
+One sentence: the work in this scope will be delivered to the same standard. The scope is smaller; the quality is not.
+
+**Next step**
+One clear ask — usually: confirm which version they'd like to proceed with, or request a call to decide.
+
+---
+
+ORIGINAL PROPOSAL:
+${originalProposal}
+
+CLIENT FEEDBACK:
+${clientFeedback}`,
                 },
             ],
         };
