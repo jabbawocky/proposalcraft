@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.2.2] — 2026-06-10
+
+### Added
+- `meeting_recap_email` tool — professional post-meeting recap email for discovery calls, kickoffs, check-ins, and reviews. Adapts subject line and opening to meeting type. Structured sections: what we covered, decisions confirmed (optional), next steps (optional), follow-up date (optional). Creates a paper trail, confirms alignment, and keeps projects moving. Does not count against the monthly draft limit.
+
+[1.2.2]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.2
+
 ## [1.2.1] — 2026-06-10
 
 ### Added

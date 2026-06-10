@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.2.1" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.2.2" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -307,6 +307,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["proposal", "client_name"],
+            },
+        },
+        {
+            name: "meeting_recap_email",
+            description: "Write a professional post-meeting recap email to send to a client after a discovery call, check-in, kickoff, or project review. Summarises what was discussed, confirms decisions, and lists next steps with owners. Creates a paper trail and keeps the project moving. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    your_name: {
+                        type: "string",
+                        description: "Your name (used in the sign-off)",
+                    },
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    meeting_type: {
+                        type: "string",
+                        enum: ["discovery", "kickoff", "check-in", "review", "sales"],
+                        description: "Type of meeting — shapes the tone and what sections are emphasised (default: check-in)",
+                    },
+                    key_points: {
+                        type: "string",
+                        description: "What was discussed — paste rough notes or a bullet list. The tool will shape them into clean prose.",
+                    },
+                    decisions: {
+                        type: "string",
+                        description: "Optional: specific decisions confirmed in the meeting (e.g. 'approved the blue colour palette', 'agreed to delay launch by 2 weeks')",
+                    },
+                    next_steps: {
+                        type: "string",
+                        description: "Optional: what happens next and who owns each item (e.g. 'You: send logo files by Friday. Me: deliver wireframes by June 18.')",
+                    },
+                    follow_up_date: {
+                        type: "string",
+                        description: "Optional: when you'll next connect (e.g. 'June 20', 'next Thursday')",
+                    },
+                },
+                required: ["your_name", "client_name", "key_points"],
             },
         },
         {
@@ -1291,6 +1330,51 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+                },
+            ],
+        };
+    }
+    if (name === "meeting_recap_email") {
+        const yourName = String(args.your_name);
+        const clientName = String(args.client_name);
+        const meetingType = args.meeting_type ? String(args.meeting_type) : "check-in";
+        const keyPoints = String(args.key_points);
+        const decisions = args.decisions ? String(args.decisions) : null;
+        const nextSteps = args.next_steps ? String(args.next_steps) : null;
+        const followUpDate = args.follow_up_date ? String(args.follow_up_date) : null;
+        const subjectMap = {
+            discovery: `Notes from our discovery call`,
+            kickoff: `Project kickoff — recap and next steps`,
+            "check-in": `Quick recap from today's call`,
+            review: `Review call — decisions and next steps`,
+            sales: `Following up on our conversation`,
+        };
+        const subject = subjectMap[meetingType] ?? `Recap from today's call`;
+        const openingMap = {
+            discovery: `Thanks for taking the time to walk me through the project today. Really useful conversation — here's a quick summary of what we covered.`,
+            kickoff: `Great to officially kick things off today. Here's a recap to make sure we're aligned on everything going into the project.`,
+            "check-in": `Thanks for the catch-up. Here's a quick recap so we've got everything in one place.`,
+            review: `Good session today. Here's a summary of what we reviewed, the decisions we landed on, and what happens next.`,
+            sales: `Really enjoyed our conversation. Here's a brief recap of what we discussed.`,
+        };
+        const opening = openingMap[meetingType] ?? openingMap["check-in"];
+        let body = `Subject: ${subject}\n\nHi ${clientName},\n\n${opening}\n\n`;
+        body += `**What we covered**\n${keyPoints}\n\n`;
+        if (decisions) {
+            body += `**Decisions confirmed**\n${decisions}\n\n`;
+        }
+        if (nextSteps) {
+            body += `**Next steps**\n${nextSteps}\n\n`;
+        }
+        if (followUpDate) {
+            body += `We'll pick this up again on ${followUpDate}. I'll send a calendar invite.\n\n`;
+        }
+        body += `Let me know if I've missed anything or you want to change anything above.\n\n${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: body,
                 },
             ],
         };
