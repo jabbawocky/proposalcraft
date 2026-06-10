@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.1.9] — 2026-06-10
+
+### Added
+- `nda_template` tool — generates a plain-English Non-Disclosure Agreement. One-way (protect client's info) or mutual, configurable duration (default 2 years) and governing law. Covers confidential information definition, exclusions, obligations, duration, return/destruction, and remedies. Includes a reviewer note. Does not count against the monthly draft limit.
+
+[1.1.9]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.1.9
+
 ## [1.1.8] — 2026-06-10
 
 ### Added

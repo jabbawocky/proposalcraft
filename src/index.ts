@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.1.8" },
+  { name: "proposalcraft", version: "1.1.9" },
   { capabilities: { tools: {} } }
 );
 
@@ -348,6 +348,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["proposal", "client_name"],
+      },
+    },
+    {
+      name: "nda_template",
+      description:
+        "Generate a simple, plain-English Non-Disclosure Agreement for freelance client work. Covers what's confidential, duration, exceptions, and a basic remedies clause. One-way (client's info stays confidential) or mutual. Not a substitute for legal advice — suitable for most standard freelance engagements. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          your_name: {
+            type: "string",
+            description: "Your full name or company name (the service provider)",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's full name or company name",
+          },
+          project_description: {
+            type: "string",
+            description: "Brief description of the project or engagement (e.g. 'website redesign', 'software development services')",
+          },
+          duration_years: {
+            type: "number",
+            description: "How long confidentiality obligations last in years (default: 2). Typical range: 1-5.",
+          },
+          mutual: {
+            type: "boolean",
+            description: "true = mutual NDA (both parties protect each other's info); false (default) = one-way (you protect the client's confidential information only)",
+          },
+          governing_law: {
+            type: "string",
+            description: "Optional: governing law jurisdiction (e.g. 'England and Wales', 'California, USA', 'New South Wales, Australia'). Leave blank to use a placeholder.",
+          },
+        },
+        required: ["your_name", "client_name", "project_description"],
       },
     },
     {
@@ -1294,6 +1329,91 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "nda_template") {
+    const yourName = String(args!.your_name);
+    const clientName = String(args!.client_name);
+    const projectDescription = String(args!.project_description);
+    const durationYears = args!.duration_years ? Number(args!.duration_years) : 2;
+    const mutual = args!.mutual === true;
+    const governingLaw = args!.governing_law ? String(args!.governing_law) : "[Governing Law Jurisdiction]";
+
+    const ndaType = mutual ? "Mutual Non-Disclosure Agreement" : "Non-Disclosure Agreement";
+    const disclosureScope = mutual
+      ? "Both parties may disclose confidential information to each other in connection with the engagement described below. Each party agrees to protect the other's confidential information on the same terms."
+      : `${clientName} (the \"Disclosing Party\") may disclose confidential information to ${yourName} (the \"Receiving Party\") in connection with the engagement described below.`;
+
+    const obligationParty = mutual
+      ? "Each party (as Receiving Party)"
+      : `${yourName} (Receiving Party)`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Generate a plain-English ${ndaType} with the following details. Format it as a proper legal document ready to be signed.
+
+Parties:
+- Service Provider: ${yourName}
+- Client: ${clientName}
+- Project / Engagement: ${projectDescription}
+- NDA type: ${mutual ? "Mutual" : "One-way (client info protected)"}
+- Confidentiality duration: ${durationYears} year${durationYears !== 1 ? "s" : ""} from the date of signing
+- Governing law: ${governingLaw}
+
+Structure the NDA as follows:
+
+---
+
+**NON-DISCLOSURE AGREEMENT**
+
+**Date:** [Date]
+
+**Between:**
+- ${yourName} ("Service Provider")
+- ${clientName} ("Client")
+
+**1. Background**
+The parties intend to ${projectDescription}. In connection with this engagement, ${disclosureScope}
+
+**2. Definition of Confidential Information**
+"Confidential Information" means any non-public information disclosed by one party to the other, whether in writing, orally, or by inspection, that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and circumstances of disclosure. This includes but is not limited to: business plans, technical data, trade secrets, client lists, pricing, financial information, and product plans.
+
+**3. Exclusions**
+Confidential Information does not include information that: (a) is or becomes publicly known through no breach of this Agreement; (b) was rightfully known to the Receiving Party before disclosure; (c) is independently developed by the Receiving Party without use of the Confidential Information; or (d) is required to be disclosed by law or court order, provided the Receiving Party gives reasonable notice.
+
+**4. Obligations**
+${obligationParty} agrees to: (a) hold all Confidential Information in strict confidence; (b) not disclose it to third parties without prior written consent; (c) use it solely for the purpose of the engagement described above; and (d) apply at least the same degree of care used to protect its own confidential information, and no less than reasonable care.
+
+**5. Duration**
+These obligations remain in effect for ${durationYears} year${durationYears !== 1 ? "s" : ""} from the date of this Agreement, or until the Confidential Information no longer qualifies as confidential, whichever occurs first.
+
+**6. Return or Destruction**
+Upon written request, the Receiving Party will promptly return or destroy all Confidential Information, including copies and notes, and confirm this in writing.
+
+**7. Remedies**
+The parties acknowledge that breach of this Agreement may cause irreparable harm for which monetary damages would be an inadequate remedy. Accordingly, the non-breaching party is entitled to seek equitable relief, including injunction, in addition to any other remedies available at law.
+
+**8. General**
+This Agreement is the entire agreement between the parties on this subject and supersedes all prior discussions. It may be amended only in writing signed by both parties. This Agreement shall be governed by the laws of ${governingLaw}. If any provision is found unenforceable, the remaining provisions continue in full force.
+
+---
+
+**Signatures**
+
+| | Service Provider | Client |
+|---|---|---|
+| Name | ${yourName} | ${clientName} |
+| Signature | _______________ | _______________ |
+| Date | _______________ | _______________ |
+
+---
+
+*Note: This NDA is provided as a starting template. For complex engagements, engagements involving significant IP, or where local law requirements are unclear, consider having a lawyer review it before signing.*`,
         },
       ],
     };
