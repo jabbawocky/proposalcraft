@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.2.5" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.2.6" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -840,6 +840,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["original_scope", "change_requested", "client_name"],
+            },
+        },
+        {
+            name: "linkedin_post",
+            description: "Write a concise, authentic LinkedIn post about a project win, lesson learned, or professional insight. LinkedIn is where freelancers get inbound leads — but most avoid posting because writing feels awkward. This generates a post in a natural professional voice (150–250 words): specific hook, the story, the takeaway, a soft CTA. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    topic: {
+                        type: "string",
+                        description: "What to post about (e.g. 'won a new e-commerce client', 'a mistake I made on a project', 'why I stopped working with certain clients', 'delivered a rebrand under budget')",
+                    },
+                    key_insight: {
+                        type: "string",
+                        description: "The one insight or takeaway you want readers to leave with",
+                    },
+                    your_role: {
+                        type: "string",
+                        description: "Optional: your professional role/title to anchor the post (e.g. 'freelance web designer', 'brand consultant', 'UX contractor'). Default: freelancer.",
+                    },
+                    include_cta: {
+                        type: "boolean",
+                        description: "Optional: include a soft call-to-action at the end (e.g. follow for more, DM for work). Default: true.",
+                    },
+                    tone: {
+                        type: "string",
+                        enum: ["professional", "conversational", "direct"],
+                        description: "Optional: post tone. 'professional' = polished, 'conversational' = warm and relatable, 'direct' = no filler, just the point. Default: conversational.",
+                    },
+                },
+                required: ["topic", "key_insight"],
             },
         },
         {
@@ -2224,6 +2255,50 @@ BRIEF:
 ${brief}${analysis}`,
                 },
             ],
+        };
+    }
+    if (name === "linkedin_post") {
+        const topic = String(args.topic);
+        const keyInsight = String(args.key_insight);
+        const yourRole = args.your_role ? String(args.your_role) : "freelancer";
+        const includeCta = args.include_cta !== false;
+        const tone = args.tone ? String(args.tone) : "conversational";
+        let post;
+        if (tone === "direct") {
+            post = `${topic.charAt(0).toUpperCase() + topic.slice(1)}.
+
+${keyInsight}
+
+Most people don't talk about this. They should.
+
+${yourRole.charAt(0).toUpperCase() + yourRole.slice(1)}s who get this right spend less time chasing clients and more time doing the work they're good at.`;
+        }
+        else if (tone === "professional") {
+            post = `One thing I've learned as a ${yourRole}: ${topic.toLowerCase()}.
+
+${keyInsight}
+
+It's not the most obvious lesson, but once you see it, you can't unsee it. The projects that go smoothly rarely do so by accident — they're the ones where expectations, scope, and communication were right from the start.
+
+Worth reflecting on as you plan your next engagement.`;
+        }
+        else {
+            // conversational (default)
+            post = `Something happened recently that I keep thinking about.
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)}.
+
+Here's what it taught me: ${keyInsight.charAt(0).toLowerCase() + keyInsight.slice(1)}
+
+As a ${yourRole}, you don't always get this stuff taught to you. You learn it by doing — sometimes by getting it wrong first.
+
+If this resonates, I'd love to hear what's worked for you in the comments.`;
+        }
+        if (includeCta) {
+            post += `\n\n---\nFollowing for more honest takes on the freelance/consulting life.`;
+        }
+        return {
+            content: [{ type: "text", text: post }],
         };
     }
     if (name === "case_study_outline") {

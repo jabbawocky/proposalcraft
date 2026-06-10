@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 11, 2026 (tick 114)
+# 💼 Money Machine — Mission Status: June 11, 2026 (tick 115)
 
 **Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **v1.2.6: linkedin_post tool** (tick 115) — 31st tool: writes a concise, authentic LinkedIn post about a project win, lesson, or insight. Three tones: conversational (default), professional, direct. Includes optional soft CTA. LinkedIn = highest-inbound channel for freelancers but most avoid posting because writing feels awkward — this removes the blank-page friction entirely. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.6. Stars: 0. Resolved 1 stale action (GoDaddy domain — Jun 10 passed, GitHub Pages live). All Mat gates unchanged.
 - ✅ **v1.2.5: case_study_outline tool** (tick 114) — 30th tool: turns any completed project into a structured portfolio case study (challenge → approach → results → learnings) ready to paste into a website, LinkedIn, or proposal. Most freelancers know they should document wins but never do — this removes the blank-page friction. Does not count against free limit. Completes the delivery arc: project_closure_email → testimonial_request → referral_request → **case_study_outline**. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.2.4: availability_announcement tool** (tick 113) — 29th tool: warm sub-120-word email to a past client announcing capacity is opening up. Frames as "wanted you to hear it first", not "please hire me". Past clients = highest-converting leads. Resolved 2 stale PH launch-day deadline actions (Jun 10 passed). Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.4. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.2.3: project_closure_email tool** (tick 112) — 28th tool: final delivery email confirming deliverables, client handover actions, optional support period, optional future-work hook. Warm close. Completes the full lifecycle: kickoff → status updates → closure → testimonial → referral. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.3. Stars: 0. All Mat gates unchanged.

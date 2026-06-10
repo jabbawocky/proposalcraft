@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 30 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 31 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -137,6 +137,7 @@ ProposalCraft gives your AI client 30 tools for the full proposal workflow — f
 | `meeting_recap_email` | Post-meeting recap email — what was covered, decisions confirmed, next steps. Works for discovery, kickoff, check-in, or review calls | — |
 | `project_closure_email` | Final delivery email — confirms deliverables, client handover items, support period, and plants a hook for future work | — |
 | `availability_announcement` | Warm email to a past client announcing you have capacity — re-activates the relationship without cold-pitching, under 120 words | — |
+| `linkedin_post` | Write a concise, authentic LinkedIn post about a win, lesson, or insight — specific hook, the story, the takeaway, soft CTA. Three tone options: conversational, professional, direct | — |
 | `case_study_outline` | Turn a completed project into a structured portfolio case study — challenge, approach, results, learnings — ready to paste into your website or proposals | — |
 | `save_proposal` | Add a winning proposal to your local reference library | — |
 | `list_proposals` | List all saved proposals | — |
