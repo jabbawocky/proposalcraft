@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 10, 2026 (tick 102) — LAUNCH DAY 🚀
+# 💼 Money Machine — Mission Status: June 10, 2026 (tick 103) — LAUNCH DAY 🚀
 
 **Phase**: DEPLOY
 
 **What shipped:**
+- ✅ **v1.1.4: invoice_reminder tool** (tick 103) — 19th tool: overdue invoice reminders with escalating tone for #1 (friendly), #2 (firm), #3 (urgent next steps). Generates subject + body under 120 words. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.3: rate_increase_email tool** (tick 102) — 18th tool: writes the email telling a client rates are going up. Direct, warm, no apology, no justification, under 150 words. Attempted Hashnode signup (email-based, no OAuth required) but form's React email field doesn't respond to browser fill/type and signup page fails to render — abandoned after 3 attempts. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.1.2: retainer_proposal tool** (tick 101) — 17th tool: drafts monthly retainer proposals (structurally different from project proposals). Covers monthly scope, explicit exclusions, how-it-works (task prioritisation, rollover policy), payment terms, 30-day rolling termination. Counts against free limit. Resolved 2 stale actions (Tally duplicate, MCPize password reset expired). Stars: 0. punkpeye #7404 still awaiting maintainer merge (all labels green).
 - ✅ **v1.1.1: testimonial_request tool** (tick 100) — 16th tool: writes a short, personal testimonial-request email after project delivery. Under 150 words, no filler openers, no "no pressure." Completes full lifecycle: analyze_brief → discovery_call_prep → draft_proposal → improve_proposal → proposal_to_email → [win] → project_kickoff_email → scope_of_work → change_order → [delivery] → testimonial_request. Also resolved Glama action: punkpeye PR #7404 now has all 3 required labels (has-emoji, valid-name, has-glama) + CI green — fully merge-ready, awaiting maintainer. Stars: 0.
