@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.3.0" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.3.1" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1034,6 +1034,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["project_type", "client_name"],
+            },
+        },
+        {
+            name: "upsell_email",
+            description: "Write a warm, non-pushy email to a happy client suggesting additional services or a retainer after a successful project. Existing clients convert at 3–5x the rate of cold prospects — this is the highest-ROI sales email a freelancer can send. Timing: right after delivering and getting positive feedback. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    completed_project: {
+                        type: "string",
+                        description: "The project you just delivered (e.g. 'the website redesign', 'the brand identity', 'the SEO audit')",
+                    },
+                    upsell_service: {
+                        type: "string",
+                        description: "What you're suggesting next (e.g. 'an ongoing SEO retainer', 'a monthly content package', 'a mobile app version', 'a quarterly brand refresh')",
+                    },
+                    value_hook: {
+                        type: "string",
+                        description: "Optional: a specific result or observation from the completed project that makes the upsell relevant (e.g. 'your site traffic jumped 40% in the first week', 'three pages need copy updates based on the audit findings')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "completed_project", "upsell_service"],
             },
         },
     ],
@@ -2730,6 +2760,41 @@ ${yourName}`;
                 {
                     type: "text",
                     text: checklist,
+                },
+            ],
+        };
+    }
+    if (name === "upsell_email") {
+        const clientName = String(args.client_name);
+        const completedProject = String(args.completed_project);
+        const upsellService = String(args.upsell_service);
+        const valueHook = args.value_hook ? String(args.value_hook) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const hookLine = valueHook
+            ? `Now that ${completedProject} is live, ${valueHook} — which got me thinking about something that could build on that.`
+            : `Now that ${completedProject} is wrapped up, I've been thinking about what would move the needle most for you next.`;
+        const email = `Subject: What's next after ${completedProject}
+
+Hi ${clientName},
+
+${hookLine}
+
+I wanted to float the idea of ${upsellService}. Here's why it makes sense right now:
+
+You already have the foundation in place from ${completedProject}. The context switching cost of onboarding someone new — briefing them, getting them up to speed, starting from scratch — doesn't apply here. I know your business, your voice, and how you like to work.
+
+The other reason now is the right time: the momentum from ${completedProject} is still fresh. Clients who build on a project quickly tend to see compounding results rather than starting from a cold stop.
+
+I'm not suggesting a massive commitment — happy to start with a trial month or a defined scope to see if it's a fit.
+
+Worth a quick call to discuss? No obligation — just an idea worth 15 minutes if it's the right time.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: email,
                 },
             ],
         };

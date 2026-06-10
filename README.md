@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 35 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 36 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -137,6 +137,7 @@ ProposalCraft gives your AI client 35 tools for the full proposal workflow — f
 | `meeting_recap_email` | Post-meeting recap email — what was covered, decisions confirmed, next steps. Works for discovery, kickoff, check-in, or review calls | — |
 | `project_closure_email` | Final delivery email — confirms deliverables, client handover items, support period, and plants a hook for future work | — |
 | `availability_announcement` | Warm email to a past client announcing you have capacity — re-activates the relationship without cold-pitching, under 120 words | — |
+| `upsell_email` | Write a warm, non-pushy email to a happy client suggesting additional services or a retainer after a successful project — highest-ROI sales email a freelancer can send | — |
 | `client_onboarding_checklist` | Generate a tailored list of everything you need from a client before work starts — access, assets, decisions, approvals — adapted to your project type | — |
 | `late_delivery_apology` | Write a professional email when you are going to miss a deadline — takes ownership without over-apologising, gives a clear revised timeline, keeps the client's trust intact | — |
 | `discount_request_response` | Respond when a client asks for a lower price — hold the rate, offer reduced scope, or offer split payments. Firm and warm without caving or burning the relationship | — |
