@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.1.9" },
+  { name: "proposalcraft", version: "1.2.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -348,6 +348,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["proposal", "client_name"],
+      },
+    },
+    {
+      name: "contract_template",
+      description:
+        "Generate a plain-English Freelance Services Agreement — the full working contract covering services, payment, IP, revisions, termination, and liability. More comprehensive than an NDA (which covers only confidentiality) and more legally framed than a SOW (which covers deliverables). Suitable for most standard freelance and consulting engagements. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          your_name: {
+            type: "string",
+            description: "Your full name or company name (the service provider)",
+          },
+          client_name: {
+            type: "string",
+            description: "The client's full name or company name",
+          },
+          project_description: {
+            type: "string",
+            description: "Brief description of the services being provided",
+          },
+          total_price: {
+            type: "string",
+            description: "Total contract value (e.g. '$5,500', '$8,000 + expenses')",
+          },
+          payment_terms: {
+            type: "string",
+            description:
+              "How and when payment is made (e.g. '50% on signing, 50% on delivery', 'monthly in advance', 'net-30 on invoice'). Default: 50% on signing, 50% on final delivery.",
+          },
+          revision_rounds: {
+            type: "number",
+            description: "Number of included revision rounds. Default: 2.",
+          },
+          start_date: {
+            type: "string",
+            description: "Project start date (optional, e.g. 'June 15, 2026')",
+          },
+          governing_law: {
+            type: "string",
+            description:
+              "Governing law jurisdiction (e.g. 'New South Wales, Australia', 'California, USA'). Optional.",
+          },
+        },
+        required: ["your_name", "client_name", "project_description", "total_price"],
       },
     },
     {
@@ -1329,6 +1374,149 @@ ${originalScope}
 
 CHANGE REQUESTED:
 ${changeRequested}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "contract_template") {
+    const yourName = String(args!.your_name);
+    const clientName = String(args!.client_name);
+    const projectDescription = String(args!.project_description);
+    const totalPrice = String(args!.total_price);
+    const paymentTerms = args!.payment_terms
+      ? String(args!.payment_terms)
+      : "50% on signing, 50% on final delivery";
+    const revisionRounds =
+      typeof args!.revision_rounds === "number" ? args!.revision_rounds : 2;
+    const startDate = args!.start_date ? String(args!.start_date) : null;
+    const governingLaw = args!.governing_law ? String(args!.governing_law) : null;
+
+    const lawClause = governingLaw
+      ? `This agreement is governed by the laws of ${governingLaw}. Any disputes will be resolved in the courts of ${governingLaw}.`
+      : "This agreement is governed by the laws of the jurisdiction in which the Service Provider is based.";
+
+    const startClause = startDate
+      ? `Services will commence on or around ${startDate}, subject to receipt of the signed agreement and any deposit required under Section 3.`
+      : "Services will commence on a date agreed in writing by both parties, subject to receipt of the signed agreement and any deposit required under Section 3.";
+
+    const contract = `FREELANCE SERVICES AGREEMENT
+
+This agreement is entered into between:
+
+Service Provider: ${yourName}
+Client: ${clientName}
+
+Collectively referred to as "the parties."
+
+---
+
+1. SERVICES
+
+${yourName} agrees to provide the following services to ${clientName}:
+
+${projectDescription}
+
+The specific deliverables, timeline, and scope of work will be documented in a separate Statement of Work or project brief agreed by both parties. ${startClause}
+
+---
+
+2. FEES
+
+The total fee for the services described is ${totalPrice}.
+
+Payment terms: ${paymentTerms}.
+
+Invoices are due within 14 days of issue unless otherwise agreed in writing. Late payments accrue interest at 1.5% per month on the overdue amount after the due date.
+
+${yourName} reserves the right to pause or suspend work if an invoice is more than 14 days overdue.
+
+---
+
+3. REVISIONS
+
+The fee includes up to ${revisionRounds} round${revisionRounds === 1 ? "" : "s"} of revisions. A revision round is a consolidated set of changes communicated in a single brief.
+
+Revision requests beyond this allowance will be quoted and invoiced separately at ${yourName}'s standard day rate.
+
+---
+
+4. INTELLECTUAL PROPERTY
+
+All intellectual property rights in the deliverables transfer to ${clientName} in full upon receipt of final payment. Until final payment is received, ${yourName} retains all rights to the work.
+
+${yourName} retains the right to display the completed work in their portfolio and use it for self-promotional purposes, unless ${clientName} requests otherwise in writing.
+
+---
+
+5. CONFIDENTIALITY
+
+Each party agrees to keep confidential any non-public information disclosed by the other party in connection with this engagement, and not to disclose it to third parties without prior written consent. This obligation survives termination of this agreement.
+
+---
+
+6. TERMINATION
+
+Either party may terminate this agreement with 14 days' written notice.
+
+If ${clientName} terminates the agreement, ${yourName} is entitled to payment for all work completed to the date of termination. Any deposit paid is non-refundable.
+
+If ${yourName} terminates the agreement without cause, they will refund any fees paid for work not yet delivered.
+
+---
+
+7. LIMITATION OF LIABILITY
+
+${yourName}'s total liability under this agreement is limited to the total fees paid by ${clientName} under this agreement.
+
+Neither party is liable to the other for indirect, incidental, or consequential damages, including loss of profits or business interruption, arising from this agreement.
+
+---
+
+8. INDEPENDENT CONTRACTOR
+
+${yourName} is an independent contractor, not an employee of ${clientName}. Nothing in this agreement creates a partnership, joint venture, or employment relationship. ${yourName} is responsible for their own taxes and insurance.
+
+---
+
+9. GENERAL
+
+This agreement constitutes the entire agreement between the parties and supersedes any prior discussions or representations.
+
+Amendments must be agreed in writing by both parties.
+
+If any provision of this agreement is found to be unenforceable, the remaining provisions continue in full force.
+
+${lawClause}
+
+---
+
+SIGNATURES
+
+By signing below, both parties agree to the terms of this agreement.
+
+Service Provider
+
+Name: ___________________________
+Signature: ___________________________
+Date: ___________________________
+
+
+Client
+
+Name: ___________________________
+Signature: ___________________________
+Date: ___________________________
+
+---
+
+⚖️ Reviewer note: This is a plain-English freelance services agreement suitable for most standard engagements. It is not a substitute for legal advice. For high-value contracts, international work, complex IP arrangements, or regulated industries, have a lawyer review it first.`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: contract,
         },
       ],
     };

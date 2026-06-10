@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.2.0] — 2026-06-10
+
+### Added
+- `contract_template` tool — generates a plain-English Freelance Services Agreement covering services, payment terms, IP transfer, revision rounds, termination, liability cap, and independent contractor status. More comprehensive than the NDA (confidentiality only) and more legally framed than a SOW (deliverables schedule). Configurable payment terms, revision rounds, start date, and governing law. Signatures block included. Does not count against the monthly draft limit.
+
+[1.2.0]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.2.0
+
 ## [1.1.9] — 2026-06-10
 
 ### Added
