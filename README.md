@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 48 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 49 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -138,6 +138,7 @@ ProposalCraft gives your AI client 48 tools for the full proposal workflow — f
 | `project_closure_email` | Final delivery email — confirms deliverables, client handover items, support period, and plants a hook for future work | — |
 | `availability_announcement` | Warm email to a past client announcing you have capacity — re-activates the relationship without cold-pitching, under 120 words | — |
 | `feedback_request_email` | Ask a client for honest private feedback after a project — not a public testimonial, just genuine input to help you improve. Clients feel valued; you get patterns you'd never discover otherwise | — |
+| `client_check_in_email` | Write a short proactive mid-project check-in — the 'things are on track, next you'll hear from me on Thursday' message that prevents client anxiety and the 'where are we?' interruption. Under 100 words. Lighter than project_status_update; sent during silent execution phases | — |
 | `project_restart_email` | Write the email restarting a paused project. Pairs with project_pause_email to complete the pause/resume lifecycle. Acknowledges the gap, confirms readiness, states the first action, and addresses any timeline adjustments | — |
 | `working_hours_email` | Set professional expectations about your working hours and response times with a client. Confident, not apologetic — frames it as giving their work proper focused attention. Three triggers: proactive (at project start), after_late_message (responding to an out-of-hours message), mid_project_reset (when a pattern has developed) | — |
 | `scope_warning_email` | Flag scope creep BEFORE issuing a change order — the early-warning conversation that prevents the surprise-invoice moment. Use when a client requests something beyond the original brief. Different from change_order (which documents agreed extra work); this is the conversation that comes first | — |

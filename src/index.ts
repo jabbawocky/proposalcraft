@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.3" },
+  { name: "proposalcraft", version: "1.4.4" },
   { capabilities: { tools: {} } }
 );
 
@@ -1443,6 +1443,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "client_check_in_email",
+      description:
+        "Write a short proactive check-in email during a long project — the 'just wanted you to know things are on track' message that prevents client anxiety and the 'where are we with this?' interruption. Under 100 words. Different from project_status_update (which is a full structured weekly report): this is a light, warm pulse sent mid-phase to maintain trust during silent execution periods. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project name or description",
+          },
+          current_stage: {
+            type: "string",
+            description: "Where things stand right now (e.g. 'about halfway through the design phase', 'finalizing the copy before the first draft', 'in build — the homepage and services pages are done')",
+          },
+          next_milestone: {
+            type: "string",
+            description: "The next thing the client will see or hear from you (e.g. 'the first draft for your review on Thursday', 'a call to walk through the prototype next week', 'the completed site for sign-off by end of month')",
+          },
+          on_track: {
+            type: "boolean",
+            description: "Optional: whether the project is on track for the agreed timeline (default: true). If false, the email will flag the issue and invite a call rather than pretend everything is fine.",
+          },
+          blocker: {
+            type: "string",
+            description: "Optional: only used when on_track is false — what's causing the issue or what you need from them (e.g. 'I'm still waiting on the brand guidelines we discussed', 'a question came up about the payment integration that needs your input')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "current_stage", "next_milestone"],
       },
     },
     {
@@ -3849,6 +3888,44 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "client_check_in_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const currentStage = String(args!.current_stage);
+    const nextMilestone = String(args!.next_milestone);
+    const onTrack = args!.on_track !== false;
+    const blocker = args!.blocker ? String(args!.blocker) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    let email: string;
+
+    if (!onTrack && blocker) {
+      email = `Subject: ${projectName} — quick update
+
+Hi ${clientName},
+
+Quick update on ${projectName}: ${currentStage}.
+
+I wanted to flag something before it becomes an issue: ${blocker}. I don't want this to catch you off guard — can we find 15 minutes to sort it out?
+
+${yourName}`;
+    } else {
+      email = `Subject: ${projectName} — quick update
+
+Hi ${clientName},
+
+Just a quick note to let you know ${projectName} is going well — ${currentStage} and on track.
+
+Next thing you'll hear from me: ${nextMilestone}. Nothing needed from you in the meantime.
+
+${yourName}`;
+    }
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
