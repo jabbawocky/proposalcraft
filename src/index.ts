@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.4" },
+  { name: "proposalcraft", version: "1.4.5" },
   { capabilities: { tools: {} } }
 );
 
@@ -1436,6 +1436,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           specific_aspect: {
             type: "string",
             description: "Optional: a specific part of the experience you're genuinely curious about — makes the request feel purposeful rather than generic (e.g. 'how the communication felt during the revision rounds', 'whether the timeline worked for your team', 'the clarity of my initial briefing process')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "recommendation_request_email",
+      description:
+        "Write the email asking a happy client for a LinkedIn recommendation. Different from testimonial_request (which asks for a short quote for your website): a LinkedIn recommendation lives on the client's own profile and carries far more social proof. This email makes the ask easy — keeps it short, gives the client a memory prompt, and optionally suggests a focus so they don't face a blank page. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project or engagement to reference (e.g. 'the brand identity project', 'the six-month content retainer', 'the website redesign')",
+          },
+          standout_result: {
+            type: "string",
+            description: "Optional: a specific result or moment to remind them of — gives them something concrete to write about (e.g. 'the site launched on time and traffic doubled in the first month', 'the proposal we worked on won the Deloitte contract')",
+          },
+          focus_suggestion: {
+            type: "string",
+            description: "Optional: what aspect of the work you'd love them to speak to — makes it easier for them to write (e.g. 'communication and turnaround speed', 'the strategic thinking behind the copy', 'reliability and quality under a tight deadline'). Keep to one thing.",
           },
           your_name: {
             type: "string",
@@ -3888,6 +3919,40 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "recommendation_request_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const standoutResult = args!.standout_result ? String(args!.standout_result) : null;
+    const focusSuggestion = args!.focus_suggestion ? String(args!.focus_suggestion) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const resultLine = standoutResult
+      ? `\n\nIn case it's a useful memory prompt: ${standoutResult}.`
+      : "";
+
+    const focusLine = focusSuggestion
+      ? `\n\nIf it helps to have a steer: the thing I'd love you to speak to, if it resonates, is ${focusSuggestion}. But write what's true for you — that's what makes a recommendation worth reading.`
+      : "";
+
+    const email = `Subject: A small ask — LinkedIn recommendation
+
+Hi ${clientName},
+
+I hope ${projectName} is still paying off on your end.
+
+I have a small favour to ask: would you be willing to write me a LinkedIn recommendation? It doesn't need to be long — two or three sentences from someone whose work I've actually done goes a long way.${resultLine}${focusLine}
+
+You can do it here: https://www.linkedin.com/in/[your-linkedin-handle]/
+
+Completely fine if it's not something you're up for — no pressure either way, and it doesn't change anything about how much I enjoyed the project.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
