@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 42 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 43 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -137,6 +137,7 @@ ProposalCraft gives your AI client 42 tools for the full proposal workflow — f
 | `meeting_recap_email` | Post-meeting recap email — what was covered, decisions confirmed, next steps. Works for discovery, kickoff, check-in, or review calls | — |
 | `project_closure_email` | Final delivery email — confirms deliverables, client handover items, support period, and plants a hook for future work | — |
 | `availability_announcement` | Warm email to a past client announcing you have capacity — re-activates the relationship without cold-pitching, under 120 words | — |
+| `annual_review_email` | Write an end-of-year review to a long-term client — deliverables, standout result, relationship note, and a forward-looking suggestion. Positions you as a strategic partner and naturally opens renewal conversations | — |
 | `client_offboarding_email` | Write a gracious, firm email ending an ongoing client relationship — clear notice, outstanding work committed, no blame, relationship preserved for future referrals. The hardest email a freelancer writes | — |
 | `conference_talk_pitch` | Write a speaker submission for a conference, meetup, or podcast CFP — talk abstract, numbered takeaways, and speaker bio. Public speaking is the highest-authority marketing move a freelancer can make | — |
 | `reactivation_email` | Write a short, light-touch email to a warm prospect who went quiet — not needy, not pushy, under 100 words. Gives them a graceful re-entry point. The single nudge that often gets a reply | — |

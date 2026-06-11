@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.7" },
+  { name: "proposalcraft", version: "1.3.8" },
   { capabilities: { tools: {} } }
 );
 
@@ -1381,6 +1381,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "engagement_description", "final_date", "outstanding_work"],
+      },
+    },
+    {
+      name: "annual_review_email",
+      description:
+        "Write an end-of-year (or end-of-engagement-period) review email to a long-term client — what was delivered, the standout result, a reflection on the working relationship, and a forward-looking suggestion for the next period. Positions you as a strategic partner rather than a transactional vendor. Naturally opens the conversation for renewal or expansion without hard-selling. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          engagement_duration: {
+            type: "string",
+            description: "How long you have worked together (e.g. 'this past year', '12 months', 'the past two years')",
+          },
+          key_deliverables: {
+            type: "string",
+            description: "The main things you delivered over the period — comma-separated (e.g. 'monthly blog content, SEO audit, landing page rewrites, email sequences')",
+          },
+          highlight: {
+            type: "string",
+            description: "The single biggest win, result, or moment worth calling out (e.g. 'the homepage rewrite that cut bounce rate by 30%', 'launching the new product line on time and under budget', 'the campaign that generated 40 qualified leads in the first month')",
+          },
+          next_suggestion: {
+            type: "string",
+            description: "What you're suggesting for the next period — can be a renewal, an expansion, or simply an invitation to discuss (e.g. 'continue at the same scope', 'add quarterly strategy sessions', 'expand into email marketing', 'a quick call to map out next year')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "engagement_duration", "key_deliverables", "highlight", "next_suggestion"],
       },
     },
   ],
@@ -3546,6 +3581,52 @@ This isn't a reflection of the work or the relationship — I've valued working 
 Between now and ${finalDate}, I'll complete: ${outstandingWork}. Everything will be properly handed over so there are no loose ends.${referralLine}
 
 Thank you for the time we've worked together. I hope our paths cross again.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
+        },
+      ],
+    };
+  }
+
+  if (name === "annual_review_email") {
+    const clientName = String(args!.client_name);
+    const engagementDuration = String(args!.engagement_duration);
+    const highlight = String(args!.highlight);
+    const nextSuggestion = String(args!.next_suggestion);
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const deliverableList = String(args!.key_deliverables)
+      .split(/[,;]/)
+      .map((d) => d.trim())
+      .filter(Boolean)
+      .map((d) => `• ${d.charAt(0).toUpperCase() + d.slice(1)}`)
+      .join("\n");
+
+    const email = `Subject: A look back at ${engagementDuration} — and what's next
+
+Hi ${clientName},
+
+With ${engagementDuration} of working together now behind us, I wanted to take a moment to reflect on what we've built — and look ahead at what comes next.
+
+**What we delivered**
+${deliverableList}
+
+**The standout moment**
+${highlight}. That's the result I'm most proud of from this period — it's a good example of what consistent, focused work compounds into over time.
+
+**A word on the working relationship**
+I genuinely enjoy working with you. You give clear direction, trust the process, and act on the work — which makes a real difference to what we can achieve together. I don't take that for granted.
+
+**Looking ahead**
+My suggestion for the next period: ${nextSuggestion}. I think there's real momentum to build on, and I'd rather map this out proactively than wait for a renewal conversation to happen by accident.
+
+Worth a quick call to talk through what next year looks like?
 
 ${yourName}`;
 
