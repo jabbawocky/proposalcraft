@@ -109,7 +109,7 @@ I have a slot open [DATE] — does that work?
 
 ## What this server does
 
-ProposalCraft gives your AI client 38 tools for the full proposal workflow — from first brief to project delivery:
+ProposalCraft gives your AI client 39 tools for the full proposal workflow — from first brief to project delivery:
 
 | Tool | What it does | Counts against limit? |
 |---|---|:---:|
@@ -137,6 +137,7 @@ ProposalCraft gives your AI client 38 tools for the full proposal workflow — f
 | `meeting_recap_email` | Post-meeting recap email — what was covered, decisions confirmed, next steps. Works for discovery, kickoff, check-in, or review calls | — |
 | `project_closure_email` | Final delivery email — confirms deliverables, client handover items, support period, and plants a hook for future work | — |
 | `availability_announcement` | Warm email to a past client announcing you have capacity — re-activates the relationship without cold-pitching, under 120 words | — |
+| `subcontractor_brief` | Generate a clear project brief for a subcontractor or VA — their scope, deliverable format, deadline, rate, work-for-hire IP clause, and confidentiality note. Prevents scope bleed, missed handoffs, and ownership disputes | — |
 | `partnership_outreach` | Write a peer-to-peer outreach email to a complementary service provider proposing a referral partnership — warm, under 150 words, not transactional. One good referral partner can generate years of warm inbound | — |
 | `project_pause_email` | Write a professional email when a project needs to pause — documents completed work, outstanding items, and what restarts the engagement. Works for client-initiated, freelancer-initiated, or mutual pauses | — |
 | `upsell_email` | Write a warm, non-pushy email to a happy client suggesting additional services or a retainer after a successful project — highest-ROI sales email a freelancer can send | — |

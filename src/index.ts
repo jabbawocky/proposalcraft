@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.3" },
+  { name: "proposalcraft", version: "1.3.4" },
   { capabilities: { tools: {} } }
 );
 
@@ -1225,6 +1225,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["recipient_name", "recipient_service", "your_service", "shared_client_type"],
+      },
+    },
+    {
+      name: "subcontractor_brief",
+      description:
+        "Generate a clear project brief for a subcontractor or VA you're bringing in for part of a project. Covers their specific scope, deliverable format and deadline, what NOT to include, payment terms, work-for-hire IP clause, and confidentiality note. Getting this right upfront prevents the most common sub problems: scope bleed, missed handoffs, and ownership disputes. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          sub_name: {
+            type: "string",
+            description: "The subcontractor's first name",
+          },
+          their_role: {
+            type: "string",
+            description: "What they are being hired to do (e.g. 'frontend development', 'copywriting', 'graphic design', 'video editing', 'data entry')",
+          },
+          project_context: {
+            type: "string",
+            description: "Brief description of the parent project so they understand the context (e.g. 'website redesign for a 20-person accounting firm', 'brand identity for a new fintech startup')",
+          },
+          their_scope: {
+            type: "string",
+            description: "Exactly what they are responsible for — be specific. Use commas or semicolons to separate items.",
+          },
+          out_of_scope: {
+            type: "string",
+            description: "Optional: what is explicitly NOT their responsibility — prevents scope bleed (e.g. 'copywriting, hosting setup, client communication')",
+          },
+          deliverable_format: {
+            type: "string",
+            description: "How they should deliver the work (e.g. 'Figma file with organised layers', 'Google Doc with tracked changes off', 'MP4 at 1080p in a shared Drive folder')",
+          },
+          deadline: {
+            type: "string",
+            description: "When you need their work delivered (e.g. 'Friday 20 June by 5pm', '3 business days after kickoff')",
+          },
+          rate: {
+            type: "string",
+            description: "What you are paying them (e.g. '$800 flat', '$75/hour, estimated 8 hours', '$400 on delivery')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["sub_name", "their_role", "project_context", "their_scope", "deliverable_format", "deadline", "rate"],
       },
     },
   ],
@@ -3200,6 +3247,76 @@ ${yourName}`;
         {
           type: "text",
           text: email,
+        },
+      ],
+    };
+  }
+
+  if (name === "subcontractor_brief") {
+    const subName = String(args!.sub_name);
+    const theirRole = String(args!.their_role);
+    const projectContext = String(args!.project_context);
+    const theirScope = String(args!.their_scope)
+      .split(/[,;]/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => `• ${s.charAt(0).toUpperCase() + s.slice(1)}`)
+      .join("\n");
+    const outOfScope = args!.out_of_scope
+      ? String(args!.out_of_scope)
+          .split(/[,;]/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((s) => `• ${s.charAt(0).toUpperCase() + s.slice(1)}`)
+          .join("\n")
+      : null;
+    const deliverableFormat = String(args!.deliverable_format);
+    const deadline = String(args!.deadline);
+    const rate = String(args!.rate);
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const outOfScopeSection = outOfScope
+      ? `\n**Not in your scope (please don't include):**\n${outOfScope}\n`
+      : "";
+
+    const brief = `**Subcontractor Brief — ${theirRole}**
+Prepared for: ${subName}
+
+---
+
+**Project context**
+${projectContext}. You are being brought in for the ${theirRole} component only — I am handling the client relationship and overall project management.
+
+**Your scope**
+${theirScope}
+${outOfScopeSection}
+**Deliverable format**
+${deliverableFormat}
+
+**Deadline**
+${deadline}. If you hit a blocker or think this timeline is at risk, tell me immediately — don't absorb the delay silently.
+
+**Rate and payment**
+${rate}. Invoice to me directly after delivery. Payment within 5 business days of my accepting the work.
+
+**IP and ownership**
+All work you produce under this brief is work-for-hire and becomes my property on payment. You may list this project in your portfolio after the client has publicly launched, unless I ask you not to.
+
+**Confidentiality**
+The client details and project specifics shared in this brief are confidential. Please don't discuss this project with third parties or use client materials for anything outside this brief.
+
+**Questions and communication**
+Come to me with questions — do not contact the end client directly unless I specifically ask you to. If anything is unclear, ask before starting rather than making assumptions.
+
+Ready to go? Confirm you've read this and agree to the terms, and I'll send over access and assets.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: brief,
         },
       ],
     };
