@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.4" },
+  { name: "proposalcraft", version: "1.3.5" },
   { capabilities: { tools: {} } }
 );
 
@@ -1272,6 +1272,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["sub_name", "their_role", "project_context", "their_scope", "deliverable_format", "deadline", "rate"],
+      },
+    },
+    {
+      name: "reactivation_email",
+      description:
+        "Write a short, light-touch email to a prospect who went quiet mid-conversation — a warm lead that stalled before they committed. Not needy, not pushy. Gives them a graceful re-entry point and an easy out. Most freelancers let cold leads die or over-chase awkwardly — this hits the middle: a single, low-pressure nudge that often gets a reply. Under 100 words. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          prospect_name: {
+            type: "string",
+            description: "Their first name",
+          },
+          context: {
+            type: "string",
+            description: "What you were discussing (e.g. 'the website redesign you enquired about', 'the brand identity project we scoped out in March', 'the SEO audit proposal I sent over')",
+          },
+          time_elapsed: {
+            type: "string",
+            description: "How long ago the conversation went quiet (e.g. 'a few weeks', 'last month', 'a couple of months')",
+          },
+          value_add: {
+            type: "string",
+            description: "Optional: a new hook that makes the timing relevant — something that's changed since you last spoke (e.g. 'I just wrapped a similar project for a law firm and have some relevant results to share', 'I have a gap opening in July', 'we updated our process based on a few recent projects'). Leave blank if there's no natural hook.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["prospect_name", "context", "time_elapsed"],
       },
     },
   ],
@@ -3317,6 +3348,37 @@ ${yourName}`;
         {
           type: "text",
           text: brief,
+        },
+      ],
+    };
+  }
+
+  if (name === "reactivation_email") {
+    const prospectName = String(args!.prospect_name);
+    const context = String(args!.context);
+    const timeElapsed = String(args!.time_elapsed);
+    const valueAdd = args!.value_add ? String(args!.value_add) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const valueAddLine = valueAdd
+      ? `\n\nOne thing worth mentioning since we last spoke: ${valueAdd}.`
+      : "";
+
+    const email = `Subject: Still relevant? — ${context}
+
+Hi ${prospectName},
+
+It's been ${timeElapsed} since we talked about ${context}. I wanted to check in — not to push, just to see if the timing is different now.${valueAddLine}
+
+If it's still on the radar, happy to pick up where we left off. If the plans changed, no worries at all — just say the word and I'll stop following up.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
         },
       ],
     };
