@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.0" },
+  { name: "proposalcraft", version: "1.4.1" },
   { capabilities: { tools: {} } }
 );
 
@@ -1443,6 +1443,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "scope_warning_email",
+      description:
+        "Write a professional email flagging scope creep BEFORE issuing a change order — the early-warning conversation that prevents the surprise-invoice moment. Use this when you notice a client requesting something beyond the original brief; it surfaces the issue collaboratively so the client can confirm they want the extra work (triggering a change order) or clarify it's within scope. Different from change_order (which documents agreed extra work and its cost); this is the conversation that comes first. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project name or description",
+          },
+          original_scope: {
+            type: "string",
+            description: "What was agreed in the original brief or contract (e.g. 'five-page website with a contact form', 'three rounds of copy revisions')",
+          },
+          new_request: {
+            type: "string",
+            description: "What the client is now asking for that falls outside that scope (e.g. 'an e-commerce shop with product pages', 'a complete brand refresh alongside the copy')",
+          },
+          estimated_impact: {
+            type: "string",
+            description: "Optional: rough estimate of the time or cost impact — makes it concrete without being a formal invoice (e.g. 'roughly 6–8 additional hours', 'an additional £800–£1,200 depending on final spec'). Leave blank if you don't yet know.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "original_scope", "new_request"],
       },
     },
     {
@@ -3743,6 +3778,37 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "scope_warning_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const originalScope = String(args!.original_scope);
+    const newRequest = String(args!.new_request);
+    const estimatedImpact = args!.estimated_impact ? String(args!.estimated_impact) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const impactLine = estimatedImpact
+      ? `\n\nIf you'd like to include this, I can put together a formal change order. Based on what you've described, the additional work would likely run to ${estimatedImpact} — though I'd want to confirm the full spec before committing to a number.`
+      : `\n\nIf you'd like to include this, I can scope it out and send a change order before we proceed.`;
+
+    const email = `Subject: Quick check — ${projectName} scope
+
+Hi ${clientName},
+
+I wanted to flag something before we go any further.
+
+The original brief for ${projectName} covered ${originalScope}. What you're describing now — ${newRequest} — goes beyond that, and I want to make sure we're on the same page before I build it into the plan.${impactLine}
+
+Equally, if I've misread what you're asking for and it falls within the original brief, just let me know and I'll carry on.
+
+Either way, no problem — I just didn't want to find out at the end that we had different assumptions about what was included.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
