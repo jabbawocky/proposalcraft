@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.8" },
+  { name: "proposalcraft", version: "1.3.9" },
   { capabilities: { tools: {} } }
 );
 
@@ -1416,6 +1416,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "engagement_duration", "key_deliverables", "highlight", "next_suggestion"],
+      },
+    },
+    {
+      name: "feedback_request_email",
+      description:
+        "Write a short, genuine email asking a client for private feedback after a project — not a public testimonial, just honest input to help you improve. Clients who are asked for feedback feel valued; you get patterns you'd never discover otherwise. Distinct from testimonial_request (which asks for a public review for marketing purposes). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project you delivered (e.g. 'the website redesign', 'the brand identity project', 'the three-month content retainer')",
+          },
+          specific_aspect: {
+            type: "string",
+            description: "Optional: a specific part of the experience you're genuinely curious about — makes the request feel purposeful rather than generic (e.g. 'how the communication felt during the revision rounds', 'whether the timeline worked for your team', 'the clarity of my initial briefing process')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name"],
       },
     },
   ],
@@ -3627,6 +3654,42 @@ I genuinely enjoy working with you. You give clear direction, trust the process,
 My suggestion for the next period: ${nextSuggestion}. I think there's real momentum to build on, and I'd rather map this out proactively than wait for a renewal conversation to happen by accident.
 
 Worth a quick call to talk through what next year looks like?
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
+        },
+      ],
+    };
+  }
+
+  if (name === "feedback_request_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const specificAspect = args!.specific_aspect ? String(args!.specific_aspect) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const specificLine = specificAspect
+      ? `One thing I'm especially curious about: ${specificAspect}. But anything is useful — there are no wrong answers.`
+      : "There are no wrong answers — even a sentence or two is genuinely useful.";
+
+    const email = `Subject: A quick ask — how did we do?
+
+Hi ${clientName},
+
+Now that ${projectName} is wrapped up, I wanted to ask for something I find more useful than a testimonial: honest private feedback.
+
+Not for my website — just for me. I'm trying to understand what worked, what felt clunky, and where I could have made the experience better for you.
+
+${specificLine}
+
+A few sentences by reply is all I need. Completely private — I won't quote you anywhere without asking separately.
+
+Thanks for taking the time. It genuinely helps.
 
 ${yourName}`;
 
