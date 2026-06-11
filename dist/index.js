@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.6" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.7" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1421,6 +1421,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name"],
+            },
+        },
+        {
+            name: "project_delay_warning",
+            description: "Write a proactive email warning a client that a deadline is at risk — BEFORE you've actually missed it. The professional middle path between staying silent (and surprising them) and over-apologising (when you're not late yet). Demonstrates that you're on top of the project and gives the client time to adjust. Different from late_delivery_apology (which is sent after you've already missed the deadline). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project or deliverable at risk (e.g. 'the brand guidelines', 'the v2 API integration', 'the homepage redesign')",
+                    },
+                    original_deadline: {
+                        type: "string",
+                        description: "The agreed delivery date (e.g. 'Friday June 13', 'end of this week')",
+                    },
+                    expected_delay: {
+                        type: "string",
+                        description: "How much of a delay you're expecting (e.g. '2–3 days', 'about a week', 'until Monday')",
+                    },
+                    reason: {
+                        type: "string",
+                        description: "Optional: a brief, honest reason for the delay (e.g. 'a dependency on the client's API took longer than expected', 'a family situation came up'). Keep to one sentence. Omit if no clean reason.",
+                    },
+                    new_delivery_date: {
+                        type: "string",
+                        description: "Optional: the specific new date you're committing to (e.g. 'Tuesday June 17'). Include if you know it; omit if you need a day to confirm.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "original_deadline", "expected_delay"],
             },
         },
         {
@@ -3705,6 +3743,35 @@ Hi ${clientName},
 Just a heads-up: I'm out of the office from ${startDate} to ${endDate} and back on ${returnDate}.${projectLine}
 
 I won't be checking messages during this time, so anything you send will get a reply from ${returnDate} onwards.${urgentLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "project_delay_warning") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const originalDeadline = String(args.original_deadline);
+        const expectedDelay = String(args.expected_delay);
+        const reason = args.reason ? String(args.reason) : null;
+        const newDeliveryDate = args.new_delivery_date ? String(args.new_delivery_date) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const reasonLine = reason
+            ? ` The reason is ${reason}.`
+            : "";
+        const newDateLine = newDeliveryDate
+            ? `\n\nI'm committing to ${newDeliveryDate} as the new delivery date.`
+            : `\n\nI'll confirm a revised date by end of day today.`;
+        const email = `Subject: Heads-up on ${projectName} timing
+
+Hi ${clientName},
+
+I wanted to flag something now rather than wait until ${originalDeadline}: I'm running ${expectedDelay} behind on ${projectName} and that deadline is at risk.${reasonLine}${newDateLine}
+
+I wanted you to know as early as possible so you have time to adjust anything on your end if needed.
+
+Sorry for the disruption — I'll keep you updated and make sure the quality is where it needs to be.
 
 ${yourName}`;
         return {
