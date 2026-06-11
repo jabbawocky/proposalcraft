@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.1" },
+  { name: "proposalcraft", version: "1.4.2" },
   { capabilities: { tools: {} } }
 );
 
@@ -1443,6 +1443,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "working_hours_email",
+      description:
+        "Write a brief, professional email setting expectations about your working hours and response times with a client. Confident and matter-of-fact — frames boundaries as something that helps the client get better work, not as a personal restriction. Works for setting hours proactively at project start, responding after a late-night or weekend message, or resetting expectations mid-project. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          your_hours: {
+            type: "string",
+            description: "Your working hours (e.g. 'Monday–Friday, 9am–5pm GMT', 'weekdays, UK hours', 'Mon–Thu 8am–4pm EST')",
+          },
+          response_time: {
+            type: "string",
+            description: "Optional: typical response time within those hours (e.g. 'within 4 hours', 'by end of business day', 'within one business day'). Defaults to 'within one business day' if omitted.",
+          },
+          urgent_path: {
+            type: "string",
+            description: "Optional: how to reach you for genuine urgencies outside hours (e.g. 'mark your email URGENT in the subject line', 'text me directly'). If omitted, no urgent path is mentioned.",
+          },
+          trigger: {
+            type: "string",
+            enum: ["proactive", "after_late_message", "mid_project_reset"],
+            description: "Context for sending: 'proactive' (setting hours at project start — default), 'after_late_message' (responding to a message sent outside your hours), 'mid_project_reset' (resetting expectations mid-project when a pattern has developed)",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "your_hours"],
       },
     },
     {
@@ -3778,6 +3814,49 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "working_hours_email") {
+    const clientName = String(args!.client_name);
+    const yourHours = String(args!.your_hours);
+    const responseTime = args!.response_time ? String(args!.response_time) : "within one business day";
+    const urgentPath = args!.urgent_path ? String(args!.urgent_path) : null;
+    const trigger = args!.trigger ? String(args!.trigger) : "proactive";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const urgentLine = urgentPath
+      ? `\n\nIf something genuinely can't wait, ${urgentPath} and I'll respond as quickly as I can.`
+      : "";
+
+    let opening: string;
+    let framing: string;
+
+    if (trigger === "after_late_message") {
+      opening = `Thanks for your message. I'll pick it up properly during my working hours — ${yourHours} — and reply ${responseTime}.`;
+      framing = `I work fixed hours so I can give your project proper focused attention rather than fragmented responses. You'll always hear back ${responseTime} during the working week.`;
+    } else if (trigger === "mid_project_reset") {
+      opening = `I wanted to take a moment to clarify how I work, since I think it'll make the rest of the project smoother for both of us.`;
+      framing = `My working hours are ${yourHours}. I respond to messages ${responseTime} within those hours. Outside of that, I'm offline — it means the time I spend on your project is focused and undivided.`;
+    } else {
+      opening = `Before we get started, a quick note on how I work.`;
+      framing = `My working hours are ${yourHours}, and I reply to messages ${responseTime}. Keeping consistent hours means the time I spend on your project is focused — you get my full attention, not a fragmented response between other things.`;
+    }
+
+    const email = `Subject: How I work — a quick note
+
+Hi ${clientName},
+
+${opening}
+
+${framing}${urgentLine}
+
+If you ever have questions or updates outside those hours, send them over — I'll pick them up at the start of the next working day.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
