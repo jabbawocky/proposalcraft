@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.5" },
+  { name: "proposalcraft", version: "1.3.6" },
   { capabilities: { tools: {} } }
 );
 
@@ -1303,6 +1303,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["prospect_name", "context", "time_elapsed"],
+      },
+    },
+    {
+      name: "conference_talk_pitch",
+      description:
+        "Write a speaker submission for a conference, meetup, or podcast — a talk abstract, key takeaways, and speaker bio formatted for a CFP (Call for Proposals). Public speaking is the highest-authority marketing move a freelancer can make. Most people don't do it because the CFP process feels opaque. This generates a submission-ready pitch. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          talk_title: {
+            type: "string",
+            description: "The proposed title of your talk (e.g. 'How I Stopped Writing Proposals and Started Closing Clients', 'The Freelancer's Guide to Saying No Profitably')",
+          },
+          audience: {
+            type: "string",
+            description: "Who will be in the room (e.g. 'freelancers and independent consultants', 'senior marketers at B2B SaaS companies', 'creative professionals and agency owners')",
+          },
+          problem_solved: {
+            type: "string",
+            description: "The core problem or frustration your talk addresses (e.g. 'most freelancers lose deals not on price but on how they present their value')",
+          },
+          key_takeaways: {
+            type: "string",
+            description: "2–4 specific things attendees will walk away with, comma-separated (e.g. 'a proposal structure that closes faster, how to handle the budget question, three phrases that stop scope creep')",
+          },
+          your_expertise: {
+            type: "string",
+            description: "Why you are qualified to give this talk — be specific (e.g. '8 years of freelance web design, 120+ client projects, wrote the ProposalCraft MCP server used by 500+ consultants')",
+          },
+          talk_format: {
+            type: "string",
+            description: "Optional: length and format (e.g. '30-minute talk + Q&A', '45-minute workshop', '20-minute lightning talk'). Defaults to a standard 30-minute talk if omitted.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the bio and sign-off",
+          },
+        },
+        required: ["talk_title", "audience", "problem_solved", "key_takeaways", "your_expertise"],
       },
     },
   ],
@@ -3379,6 +3418,60 @@ ${yourName}`;
         {
           type: "text",
           text: email,
+        },
+      ],
+    };
+  }
+
+  if (name === "conference_talk_pitch") {
+    const talkTitle = String(args!.talk_title);
+    const audience = String(args!.audience);
+    const problemSolved = String(args!.problem_solved);
+    const keyTakeaways = String(args!.key_takeaways)
+      .split(/[,;]/)
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t, i) => `${i + 1}. ${t.charAt(0).toUpperCase() + t.slice(1)}`)
+      .join("\n");
+    const yourExpertise = String(args!.your_expertise);
+    const talkFormat = args!.talk_format ? String(args!.talk_format) : "30-minute talk";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const pitch = `**Speaker Submission — ${talkTitle}**
+
+---
+
+**Talk title**
+${talkTitle}
+
+**Format**
+${talkFormat}
+
+**Abstract** *(~150 words)*
+${audience.charAt(0).toUpperCase() + audience.slice(1)} face a specific problem: ${problemSolved}. Most people in this situation rely on guesswork, generic advice, or templates that were never built for the way they actually work.
+
+This talk cuts through that. Drawing on ${yourExpertise}, I'll walk through a practical, field-tested framework that you can apply immediately — not theory, but the exact approach I've used and refined across real client engagements.
+
+By the end of the session, the audience will have a clear, actionable playbook — not just inspiration.
+
+**What attendees will take away**
+${keyTakeaways}
+
+**Why this talk, why this speaker**
+${yourExpertise}. I've lived the problem this talk addresses and built a working solution — the material comes from practice, not research. The audience will leave with things they can use the same week.
+
+**Speaker bio** *(short version)*
+${yourName} is a ${yourExpertise.split(",")[0].trim()}. ${yourExpertise}. [Website / portfolio URL]
+
+---
+
+*Happy to provide a longer abstract, speaker headshot, or video sample on request.*`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: pitch,
         },
       ],
     };
