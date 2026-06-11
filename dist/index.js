@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.3.9" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.0" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1353,6 +1353,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name"],
+            },
+        },
+        {
+            name: "deposit_request_email",
+            description: "Write the email requesting a project deposit before work begins. Deposits are standard professional practice — this email is confident and clear, not apologetic. Fills the gap between signing the contract/SOW and starting work. Works for any deposit amount or percentage. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project name or description (e.g. 'the website redesign', 'your brand identity project')",
+                    },
+                    deposit_amount: {
+                        type: "string",
+                        description: "The deposit amount or percentage (e.g. '$2,500', '50%', '$1,500 (50% of the total)')",
+                    },
+                    total_amount: {
+                        type: "string",
+                        description: "Optional: the full project cost (e.g. '$5,000') — included when helpful for context",
+                    },
+                    payment_link: {
+                        type: "string",
+                        description: "Optional: a payment link URL (Stripe, PayPal, Wise, etc.) — makes it one-click for the client",
+                    },
+                    payment_method: {
+                        type: "string",
+                        description: "Optional: preferred payment method if no link (e.g. 'bank transfer', 'Wise', 'PayPal'). Include account details separately.",
+                    },
+                    due_date: {
+                        type: "string",
+                        description: "Optional: when you need the deposit by (e.g. 'by Friday', 'before we kick off on Monday', 'within 5 business days')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "deposit_amount"],
             },
         },
     ],
@@ -3422,6 +3464,51 @@ ${specificLine}
 A few sentences by reply is all I need. Completely private — I won't quote you anywhere without asking separately.
 
 Thanks for taking the time. It genuinely helps.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: email,
+                },
+            ],
+        };
+    }
+    if (name === "deposit_request_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const depositAmount = String(args.deposit_amount);
+        const totalAmount = args.total_amount ? String(args.total_amount) : null;
+        const paymentLink = args.payment_link ? String(args.payment_link) : null;
+        const paymentMethod = args.payment_method ? String(args.payment_method) : null;
+        const dueDate = args.due_date ? String(args.due_date) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const totalLine = totalAmount
+            ? ` (${depositAmount} of the ${totalAmount} total)`
+            : ` (${depositAmount})`;
+        const dueLine = dueDate
+            ? ` by ${dueDate}`
+            : "";
+        let paymentSection;
+        if (paymentLink) {
+            paymentSection = `You can pay via the link below — it takes about two minutes:\n\n${paymentLink}\n\nOnce that's through, I'll send a confirmation and we'll be good to go.`;
+        }
+        else if (paymentMethod) {
+            paymentSection = `Payment is by ${paymentMethod}${dueLine}. I'll send a formal invoice shortly with the details.`;
+        }
+        else {
+            paymentSection = `I'll send over a formal invoice${dueLine} with payment details.`;
+        }
+        const email = `Subject: ${projectName} — deposit to kick off
+
+Hi ${clientName},
+
+Great to have everything confirmed. To get started, I'll need the deposit${totalLine}${dueDate && !paymentLink ? "" : dueLine ? ` ${dueLine}` : ""}.
+
+${paymentSection}
+
+Work begins as soon as the deposit is received — I have ${projectName} blocked in my schedule and I'm ready to go.
 
 ${yourName}`;
         return {
