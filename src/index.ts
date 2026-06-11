@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.3.6" },
+  { name: "proposalcraft", version: "1.3.7" },
   { capabilities: { tools: {} } }
 );
 
@@ -1342,6 +1342,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["talk_title", "audience", "problem_solved", "key_takeaways", "your_expertise"],
+      },
+    },
+    {
+      name: "client_offboarding_email",
+      description:
+        "Write a gracious, professional email ending an ongoing client relationship — a retainer, a long-term engagement, or a repeat working arrangement. Distinct from project_closure_email (a project that completed naturally) — this is for when you are choosing to end the relationship. The hardest email a freelancer has to write. Gets the tone right: clear and firm without blame, warm without being dishonest, and structured to preserve the relationship for future referrals. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          engagement_description: {
+            type: "string",
+            description: "What you are ending (e.g. 'our monthly retainer', 'our ongoing content partnership', 'our working relationship')",
+          },
+          final_date: {
+            type: "string",
+            description: "When the engagement ends (e.g. 'June 30', 'end of this month', 'in 30 days')",
+          },
+          outstanding_work: {
+            type: "string",
+            description: "What you will complete before the end date (e.g. 'the June content deliverables', 'the current sprint', 'nothing outstanding — all work is up to date')",
+          },
+          reason: {
+            type: "string",
+            description: "Optional: a brief, honest reason — keep it high-level (e.g. 'I am restructuring my practice to focus on a narrower service area', 'my capacity is changing', 'I need to reduce my client load'). Omit if there is no clean explanation.",
+          },
+          offer_referral: {
+            type: "boolean",
+            description: "Optional: set to true to include an offer to recommend another provider. Default: false.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "engagement_description", "final_date", "outstanding_work"],
       },
     },
   ],
@@ -3472,6 +3511,49 @@ ${yourName} is a ${yourExpertise.split(",")[0].trim()}. ${yourExpertise}. [Websi
         {
           type: "text",
           text: pitch,
+        },
+      ],
+    };
+  }
+
+  if (name === "client_offboarding_email") {
+    const clientName = String(args!.client_name);
+    const engagementDescription = String(args!.engagement_description);
+    const finalDate = String(args!.final_date);
+    const outstandingWork = String(args!.outstanding_work);
+    const reason = args!.reason ? String(args!.reason) : null;
+    const offerReferral = args!.offer_referral === true;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const reasonLine = reason
+      ? `The reason: ${reason}.`
+      : `I don't have a single clean reason to give you — it's the right move for where my practice is heading.`;
+
+    const referralLine = offerReferral
+      ? `\n\nIf it would be useful, I'm happy to recommend someone who I think would be a good fit for what you need going forward. Just say the word.`
+      : "";
+
+    const email = `Subject: A change to our arrangement
+
+Hi ${clientName},
+
+I'm writing to let you know that I'll be ending ${engagementDescription}, with ${finalDate} as my final date.
+
+${reasonLine}
+
+This isn't a reflection of the work or the relationship — I've valued working with you and I mean that. I wanted to give you clear notice so you have time to make alternative arrangements without being caught short.
+
+Between now and ${finalDate}, I'll complete: ${outstandingWork}. Everything will be properly handed over so there are no loose ends.${referralLine}
+
+Thank you for the time we've worked together. I hope our paths cross again.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: email,
         },
       ],
     };
