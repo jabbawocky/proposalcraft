@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.5" },
+  { name: "proposalcraft", version: "1.4.6" },
   { capabilities: { tools: {} } }
 );
 
@@ -1443,6 +1443,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "out_of_office_email",
+      description:
+        "Write a professional heads-up email to clients before you go on leave. Confident and matter-of-fact — doesn't apologize for taking time off. Sets clear expectations on dates, response time, and what (if anything) to do for urgent matters. Different from an auto-reply: this is the proactive note you send to active clients a few days before you leave. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          start_date: {
+            type: "string",
+            description: "First day you're away (e.g. 'Monday June 16', 'June 16')",
+          },
+          end_date: {
+            type: "string",
+            description: "Last day you're away (e.g. 'Friday June 27', 'June 27')",
+          },
+          return_date: {
+            type: "string",
+            description: "First day back — when they can expect a response (e.g. 'Monday June 30', 'June 30')",
+          },
+          project_status: {
+            type: "string",
+            description: "Optional: note about ongoing work — reassures client everything is in hand (e.g. 'the first draft will be with you before I leave', 'your project is on track and nothing is scheduled during this period', 'I'll complete the homepage before I go')",
+          },
+          urgent_contact: {
+            type: "string",
+            description: "Optional: who or how to reach someone for genuine urgencies (e.g. 'for anything genuinely urgent, email my colleague at colleague@example.com', 'I'll have limited access and will check messages once a week')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "start_date", "end_date", "return_date"],
       },
     },
     {
@@ -3919,6 +3958,38 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "out_of_office_email") {
+    const clientName = String(args!.client_name);
+    const startDate = String(args!.start_date);
+    const endDate = String(args!.end_date);
+    const returnDate = String(args!.return_date);
+    const projectStatus = args!.project_status ? String(args!.project_status) : null;
+    const urgentContact = args!.urgent_contact ? String(args!.urgent_contact) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectLine = projectStatus
+      ? `\n\n${projectStatus}.`
+      : "";
+
+    const urgentLine = urgentContact
+      ? `\n\nIf something genuinely can't wait: ${urgentContact}.`
+      : "";
+
+    const email = `Subject: Out of office ${startDate}–${endDate}
+
+Hi ${clientName},
+
+Just a heads-up: I'm out of the office from ${startDate} to ${endDate} and back on ${returnDate}.${projectLine}
+
+I won't be checking messages during this time, so anything you send will get a reply from ${returnDate} onwards.${urgentLine}
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
