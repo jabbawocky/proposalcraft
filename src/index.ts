@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.2" },
+  { name: "proposalcraft", version: "1.4.3" },
   { capabilities: { tools: {} } }
 );
 
@@ -1443,6 +1443,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "project_restart_email",
+      description:
+        "Write a professional email restarting a paused project. Pairs with project_pause_email to complete the pause/resume lifecycle. Acknowledges the gap, confirms readiness, states the first concrete action, and addresses any timeline adjustments. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project name or description",
+          },
+          restart_reason: {
+            type: "string",
+            description: "Optional: what cleared the way to restart (e.g. 'the budget has been approved', 'I've wrapped the other project', 'the feedback from your stakeholders is in'). Keep it brief — one clause.",
+          },
+          first_action: {
+            type: "string",
+            description: "The first concrete thing you'll do to get moving again (e.g. 'send over a revised timeline by Wednesday', 'pick up from the homepage copy', 'schedule a quick catch-up call to re-align on priorities')",
+          },
+          timeline_note: {
+            type: "string",
+            description: "Optional: any adjustment to the original delivery timeline (e.g. 'the original deadline of July 15 still holds', 'I'll need to push the delivery by one week to July 22 to account for the pause')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "first_action"],
       },
     },
     {
@@ -3814,6 +3849,41 @@ ${yourName}`;
           text: email,
         },
       ],
+    };
+  }
+
+  if (name === "project_restart_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const restartReason = args!.restart_reason ? String(args!.restart_reason) : null;
+    const firstAction = String(args!.first_action);
+    const timelineNote = args!.timeline_note ? String(args!.timeline_note) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const reasonClause = restartReason
+      ? ` — ${restartReason}`
+      : "";
+
+    const timelineLine = timelineNote
+      ? `\n\nOn timing: ${timelineNote}.`
+      : "";
+
+    const email = `Subject: ${projectName} — picking back up
+
+Hi ${clientName},
+
+Good news: we're good to go on ${projectName}${reasonClause}.
+
+To get things moving again, I'll ${firstAction}.${timelineLine}
+
+If anything has changed on your end since we paused — priorities, requirements, key contacts — flag it now and I'll factor it in before diving back in.
+
+Looking forward to getting this across the line.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
     };
   }
 
