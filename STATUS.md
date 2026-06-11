@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 11, 2026 (tick 136)
+# 💼 Money Machine — Mission Status: June 12, 2026 (tick 137)
 
 **Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **Two new distribution PRs** (tick 137) — (1) `agenticdevops/awesome-devops-mcp` PR #32 https://github.com/agenticdevops/awesome-devops-mcp/pull/32 — StatusCraft added to Monitoring & Observability section (DevOps MCP list, active maintainer, PRs welcome badge). (2) Updated `win4r/Awesome-Claude-MCP-Servers` PR #63 https://github.com/win4r/Awesome-Claude-MCP-Servers/pull/63 — corrected StatusCraft service count from 125 → 141. Resolved 1 duplicate DMARC action. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.7: project_delay_warning tool** (tick 136) — 52nd tool: proactive email when a deadline is at risk, sent BEFORE you've missed it. Distinct from late_delivery_apology (after the fact) — this is the early flag that gives the client time to adjust and shows you're on top of things. Inputs: client_name, project_name, original_deadline, expected_delay, optional reason, optional new_delivery_date. Two output paths: commits to a specific new date if provided, offers to confirm by end of day if not. Closes the professional gap between "things are on track" and "I already missed it" that most freelancers handle badly. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.7. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.6: out_of_office_email tool** (tick 135) — 51st tool: proactive heads-up email to clients before you go on leave. Confident, not apologetic — sets clear start/end dates, response time, and optionally reassures them about ongoing work status. Different from an auto-reply (reactive, system-generated): this is the personal note you send to active clients a few days before you leave so there's no anxiety on their end. Optional urgentContact param adds an escalation route for genuine emergencies; optional projectStatus param confirms where ongoing work stands. Closes with "anything you send will get a reply from [return date] onwards" — clear expectation, no ambiguity. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.6. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.5: recommendation_request_email tool** (tick 134) — **50th tool milestone.** Asks a happy client for a LinkedIn recommendation — the strongest social proof signal available to a freelancer. Different from testimonial_request (short quote for your website): a LinkedIn recommendation lives permanently on the client's profile, is attributed, and carries the weight of a genuine endorsement. Optional standout_result param gives the client a memory prompt so they don't start from scratch; optional focus_suggestion steers them toward the aspect you most want highlighted while leaving them free to write what's true. Closes with a graceful no-pressure exit ("completely fine if it's not something you're up for — no pressure either way"). Completes the social proof trilogy: testimonial_request → referral_request → recommendation_request_email. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.5. Stars: 0. All Mat gates unchanged.
@@ -214,6 +215,9 @@
 | win4r/Awesome-Claude-MCP-Servers | #55 |
 | YuzeHao2023/Awesome-MCP-Servers | #302 |
 | toolsdk-ai/toolsdk-mcp-registry | #342 |
+| rohitg00/awesome-devops-mcp-servers | #249 |
+| agenticdevops/awesome-devops-mcp | #32 ✅ NEW |
+| win4r/Awesome-Claude-MCP-Servers | #63 ✅ UPDATED (141 services) |
 
 **Metrics:**
 - Revenue: $0 — gate pending MCPize URL
@@ -233,4 +237,4 @@
 8. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-24 tools shipped. All web distribution channels remain bot-blocked from worker. Next tick: ship v1.2.0 (new tool TBD) to keep the repo active on launch day. All distribution requires Mat's direct action today.
+53 tools shipped at v1.4.7. Distribution: 13 PRs open across awesome-lists, 1 merged (TensorBlock). All web channels remain bot-blocked. Next tick: search for more MCP/Claude awesome-lists to PR; or add ProposalCraft to `bh-rat/awesome-mcp-enterprise`. Revenue gate still requires Mat.
