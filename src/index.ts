@@ -1743,6 +1743,54 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "revision_response_email",
+      description:
+        "Write the email responding to a client's revision request. Three modes: 'in_scope' (happy to revise — confirms what you'll change and when), 'exceeds_rounds' (they've used their included revision rounds — explains what's included and what additional rounds cost), 'out_of_scope' (the request is a direction change that requires a change order, not a revision). Distinct from scope_change_email (formal change order) and scope_warning_email (early creep flag) — this is the specific, policy-in-action response to a concrete revision ask. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          revision_type: {
+            type: "string",
+            enum: ["in_scope", "exceeds_rounds", "out_of_scope"],
+            description: "'in_scope': revision is within agreed rounds — you'll do it; 'exceeds_rounds': they've used up their included rounds — additional work costs more; 'out_of_scope': it's a direction change, not a revision — needs a change order",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project name (e.g. 'the brand identity', 'the website redesign')",
+          },
+          revision_request: {
+            type: "string",
+            description: "Optional: brief description of what the client wants changed (e.g. 'swap the colour palette to navy and gold', 'rewrite the homepage copy in a more casual tone'). Makes the response feel specific rather than templated.",
+          },
+          rounds_included: {
+            type: "number",
+            description: "Optional: number of revision rounds included in the original agreement (e.g. 2). Used in 'exceeds_rounds' mode.",
+          },
+          rounds_used: {
+            type: "number",
+            description: "Optional: how many rounds have already been used (e.g. 2). Used in 'exceeds_rounds' mode.",
+          },
+          estimated_cost: {
+            type: "string",
+            description: "Optional: cost for an additional revision round (e.g. '$300', '2 hours at my hourly rate'). Used in 'exceeds_rounds' mode.",
+          },
+          turnaround: {
+            type: "string",
+            description: "Optional: when you'll have the revision back (e.g. 'by Thursday', 'within 2 business days'). Used in 'in_scope' mode.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "revision_type"],
+      },
+    },
+    {
       name: "payment_received_email",
       description:
         "Write a short, professional email acknowledging receipt of a client payment. Most freelancers say nothing when they get paid — this brief confirmation closes the loop, gives the client a paper trail, and signals what happens next. Under 80 words. Does not count against your monthly draft limit.",
@@ -4705,6 +4753,64 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "revision_response_email") {
+    const clientName = String(args!.client_name);
+    const revisionType = String(args!.revision_type);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const revisionRequest = args!.revision_request ? String(args!.revision_request) : null;
+    const roundsIncluded = args!.rounds_included ? Number(args!.rounds_included) : null;
+    const roundsUsed = args!.rounds_used ? Number(args!.rounds_used) : null;
+    const estimatedCost = args!.estimated_cost ? String(args!.estimated_cost) : null;
+    const turnaround = args!.turnaround ? String(args!.turnaround) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectLine = projectName ? ` on ${projectName}` : "";
+    const requestLine = revisionRequest ? `\n\nFor the change you mentioned — ${revisionRequest} — ` : "\n\n";
+
+    let subject: string;
+    let body: string;
+
+    if (revisionType === "in_scope") {
+      subject = `Re: Revision${projectName ? ` — ${projectName}` : ""}`;
+      const turnaroundLine = turnaround ? ` I'll have it back to you ${turnaround}.` : " I'll get this back to you shortly.";
+      body = `Thanks for the feedback${projectLine}.${requestLine.trimEnd()} I'll get that updated for you.${turnaroundLine}
+
+Let me know if anything else needs adjusting once you've seen the new version.`;
+    } else if (revisionType === "exceeds_rounds") {
+      subject = `Revision rounds — ${projectName || "your project"}`;
+      const roundsLine = roundsIncluded && roundsUsed
+        ? `The original agreement included ${roundsIncluded} round${roundsIncluded === 1 ? "" : "s"} of revisions, and we've now completed ${roundsUsed}.`
+        : "We've now completed all the revision rounds included in the original agreement.";
+      const costLine = estimatedCost
+        ? ` An additional round would be ${estimatedCost}.`
+        : " I'm happy to quote for an additional round if you'd like to continue.";
+      body = `Thanks for the notes${projectLine}.
+
+${roundsLine} Any further changes fall outside what's included.${costLine}
+
+Let me know how you'd like to proceed — happy to continue if the budget works.`;
+    } else {
+      subject = `Re: Revision request${projectName ? ` — ${projectName}` : ""}`;
+      body = `Thanks for sending this through${projectLine}.
+
+I want to make sure we handle this correctly — what you're describing${revisionRequest ? ` ("${revisionRequest}")` : ""} is a change in direction rather than a revision to the agreed brief. That means it sits outside the revision rounds and would need a change order to proceed.
+
+I'll put together the scope and cost for your approval before we start — that way there are no surprises on either side. Does that work for you?`;
+    }
+
+    const email = `Subject: ${subject}
+
+Hi ${clientName},
+
+${body}
 
 ${yourName}`;
 
