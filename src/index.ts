@@ -1743,6 +1743,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "portfolio_request_email",
+      description:
+        "Write the email asking a past client for permission to feature their project in your portfolio, website, or case studies. Specifies exactly what you want to show, where it will appear, and offers them a preview before it goes live. Gives an easy out if they'd rather not — or offers to anonymise the work instead. Distinct from testimonial_request (asking for a quote) and case_study_outline (writing the case study itself) — this is the consent ask that must happen first. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project you want to feature",
+          },
+          portfolio_location: {
+            type: "string",
+            description:
+              "Where the work will appear (e.g. 'my portfolio website', 'a case study on my site', 'proposals to prospective clients')",
+          },
+          specific_work: {
+            type: "string",
+            description:
+              "Optional: the specific piece you want to show (e.g. 'the homepage design', 'the brand identity system', 'before-and-after screenshots'). Makes the ask concrete and limits ambiguity.",
+          },
+          offer_preview: {
+            type: "boolean",
+            description:
+              "Optional: if true (default), offers to share a draft of the portfolio entry before publishing so the client can approve the copy.",
+          },
+          offer_anonymise: {
+            type: "boolean",
+            description:
+              "Optional: if true, offers to remove the client's name/branding if they prefer privacy while still allowing the work to be shown.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "portfolio_location"],
+      },
+    },
+    {
       name: "contract_sent_email",
       description:
         "Write the short covering email sent when sharing a contract or agreement for a client to sign. Tells the client what they're signing, where to find it, when you need it back, and what happens next. Distinct from contract_template (the contract document itself) — this is the email that wraps around it. Does not count against your monthly draft limit.",
@@ -5010,6 +5053,61 @@ I'm not raising this to be difficult — I just want us to be on the same page s
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
 
 ${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "portfolio_request_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const portfolioLocation = String(args!.portfolio_location);
+    const specificWork = args!.specific_work
+      ? String(args!.specific_work)
+      : null;
+    const offerPreview =
+      args!.offer_preview !== false;
+    const offerAnonymise = args!.offer_anonymise === true;
+    const yourName = args!.your_name ? String(args!.your_name) : null;
+
+    const workRef = specificWork
+      ? `${specificWork} from ${projectName}`
+      : `the work we did on ${projectName}`;
+
+    const locationLine = `I'd love to feature it in ${portfolioLocation} — it's a great example of the kind of work I do.`;
+
+    const previewLine = offerPreview
+      ? `I'd share a draft with you before anything goes live so you can review the copy and approve it.`
+      : ``;
+
+    const anonymiseClause = offerAnonymise
+      ? ` If you'd prefer I keep your company name out of it, I'm happy to show the work without attribution — just let me know.`
+      : ``;
+
+    const exitLine = `Completely fine if you'd rather it stayed private — just say the word.`;
+
+    const signOff = yourName ? yourName : "Best";
+
+    const body = [
+      `I've been putting together my portfolio and wanted to ask if you'd be happy for me to include ${workRef}.`,
+      ``,
+      locationLine,
+      ``,
+      previewLine ? previewLine + anonymiseClause : anonymiseClause.trim(),
+      ``,
+      exitLine,
+    ]
+      .filter((line, i, arr) => !(line === "" && arr[i - 1] === ""))
+      .join("\n");
+
+    const email = `Subject: Quick question about featuring ${projectName}
+
+Hi ${clientName},
+
+${body.trim()}
+
+${signOff}`;
 
     return {
       content: [{ type: "text", text: email }],
