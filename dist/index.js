@@ -1645,6 +1645,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "milestone_delivered_email",
+            description: "Write the email sent when delivering a project milestone or phase — not the final delivery, but a defined stage with its own deliverables and sign-off. Tells the client exactly what's included, asks for their review and sign-off by a specific date, and states what's next. Distinct from project_completion_email (final handover) and project_status_update (progress report during execution). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    milestone_name: {
+                        type: "string",
+                        description: "Name or number of this milestone (e.g. 'Phase 1', 'Design Mockups', 'Sprint 2')",
+                    },
+                    deliverables: {
+                        type: "string",
+                        description: "Comma-separated list of what is being delivered in this milestone (e.g. 'homepage design, about page, contact form mockup')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the overall project",
+                    },
+                    feedback_deadline: {
+                        type: "string",
+                        description: "Optional: date by which you need the client's review or sign-off (e.g. 'Friday', 'June 20')",
+                    },
+                    next_milestone: {
+                        type: "string",
+                        description: "Optional: brief description of what comes next after sign-off (e.g. 'development build', 'Phase 2: backend integration')",
+                    },
+                    next_milestone_date: {
+                        type: "string",
+                        description: "Optional: when the next milestone is expected to be delivered",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "milestone_name", "deliverables"],
+            },
+        },
+        {
             name: "win_back_email",
             description: "Write a short, warm re-engagement email to a past client you haven't worked with in a while (6+ months). Distinct from availability_announcement (broadcast to all past clients) and reactivation_email (cold prospect from a mid-pitch conversation) — this is a targeted, personal one-to-one note to someone you've already delivered results for. The gap is acknowledged briefly and lightly, not apologised for. Closes with a soft open-ended ask ('are you working on anything at the moment?'), not a pitch. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4582,6 +4624,58 @@ I'm not raising this to be difficult — I just want us to be on the same page s
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
 
 ${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "milestone_delivered_email") {
+        const clientName = String(args.client_name);
+        const milestoneName = String(args.milestone_name);
+        const rawDeliverables = String(args.deliverables);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const feedbackDeadline = args.feedback_deadline
+            ? String(args.feedback_deadline)
+            : null;
+        const nextMilestone = args.next_milestone
+            ? String(args.next_milestone)
+            : null;
+        const nextMilestoneDate = args.next_milestone_date
+            ? String(args.next_milestone_date)
+            : null;
+        const yourName = args.your_name ? String(args.your_name) : null;
+        const deliverableList = rawDeliverables
+            .split(/,\s*/)
+            .map((d) => `- ${d.trim()}`)
+            .join("\n");
+        const subjectProject = projectName
+            ? `${milestoneName} delivered — ${projectName}`
+            : `${milestoneName} delivered`;
+        const openingProject = projectName
+            ? `I'm pleased to share the deliverables for ${milestoneName} of ${projectName}.`
+            : `I'm pleased to share the deliverables for ${milestoneName}.`;
+        const reviewLine = feedbackDeadline
+            ? `Please review and let me know if you have any feedback or changes by ${feedbackDeadline} so we can keep the project on schedule.`
+            : `Please review and let me know if you have any feedback or if you're happy to sign off.`;
+        let nextLine = "";
+        if (nextMilestone && nextMilestoneDate) {
+            nextLine = `\n\nOnce you've signed off, I'll move into ${nextMilestone}. I'm targeting ${nextMilestoneDate} for that delivery.`;
+        }
+        else if (nextMilestone) {
+            nextLine = `\n\nOnce you've signed off, I'll move into ${nextMilestone}.`;
+        }
+        const signOff = yourName ? yourName : "Best";
+        const email = `Subject: ${subjectProject}
+
+Hi ${clientName},
+
+${openingProject}
+
+**${milestoneName} deliverables:**
+${deliverableList}
+
+${reviewLine}${nextLine}
+
+${signOff}`;
         return {
             content: [{ type: "text", text: email }],
         };
