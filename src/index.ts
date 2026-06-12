@@ -1743,6 +1743,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "scope_change_email",
+      description:
+        "Write a professional email to a client when work has grown beyond the original scope — new requests, added features, extra rounds of revisions. Raises the issue without accusation, outlines the impact, and presents options (change order, revised quote, or narrowing scope). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "The project name or description (e.g. 'the website redesign', 'your brand identity project')",
+          },
+          scope_change: {
+            type: "string",
+            description: "What has been added or changed beyond the original agreement (e.g. 'adding an e-commerce section to the website', 'three extra rounds of logo revisions', 'building a mobile app version')",
+          },
+          original_scope: {
+            type: "string",
+            description: "Optional: what was originally agreed (e.g. 'a 5-page brochure site', 'two logo concepts with one round of revisions'). Helps contrast clearly.",
+          },
+          time_impact: {
+            type: "string",
+            description: "Optional: how much extra time this adds (e.g. '2–3 extra days', 'roughly a week of additional work')",
+          },
+          cost_impact: {
+            type: "string",
+            description: "Optional: the additional cost or rate adjustment (e.g. '$800 at my standard day rate', 'an additional $1,200')",
+          },
+          proposed_options: {
+            type: "string",
+            description: "Optional: the options you are offering the client (e.g. 'proceed with a change order, or scale the project back to the original scope'). If omitted, a standard two-option proposal is used.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "scope_change"],
+      },
+    },
+    {
       name: "client_waiting_email",
       description:
         "Write a professional email to a client who hasn't delivered what they promised — assets, feedback, sign-off, content — and the project is blocked waiting on them. Keeps the tone factual and non-accusatory: the goal is to get what you need, not to assign blame. Does not count against your monthly draft limit.",
@@ -4373,6 +4416,49 @@ ${yourName}`;
 Hi ${clientName},
 
 ${waitingLine}${impactLine}${deadlineLine}
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "scope_change_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const scopeChange = String(args!.scope_change);
+    const originalScope = args!.original_scope ? String(args!.original_scope) : null;
+    const timeImpact = args!.time_impact ? String(args!.time_impact) : null;
+    const costImpact = args!.cost_impact ? String(args!.cost_impact) : null;
+    const proposedOptions = args!.proposed_options ? String(args!.proposed_options) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const contextLine = originalScope
+      ? `The original scope was ${originalScope}. Since then, the project has grown to include ${scopeChange}.`
+      : `When we kicked off the project, the scope didn't include ${scopeChange} — but that's where things are heading.`;
+
+    const impactLines: string[] = [];
+    if (timeImpact) impactLines.push(`Time: ${timeImpact} of additional work`);
+    if (costImpact) impactLines.push(`Cost: ${costImpact}`);
+    const impactBlock =
+      impactLines.length > 0
+        ? `\n\nHere's what that means in practice:\n${impactLines.map((l) => `  • ${l}`).join("\n")}`
+        : "\n\nThis adds meaningful time and effort outside what the original agreement covers.";
+
+    const optionsBlock = proposedOptions
+      ? `\n\nTo keep things moving, here are the options as I see them:\n  • ${proposedOptions}`
+      : `\n\nTo keep things moving, here are the options as I see them:\n  • I put together a change order for the additional work — happy to send it over.\n  • We scale the project back to the original scope and pick up the extras as a separate engagement.`;
+
+    const email = `Subject: ${projectName} — scope change
+
+Hi ${clientName},
+
+I wanted to flag something before we get too deep into it. ${contextLine}${impactBlock}
+
+I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
+
+Either way works for me. Let me know what you'd prefer and we can sort it quickly.
 
 ${yourName}`;
 
