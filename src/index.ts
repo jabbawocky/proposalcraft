@@ -1786,6 +1786,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "meeting_request_email",
+      description:
+        "Write a short, focused email requesting a meeting — a discovery call with a new prospect, a check-in with an existing client, or a catch-up with a collaborator. Fills the workflow gap between sending a cold pitch or initial enquiry and running the actual discovery_call_prep. Offers specific time slots if provided, otherwise makes a flexible open ask. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          recipient_name: {
+            type: "string",
+            description: "The recipient's first name",
+          },
+          meeting_purpose: {
+            type: "string",
+            description: "What the meeting is for — one line (e.g. 'a quick discovery call to talk through your project', 'a 30-minute check-in on the current retainer', 'catching up on where things stand with the rebrand')",
+          },
+          time_options: {
+            type: "string",
+            description: "Optional: 2–3 suggested time slots (e.g. 'Tuesday 10am or Thursday 2pm GMT, or Friday morning'). If omitted, the email asks them to suggest a time that works.",
+          },
+          duration: {
+            type: "string",
+            description: "Optional: how long the meeting will take (e.g. '20 minutes', '30 minutes', 'an hour'). Defaults to a brief mention if omitted.",
+          },
+          platform: {
+            type: "string",
+            description: "Optional: how you'll meet (e.g. 'Zoom', 'Google Meet', 'a phone call', 'in person'). Omit if you don't mind either way.",
+          },
+          context: {
+            type: "string",
+            description: "Optional: one sentence of context explaining why now — especially useful for cold or semi-warm prospects (e.g. 'I've just wrapped a similar project and have a window opening up', 'following up on my email last week')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["recipient_name", "meeting_purpose"],
+      },
+    },
+    {
       name: "contract_renewal_email",
       description:
         "Write a professional email proposing to renew a contract, retainer, or ongoing engagement with a client. Warm but businesslike — references the work done together, proposes renewal terms, and invites a conversation. Does not count against your monthly draft limit.",
@@ -4537,6 +4576,37 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "meeting_request_email") {
+    const recipientName = String(args!.recipient_name);
+    const meetingPurpose = String(args!.meeting_purpose);
+    const timeOptions = args!.time_options ? String(args!.time_options) : null;
+    const duration = args!.duration ? String(args!.duration) : null;
+    const platform = args!.platform ? String(args!.platform) : null;
+    const context = args!.context ? String(args!.context) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const contextLine = context ? `\n\n${context}.` : "";
+
+    const platformLine = platform ? ` on ${platform}` : "";
+    const durationLine = duration ? ` (${duration})` : "";
+
+    const timingBlock = timeOptions
+      ? `\n\nI have ${timeOptions} — any of those work for you?`
+      : `\n\nWhat does your diary look like over the next week or so?`;
+
+    const email = `Subject: Quick call — ${meetingPurpose}
+
+Hi ${recipientName},${contextLine}
+
+Would you be up for ${meetingPurpose}${platformLine}${durationLine}?${timingBlock}
 
 ${yourName}`;
 
