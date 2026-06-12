@@ -1743,6 +1743,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "invoice_cover_email",
+      description:
+        "Write the short professional email that accompanies a sent invoice. Most freelancers attach invoices to a blank or one-line email — this tool generates the cover email that frames the invoice, states the amount and due date, and gives the client a clear next step. Under 80 words. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          amount: {
+            type: "string",
+            description: "The invoice total (e.g. '$2,500', '€1,800', '£950')",
+          },
+          invoice_number: {
+            type: "string",
+            description: "Optional: invoice reference number (e.g. 'INV-0042'). Included in the subject line if provided.",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project or work this invoice covers (e.g. 'the website redesign', 'May retainer', 'copywriting — Phase 1')",
+          },
+          due_date: {
+            type: "string",
+            description: "Optional: when payment is due (e.g. 'June 26', 'within 14 days', 'on receipt'). Defaults to a generic 'per our agreed terms' line.",
+          },
+          payment_link: {
+            type: "string",
+            description: "Optional: a direct payment URL (e.g. a Stripe link, PayPal.me). Adds a one-click CTA to the email.",
+          },
+          payment_method: {
+            type: "string",
+            description: "Optional: how you'd like to be paid if no payment link (e.g. 'bank transfer — details on the invoice', 'via Stripe')",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "amount"],
+      },
+    },
+    {
       name: "revision_response_email",
       description:
         "Write the email responding to a client's revision request. Three modes: 'in_scope' (happy to revise — confirms what you'll change and when), 'exceeds_rounds' (they've used their included revision rounds — explains what's included and what additional rounds cost), 'out_of_scope' (the request is a direction change that requires a change order, not a revision). Distinct from scope_change_email (formal change order) and scope_warning_email (early creep flag) — this is the specific, policy-in-action response to a concrete revision ask. Does not count against your monthly draft limit.",
@@ -4753,6 +4796,47 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "invoice_cover_email") {
+    const clientName = String(args!.client_name);
+    const amount = String(args!.amount);
+    const invoiceNumber = args!.invoice_number ? String(args!.invoice_number) : null;
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const dueDate = args!.due_date ? String(args!.due_date) : null;
+    const paymentLink = args!.payment_link ? String(args!.payment_link) : null;
+    const paymentMethod = args!.payment_method ? String(args!.payment_method) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const subject = invoiceNumber
+      ? `Invoice ${invoiceNumber}${projectName ? ` — ${projectName}` : ""}`
+      : `Invoice${projectName ? ` — ${projectName}` : ""}`;
+
+    const projectLine = projectName ? ` for ${projectName}` : "";
+    const dueLine = dueDate
+      ? ` Payment is due ${dueDate}.`
+      : " Payment is due per our agreed terms.";
+
+    let ctaLine = "";
+    if (paymentLink) {
+      ctaLine = `\n\nYou can pay directly here: ${paymentLink}`;
+    } else if (paymentMethod) {
+      ctaLine = `\n\nPayment via ${paymentMethod}.`;
+    }
+
+    const email = `Subject: ${subject}
+
+Hi ${clientName},
+
+Please find attached invoice${invoiceNumber ? ` ${invoiceNumber}` : ""} for ${amount}${projectLine}.${dueLine}${ctaLine}
+
+Let me know if you have any questions.
 
 ${yourName}`;
 
