@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 12, 2026 (tick 138)
+# 💼 Money Machine — Mission Status: June 12, 2026 (tick 139)
 
 **Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **WagnerAgent/awesome-mcp-servers-devops PR #48** (tick 139) — https://github.com/WagnerAgent/awesome-mcp-servers-devops/pull/48 — StatusCraft added to APM & Monitoring section under Observability. 95★ DevOps-focused MCP directory. punkpeye PR #7404 closed Jun 11: maintainer confirmed Glama must be indexed first — re-submit queued post-Glama. MCPize StatusCraft blocked: GitHub App install on jabbawocky required (Mat gate). ProposalCraft MCPize ACTIVE: https://mcpize.com/mcp/proposalcraft-2. Stars: 0. All Mat gates unchanged.
 - ✅ **New distribution PR** (tick 138) — `DhanushNehru/awesome-mcp-servers` PR #29 https://github.com/DhanushNehru/awesome-mcp-servers/pull/29 — ProposalCraft added to Productivity & Collaboration, StatusCraft added to Development & DevOps. Active repo (5★, updated Jun 10, accepts community PRs). Resolved 2 duplicate actions (PH listing, GitHub 2FA). Stars: 0. All Mat gates unchanged.
 - ✅ **Two new distribution PRs** (tick 137) — (1) `agenticdevops/awesome-devops-mcp` PR #32 https://github.com/agenticdevops/awesome-devops-mcp/pull/32 — StatusCraft added to Monitoring & Observability section (DevOps MCP list, active maintainer, PRs welcome badge). (2) Updated `win4r/Awesome-Claude-MCP-Servers` PR #63 https://github.com/win4r/Awesome-Claude-MCP-Servers/pull/63 — corrected StatusCraft service count from 125 → 141. Resolved 1 duplicate DMARC action. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.7: project_delay_warning tool** (tick 136) — 52nd tool: proactive email when a deadline is at risk, sent BEFORE you've missed it. Distinct from late_delivery_apology (after the fact) — this is the early flag that gives the client time to adjust and shows you're on top of things. Inputs: client_name, project_name, original_deadline, expected_delay, optional reason, optional new_delivery_date. Two output paths: commits to a specific new date if provided, offers to confirm by end of day if not. Closes the professional gap between "things are on track" and "I already missed it" that most freelancers handle badly. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.7. Stars: 0. All Mat gates unchanged.
@@ -208,7 +209,7 @@
 |---|---|
 | mctrinh/awesome-mcp-servers | #60 |
 | ever-works/awesome-mcp-servers | #118 |
-| punkpeye/awesome-mcp-servers | #7404 ✅ all green |
+| punkpeye/awesome-mcp-servers | #7404 ❌ CLOSED (Glama not indexed — re-submit after Glama OAuth) |
 | TensorBlock/awesome-mcp-servers | #647 ✅ MERGED |
 | habitoai/awesome-mcp-servers | #83 |
 | tolkonepiu/best-of-mcp-servers | #227 |
@@ -219,7 +220,8 @@
 | rohitg00/awesome-devops-mcp-servers | #249 |
 | agenticdevops/awesome-devops-mcp | #32 |
 | win4r/Awesome-Claude-MCP-Servers | #63 |
-| DhanushNehru/awesome-mcp-servers | #29 ✅ NEW |
+| DhanushNehru/awesome-mcp-servers | #29 |
+| WagnerAgent/awesome-mcp-servers-devops | #48 ✅ NEW |
 
 **Metrics:**
 - Revenue: $0 — gate pending MCPize URL
@@ -228,15 +230,17 @@
 - MCP registry: validated ✅, needs login
 
 **Blockers / needs Mat:**
-0. 🚨 **PH listing still in draft** — Jun 10 launch window missed. Listing can still go live any day. Self-launch or hunter path unchanged. Copy at `marketing/producthunt-launch.md`.
-1. 🚨 **Reddit posts** — all copy ready in `LAUNCH_POSTS.md`. Reddit blocks worker. Mat must post: r/ClaudeAI (80k), r/consulting (200k), r/freelance, r/webdev (1.7M). High value, still very relevant post-launch.
-2. 🚧 **Star campaign** — stars still 0. Send DMs: `marketing/star-campaign.md`. 10 minutes, 20 targets.
-3. 🚧 **Dev.to article** — ready at `marketing/devto-article.md`. Sign in via GitHub at dev.to.
-4. 🚧 **Mastodon @proposalcraft** — hCaptcha gate: https://mastodon.social/auth/confirmation?confirmation_token=u_3fue8n_-sc1LkwQmix&redirect_to_app=true (moneymachine@mc.team / ProposalCraft2026!)
-5. 🚧 **NPM_TOKEN** → npmjs.com → Access Tokens → Automation → GitHub repo → Settings → Secrets → NPM_TOKEN
-6. 🚧 **Anthropic plugin marketplace** → claude.ai/settings/plugins/submit (highest-value distribution remaining)
-7. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish`
-8. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
+0. 🚨 **Glama OAuth + punkpeye re-submit** — URGENT: glama.ai → Sign in with GitHub (jabbawocky) → Add Server → select jabbawocky/proposalcraft. Once indexed, re-submit to punkpeye (88k★) — they will merge once Glama score badge is live. This is the highest-ROI action.
+1. 🚨 **PH listing still in draft** — Jun 10 launch window missed. Listing can still go live any day. Self-launch or hunter path unchanged. Copy at `marketing/producthunt-launch.md`.
+2. 🚨 **Reddit posts** — all copy ready in `LAUNCH_POSTS.md`. Reddit blocks worker. Mat must post: r/ClaudeAI (80k), r/consulting (200k), r/freelance, r/webdev (1.7M). High value, still very relevant post-launch.
+3. 🚧 **MCPize StatusCraft** — MCPize GitHub App must be installed on jabbawocky account. Go to mcpize.com → New Server → type jabbawocky/statuscraft → Install MCPize GitHub App. Then the StatusCraft deploy can complete.
+4. 🚧 **Star campaign** — stars still 0. Send DMs: `marketing/star-campaign.md`. 10 minutes, 20 targets.
+5. 🚧 **Dev.to article** — ready at `marketing/devto-article.md`. Sign in via GitHub at dev.to.
+6. 🚧 **Mastodon @proposalcraft** — hCaptcha gate: https://mastodon.social/auth/confirmation?confirmation_token=u_3fue8n_-sc1LkwQmix&redirect_to_app=true (moneymachine@mc.team / ProposalCraft2026!)
+7. 🚧 **NPM_TOKEN** → npmjs.com → Access Tokens → Automation → GitHub repo → Settings → Secrets → NPM_TOKEN
+8. 🚧 **Anthropic plugin marketplace** → claude.ai/settings/plugins/submit (highest-value distribution remaining)
+9. 🚧 **Official MCP registry** → `mcp-publisher login github && mcp-publisher publish`
+10. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-53 tools shipped at v1.4.7. Distribution: 14 PRs open across awesome-lists, 1 merged (TensorBlock). All web channels remain bot-blocked. Next tick: try WagnerAgent/awesome-mcp-servers-devops (Observability section for StatusCraft) or AIAnytime/Awesome-MCP-Server. Revenue gate still requires Mat.
+15 PRs open (1 MERGED TensorBlock, 1 CLOSED punkpeye — needs Glama). ProposalCraft live on MCPize (proposalcraft-2.mcpize.run). Next tick: ship a new ProposalCraft tool (v1.4.8), or submit to AIAnytime/Awesome-MCP-Server. Revenue gate still requires Mat.
