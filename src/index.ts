@@ -1743,6 +1743,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "unclear_brief_email",
+      description:
+        "Write the email sent when a client's brief is too vague to start work safely — asks targeted clarifying questions before time is spent. Lists the specific unclear points concisely, explains why each matters (to avoid rework or surprises), and offers a quick call if it's easier than written answers. Professional and collaborative in tone — not a complaint, not a lecture. Prevents scope creep and misaligned deliverables from the start. Distinct from scope_change_email (used mid-project when scope expands) and revision_response_email (used after client feedback). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or description of the project",
+          },
+          unclear_points: {
+            type: "array",
+            items: { type: "string" },
+            description:
+              "The specific things that need clarification (e.g. 'Who is the target audience?', 'What does success look like — increased signups, revenue, engagement?'). 2–5 questions work best.",
+          },
+          suggest_call: {
+            type: "boolean",
+            description:
+              "Whether to offer a quick call as an alternative to written answers — defaults to true",
+          },
+          response_deadline: {
+            type: "string",
+            description:
+              "Date or timeframe by which you need answers to stay on schedule (e.g. 'by Thursday', 'before end of week')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "unclear_points"],
+      },
+    },
+    {
       name: "onboarding_questionnaire",
       description:
         "Write the onboarding questionnaire email sent to a new client right after they sign the contract. Gathers everything you need to start work: goals, target audience, brand assets, access credentials, tone/style preferences, examples they like or dislike, key contacts, and approval workflow. Includes optional custom questions for project-specific needs. Avoids the back-and-forth that slows down project starts and sets a professional tone from day one. Does not count against your monthly draft limit.",
@@ -5100,6 +5139,45 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "unclear_brief_email") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const unclearPoints: string[] = Array.isArray(args!.unclear_points)
+      ? (args!.unclear_points as string[]).map(String)
+      : [];
+    const suggestCall = args!.suggest_call !== false;
+    const responseDeadline = args!.response_deadline
+      ? String(args!.response_deadline)
+      : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your name";
+
+    const projectRef = projectName ? ` for ${projectName}` : "";
+    const questionList = unclearPoints
+      .map((q, i) => `${i + 1}. ${q}`)
+      .join("\n");
+    const deadlineLine = responseDeadline
+      ? `\nIf you can get these back to me ${responseDeadline} that would keep us on track.`
+      : "";
+    const callLine = suggestCall
+      ? "\nAlternatively, if it's easier to talk through, I'm happy to jump on a 15-minute call — just let me know."
+      : "";
+
+    const email = `Subject: Quick questions before I start${projectRef}
+
+Hi ${clientName},
+
+Thanks for sending through the brief${projectRef}. Before I dive in I want to make sure I'm working from the right information — a few things would help me give you exactly what you're after rather than us going back and forth later.
+
+${questionList}
+${deadlineLine}${callLine}
 
 ${yourName}`;
 
