@@ -1743,6 +1743,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "price_quote_email",
+      description:
+        "Write a short, confident email sending a price quote or estimate to a prospective client. For situations where a full formal proposal isn't needed — quick projects, hourly work, or a client who just asked 'how much?' Covers: the work, the price, what's included, and a clear next step. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_description: {
+            type: "string",
+            description: "What you're quoting for — brief description (e.g. 'the landing page redesign', 'copywriting for your website home page', 'a 2-hour strategy session')",
+          },
+          price: {
+            type: "string",
+            description: "Your quoted price or rate (e.g. '$2,400', '$1,800–$2,200', '$150/hr', '$800 flat')",
+          },
+          whats_included: {
+            type: "string",
+            description: "Optional: what the price includes — 2–4 bullet points (e.g. 'initial discovery call, first draft, two rounds of revisions, final files'). If omitted, the email states the deliverable only.",
+          },
+          timeline: {
+            type: "string",
+            description: "Optional: how long the work will take or when you can deliver (e.g. '5 business days after sign-off', 'ready by June 20', 'approx. 2 weeks')",
+          },
+          validity: {
+            type: "string",
+            description: "Optional: how long the quote is valid for (e.g. '30 days', 'until end of month'). Useful if your rates may change or capacity is limited.",
+          },
+          next_step: {
+            type: "string",
+            description: "Optional: what you'd like them to do next (e.g. 'let me know if you'd like to go ahead and I'll send the contract', 'reply to confirm and I can start next week'). Defaults to a simple confirmation ask.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_description", "price"],
+      },
+    },
+    {
       name: "contract_renewal_email",
       description:
         "Write a professional email proposing to renew a contract, retainer, or ongoing engagement with a client. Warm but businesslike — references the work done together, proposes renewal terms, and invites a conversation. Does not count against your monthly draft limit.",
@@ -4494,6 +4537,47 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "price_quote_email") {
+    const clientName = String(args!.client_name);
+    const projectDescription = String(args!.project_description);
+    const price = String(args!.price);
+    const whatsIncluded = args!.whats_included ? String(args!.whats_included) : null;
+    const timeline = args!.timeline ? String(args!.timeline) : null;
+    const validity = args!.validity ? String(args!.validity) : null;
+    const nextStep = args!.next_step ? String(args!.next_step) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const includedLine = whatsIncluded
+      ? `\n\nThat covers: ${whatsIncluded}.`
+      : "";
+
+    const timelineLine = timeline
+      ? `\n\nTimeline: ${timeline}.`
+      : "";
+
+    const validityLine = validity
+      ? `\n\nThis quote is valid for ${validity}.`
+      : "";
+
+    const nextStepLine = nextStep
+      ? `\n\n${nextStep}`
+      : `\n\nLet me know if you'd like to go ahead or if you have any questions.`;
+
+    const email = `Subject: Quote for ${projectDescription}
+
+Hi ${clientName},
+
+Thanks for the brief — here's my quote for ${projectDescription}.
+
+Investment: ${price}${includedLine}${timelineLine}${validityLine}${nextStepLine}
 
 ${yourName}`;
 
