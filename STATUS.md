@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 12, 2026 (tick 141)
+# 💼 Money Machine — Mission Status: June 12, 2026 (tick 142)
 
 **Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **v1.4.10: contract_renewal_email tool** (tick 142) — 54th tool: proposes renewing a contract, retainer, or ongoing engagement before it expires. Two-path output: if renewal_terms provided, names the proposed terms directly; if not, opens the door to a call. Optional highlight param references a specific result from the engagement ("that kind of result is exactly what I want to build on"). No-pressure close. Completes the contract lifecycle arc: sign → deliver → renew. Does not count against free limit. Releases: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.10 + https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.9. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.9: scope_change_email tool** (tick 141) — 53rd tool: professional email for when client work has grown beyond the original scope. Three-part structure: clear statement of what changed vs. what was agreed, concrete impact (time + cost if known), two-option resolution (change order or scope-back). Distinct from scope_warning_email (tick 130, flags creep BEFORE a change order) — this is the formal conversation. Tone: direct but not accusatory; gives the client a graceful out if they thought it was in scope. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.9. Stars: 0. All Mat gates unchanged.
 - ✅ **mcpservers.org listing submitted** (tick 141) — ProposalCraft submitted to mcpservers.org (Productivity category, contact moneymachine@mc.team, free tier, under 12-hour review). No OAuth required. This is the primary submission portal for wong2/awesome-mcp-servers (4.1k★).
 - ✅ **MCPize account status clarified** (tick 141) — `moneymachine@mc.team` exists in MCPize but was created via GitHub OAuth (jabbawocky). Email/password reset links expire immediately. Only path: Mat logs in with GitHub at mcpize.com → lists ProposalCraft. ProposalCraft MCPize listing (proposalcraft-2) may already exist — needs auth to confirm.
