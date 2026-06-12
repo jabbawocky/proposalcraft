@@ -1743,6 +1743,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "win_back_email",
+      description:
+        "Write a short, warm re-engagement email to a past client you haven't worked with in a while (6+ months). Distinct from availability_announcement (broadcast to all past clients) and reactivation_email (cold prospect from a mid-pitch conversation) — this is a targeted, personal one-to-one note to someone you've already delivered results for. The gap is acknowledged briefly and lightly, not apologised for. Closes with a soft open-ended ask ('are you working on anything at the moment?'), not a pitch. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the past client",
+          },
+          last_project: {
+            type: "string",
+            description:
+              "Brief description of the last project you delivered for them (e.g. 'the rebranding project', 'your SaaS MVP')",
+          },
+          time_elapsed: {
+            type: "string",
+            description:
+              "Optional: how long since you last worked together (e.g. 'six months', 'about a year'). If omitted, the email keeps it vague.",
+          },
+          value_hook: {
+            type: "string",
+            description:
+              "Optional: a specific, genuine reason to reach out now — a result you achieved that you want to share, something relevant you noticed about their business, a new capability that fits their context. Makes the email feel timely rather than random.",
+          },
+          service_to_offer: {
+            type: "string",
+            description:
+              "Optional: if there's a specific type of work you're hoping to pick up with them, name it (e.g. 'a second phase', 'ongoing SEO', 'a campaign for Q4'). If omitted, the email stays open-ended.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "last_project"],
+      },
+    },
+    {
       name: "project_handover_email",
       description:
         "Write the email that delivers final project files to a client. Distinct from project_closure_email (which handles the relationship close and testimonial ask) — this is the practical handover: here are your files, here's what's included, here's what you need to do next. Sends with the final deliverables attached or linked. Does not count against your monthly draft limit.",
@@ -4880,6 +4919,49 @@ I'm not raising this to be difficult — I just want us to be on the same page s
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
 
 ${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "win_back_email") {
+    const clientName = String(args!.client_name);
+    const lastProject = String(args!.last_project);
+    const timeElapsed = args!.time_elapsed ? String(args!.time_elapsed) : null;
+    const valueHook = args!.value_hook ? String(args!.value_hook) : null;
+    const serviceToOffer = args!.service_to_offer
+      ? String(args!.service_to_offer)
+      : null;
+    const yourName = args!.your_name ? String(args!.your_name) : null;
+
+    const timeRef = timeElapsed
+      ? `It's been ${timeElapsed} since we wrapped up ${lastProject}`
+      : `It's been a while since we finished ${lastProject}`;
+
+    let hookLine = "";
+    if (valueHook) {
+      hookLine = `\n\n${valueHook}`;
+    }
+
+    let askLine = "";
+    if (serviceToOffer) {
+      askLine = `I've got capacity coming up and ${serviceToOffer} is exactly the kind of thing I'd love to pick up again — are you working on anything along those lines?`;
+    } else {
+      askLine = `Are you working on anything at the moment I could help with?`;
+    }
+
+    const signOff = yourName ? yourName : "Best";
+
+    const email = `Subject: Checking in
+
+Hi ${clientName},
+
+${timeRef} — hope things have been going well.${hookLine}
+
+${askLine}
+
+${signOff}`;
 
     return {
       content: [{ type: "text", text: email }],
