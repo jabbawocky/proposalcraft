@@ -1687,6 +1687,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "client_decline_email",
+            description: "Write a professional email declining a client project inquiry — when you can't or shouldn't take the work. Covers four common situations: capacity (you're fully booked), not_fit (the project isn't the right match for your skills or style), timing (wrong timing — project start doesn't align), or budget (their budget doesn't meet your rates). Warm and respectful throughout: preserves the relationship, never burns a bridge. Optionally offers to refer them to someone better suited — turning a decline into goodwill. Most freelancers either ghost prospects or write awkward excuses; this is the professional middle path that keeps the door open for future work. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or short description of the project being declined (optional)",
+                    },
+                    decline_reason: {
+                        type: "string",
+                        enum: ["capacity", "not_fit", "timing", "budget"],
+                        description: "Primary reason for declining: capacity (fully booked), not_fit (wrong match), timing (dates don't work), budget (below your rate). Defaults to capacity if omitted.",
+                    },
+                    suggest_referral: {
+                        type: "boolean",
+                        description: "Whether to offer to pass their details to someone who might be a better fit (default true)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name"],
+            },
+        },
+        {
             name: "unclear_brief_email",
             description: "Write the email sent when a client's brief is too vague to start work safely — asks targeted clarifying questions before time is spent. Lists the specific unclear points concisely, explains why each matters (to avoid rework or surprises), and offers a quick call if it's easier than written answers. Professional and collaborative in tone — not a complaint, not a lecture. Prevents scope creep and misaligned deliverables from the start. Distinct from scope_change_email (used mid-project when scope expands) and revision_response_email (used after client feedback). Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4856,6 +4887,46 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "client_decline_email") {
+        const clientName = String(args.client_name);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const declineReason = args.decline_reason ? String(args.decline_reason) : "capacity";
+        const suggestReferral = args.suggest_referral !== false;
+        const yourName = args.your_name ? String(args.your_name) : "Your Name";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        let reasonParagraph;
+        switch (declineReason) {
+            case "not_fit":
+                reasonParagraph = `After thinking it through, I don't think I'm the right fit for this one. The work calls for a different skill set or approach than what I specialise in, and I'd rather be upfront about that than take it on and not deliver at the level you deserve.`;
+                break;
+            case "timing":
+                reasonParagraph = `Unfortunately the timing doesn't work on my end. The project schedule doesn't align with my current commitments, and I wouldn't be able to give it the attention it needs at this stage.`;
+                break;
+            case "budget":
+                reasonParagraph = `After reviewing the scope and your budget, I don't think I can take it on — the investment required to do this properly is above what you've outlined, and I'd rather be transparent about that now than try to make it work in a way that shortchanges the outcome.`;
+                break;
+            default: // capacity
+                reasonParagraph = `I'm currently fully booked and wouldn't be able to take on new work${projectRef ? ` of this scope` : ""} without it affecting the quality I deliver to existing clients. I'd rather decline now than commit to something I can't give proper attention to.`;
+        }
+        const referralLine = suggestReferral
+            ? `\n\nIf it would be useful, I'm happy to pass your details to someone in my network who might be a better fit — just let me know.`
+            : "";
+        const email = `Subject: Re: ${projectName ? projectName : "Your project inquiry"}
+
+Hi ${clientName},
+
+Thank you for reaching out${projectRef} — I appreciate you thinking of me.
+
+${reasonParagraph}${referralLine}
+
+I hope you find the right person for the project, and I wish you well with it. Feel free to get in touch if something comes up in the future that might be a better match.
+
+Best,
 ${yourName}`;
         return {
             content: [{ type: "text", text: email }],
