@@ -1645,6 +1645,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "contract_sent_email",
+            description: "Write the short covering email sent when sharing a contract or agreement for a client to sign. Tells the client what they're signing, where to find it, when you need it back, and what happens next. Distinct from contract_template (the contract document itself) — this is the email that wraps around it. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project the contract covers",
+                    },
+                    signing_deadline: {
+                        type: "string",
+                        description: "Optional: date by which you need the signed contract back (e.g. 'Friday', 'June 20'). If omitted, closes with a general 'let me know if you have any questions' sign-off.",
+                    },
+                    signing_link: {
+                        type: "string",
+                        description: "Optional: URL where the client can sign (e.g. a DocuSign or HelloSign link). If provided, used as the primary CTA. If not, assumes contract is attached.",
+                    },
+                    contract_summary: {
+                        type: "string",
+                        description: "Optional: one-sentence description of what the contract covers (e.g. 'this covers the scope, payment schedule, and IP terms we discussed'). Helps the client know what to expect before opening.",
+                    },
+                    start_date: {
+                        type: "string",
+                        description: "Optional: when work begins once the contract is signed. Signals momentum without pressure.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name"],
+            },
+        },
+        {
             name: "milestone_delivered_email",
             description: "Write the email sent when delivering a project milestone or phase — not the final delivery, but a defined stage with its own deliverables and sign-off. Tells the client exactly what's included, asks for their review and sign-off by a specific date, and states what's next. Distinct from project_completion_email (final handover) and project_status_update (progress report during execution). Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4624,6 +4662,51 @@ I'm not raising this to be difficult — I just want us to be on the same page s
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
 
 ${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "contract_sent_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const signingDeadline = args.signing_deadline
+            ? String(args.signing_deadline)
+            : null;
+        const signingLink = args.signing_link ? String(args.signing_link) : null;
+        const contractSummary = args.contract_summary
+            ? String(args.contract_summary)
+            : null;
+        const startDate = args.start_date ? String(args.start_date) : null;
+        const yourName = args.your_name ? String(args.your_name) : null;
+        const summaryLine = contractSummary
+            ? `\n\n${contractSummary}`
+            : "";
+        let ctaLine;
+        if (signingLink) {
+            ctaLine = `You can sign here: ${signingLink}`;
+        }
+        else {
+            ctaLine = `Please find the contract attached.`;
+        }
+        const deadlineLine = signingDeadline
+            ? `If you could sign and return it by ${signingDeadline}, that would be great.`
+            : `Once signed, we're ready to get started.`;
+        const startLine = startDate
+            ? ` Work begins on ${startDate}.`
+            : "";
+        const closingLine = `Let me know if you have any questions before signing.`;
+        const signOff = yourName ? yourName : "Best";
+        const email = `Subject: Contract for ${projectName}
+
+Hi ${clientName},
+
+As discussed, I've put together the contract for ${projectName}.${summaryLine}
+
+${ctaLine}
+
+${deadlineLine}${startLine} ${closingLine}
+
+${signOff}`;
         return {
             content: [{ type: "text", text: email }],
         };
