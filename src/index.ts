@@ -1743,6 +1743,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "contract_renewal_email",
+      description:
+        "Write a professional email proposing to renew a contract, retainer, or ongoing engagement with a client. Warm but businesslike — references the work done together, proposes renewal terms, and invites a conversation. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          project_or_retainer: {
+            type: "string",
+            description: "What you're renewing (e.g. 'the monthly retainer', 'the SEO contract', 'our content arrangement')",
+          },
+          current_end_date: {
+            type: "string",
+            description: "When the current agreement ends (e.g. 'June 30', 'end of this month', 'July 15')",
+          },
+          renewal_terms: {
+            type: "string",
+            description: "Optional: the proposed renewal terms — same, updated scope, new rate (e.g. 'same scope and rate for another 3 months', 'updated scope covering X and Y at the same monthly rate', '$3,500/mo for the next quarter'). If omitted, the email proposes a call to discuss.",
+          },
+          highlight: {
+            type: "string",
+            description: "Optional: a result or milestone from the current engagement worth referencing (e.g. 'the site traffic increase', '3 months of consistent delivery', 'the rebrand launch'). Makes the email feel specific rather than templated.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_or_retainer", "current_end_date"],
+      },
+    },
+    {
       name: "scope_change_email",
       description:
         "Write a professional email to a client when work has grown beyond the original scope — new requests, added features, extra rounds of revisions. Raises the issue without accusation, outlines the impact, and presents options (change order, revised quote, or narrowing scope). Does not count against your monthly draft limit.",
@@ -4459,6 +4494,37 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "contract_renewal_email") {
+    const clientName = String(args!.client_name);
+    const projectOrRetainer = String(args!.project_or_retainer);
+    const currentEndDate = String(args!.current_end_date);
+    const renewalTerms = args!.renewal_terms ? String(args!.renewal_terms) : null;
+    const highlight = args!.highlight ? String(args!.highlight) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const highlightLine = highlight
+      ? `\n\n${highlight} — that kind of result is exactly what I want to build on.`
+      : "";
+
+    const renewalBlock = renewalTerms
+      ? `\n\nI'd like to propose renewing on the following terms: ${renewalTerms}. If that works for you, I can get a new agreement over by the end of the week.`
+      : `\n\nIf you'd like to continue working together, I'm happy to put together renewal terms — same scope, updated scope, whatever makes sense for where you're at. Let me know if a quick call makes sense.`;
+
+    const email = `Subject: Renewing ${projectOrRetainer}
+
+Hi ${clientName},
+
+${projectOrRetainer.charAt(0).toUpperCase() + projectOrRetainer.slice(1)} wraps up on ${currentEndDate} and I wanted to get in touch before it expires.${highlightLine}${renewalBlock}
+
+Let me know either way — no pressure if the timing isn't right.
 
 ${yourName}`;
 
