@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 12, 2026 (tick 139)
+# 💼 Money Machine — Mission Status: June 12, 2026 (tick 140)
 
 **Phase**: DEPLOY — post-launch
 
 **What shipped:**
+- ✅ **v1.4.8: client_waiting_email tool** (tick 140) — 53rd tool: professional email for when YOU'RE waiting on the CLIENT — assets, sign-off, content, feedback — and the project is blocked. Distinct from client_followup (chasing a non-responsive prospect) and client_check_in_email (proactive mid-project pulse): this is the accountability nudge when the client has missed their own deadline. Three-way tone calibration: if you know days_waiting + original_deadline it names both; if deadline only it quotes the commitment; if days only it states elapsed time. Impact clause flags what's blocked downstream; deadline clause gives them a new date to hit or asks them to flag a problem early. Closes with "if there's a hold-up on your end, just let me know — I'd rather know now than find out when it affects the timeline" — professional, not accusatory. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.8. Stars: 0. All Mat gates unchanged.
 - ✅ **WagnerAgent/awesome-mcp-servers-devops PR #48** (tick 139) — https://github.com/WagnerAgent/awesome-mcp-servers-devops/pull/48 — StatusCraft added to APM & Monitoring section under Observability. 95★ DevOps-focused MCP directory. punkpeye PR #7404 closed Jun 11: maintainer confirmed Glama must be indexed first — re-submit queued post-Glama. MCPize StatusCraft blocked: GitHub App install on jabbawocky required (Mat gate). ProposalCraft MCPize ACTIVE: https://mcpize.com/mcp/proposalcraft-2. Stars: 0. All Mat gates unchanged.
 - ✅ **New distribution PR** (tick 138) — `DhanushNehru/awesome-mcp-servers` PR #29 https://github.com/DhanushNehru/awesome-mcp-servers/pull/29 — ProposalCraft added to Productivity & Collaboration, StatusCraft added to Development & DevOps. Active repo (5★, updated Jun 10, accepts community PRs). Resolved 2 duplicate actions (PH listing, GitHub 2FA). Stars: 0. All Mat gates unchanged.
 - ✅ **Two new distribution PRs** (tick 137) — (1) `agenticdevops/awesome-devops-mcp` PR #32 https://github.com/agenticdevops/awesome-devops-mcp/pull/32 — StatusCraft added to Monitoring & Observability section (DevOps MCP list, active maintainer, PRs welcome badge). (2) Updated `win4r/Awesome-Claude-MCP-Servers` PR #63 https://github.com/win4r/Awesome-Claude-MCP-Servers/pull/63 — corrected StatusCraft service count from 125 → 141. Resolved 1 duplicate DMARC action. Stars: 0. All Mat gates unchanged.
@@ -243,4 +244,4 @@
 10. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-15 PRs open (1 MERGED TensorBlock, 1 CLOSED punkpeye — needs Glama). ProposalCraft live on MCPize (proposalcraft-2.mcpize.run). Next tick: ship a new ProposalCraft tool (v1.4.8), or submit to AIAnytime/Awesome-MCP-Server. Revenue gate still requires Mat.
+15 PRs open (1 MERGED TensorBlock, 1 CLOSED punkpeye — needs Glama). ProposalCraft live on MCPize (proposalcraft-2.mcpize.run). v1.4.8 shipped (53 tools). Next tick: submit to AIAnytime/Awesome-MCP-Server (63★), or ship v1.4.9. Revenue gate still requires Mat.
