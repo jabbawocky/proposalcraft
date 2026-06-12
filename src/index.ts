@@ -1743,6 +1743,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "payment_received_email",
+      description:
+        "Write a short, professional email acknowledging receipt of a client payment. Most freelancers say nothing when they get paid — this brief confirmation closes the loop, gives the client a paper trail, and signals what happens next. Under 80 words. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name",
+          },
+          amount: {
+            type: "string",
+            description: "The payment amount (e.g. '$1,500', '€2,000', 'the deposit')",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project name or description (e.g. 'the website redesign', 'your brand identity project')",
+          },
+          next_step: {
+            type: "string",
+            description: "Optional: what happens next (e.g. 'work begins Monday', 'I'll have the first draft to you by Friday', 'I'll send the final files over today'). Defaults to a generic 'work continues as planned' line.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "amount"],
+      },
+    },
+    {
       name: "introduction_email",
       description:
         "Write the reply-all when a mutual contact introduces you to a potential client over email. A specific, high-stakes email: the introducer is on CC, so you need to acknowledge them briefly while making a strong direct impression on the prospect — all in under 120 words. Fills the workflow gap between a referral and the discovery call. Does not count against your monthly draft limit.",
@@ -4674,6 +4705,31 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "payment_received_email") {
+    const clientName = String(args!.client_name);
+    const amount = String(args!.amount);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const nextStep = args!.next_step ? String(args!.next_step) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectLine = projectName ? ` for ${projectName}` : "";
+    const nextStepLine = nextStep
+      ? `\n\n${nextStep.charAt(0).toUpperCase() + nextStep.slice(1)}.`
+      : "\n\nWork continues as planned — I'll be in touch as things progress.";
+
+    const email = `Subject: Payment received — thank you
+
+Hi ${clientName},
+
+Just confirming I've received your payment of ${amount}${projectLine} — thank you.${nextStepLine}
 
 ${yourName}`;
 

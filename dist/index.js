@@ -1645,6 +1645,287 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "payment_received_email",
+            description: "Write a short, professional email acknowledging receipt of a client payment. Most freelancers say nothing when they get paid — this brief confirmation closes the loop, gives the client a paper trail, and signals what happens next. Under 80 words. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    amount: {
+                        type: "string",
+                        description: "The payment amount (e.g. '$1,500', '€2,000', 'the deposit')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name or description (e.g. 'the website redesign', 'your brand identity project')",
+                    },
+                    next_step: {
+                        type: "string",
+                        description: "Optional: what happens next (e.g. 'work begins Monday', 'I'll have the first draft to you by Friday', 'I'll send the final files over today'). Defaults to a generic 'work continues as planned' line.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "amount"],
+            },
+        },
+        {
+            name: "introduction_email",
+            description: "Write the reply-all when a mutual contact introduces you to a potential client over email. A specific, high-stakes email: the introducer is on CC, so you need to acknowledge them briefly while making a strong direct impression on the prospect — all in under 120 words. Fills the workflow gap between a referral and the discovery call. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    prospect_name: {
+                        type: "string",
+                        description: "First name of the person you're being introduced to",
+                    },
+                    introducer_name: {
+                        type: "string",
+                        description: "First name of the mutual contact who made the introduction (they'll be on CC)",
+                    },
+                    your_specialty: {
+                        type: "string",
+                        description: "What you do — one line (e.g. 'freelance web developer', 'brand strategist', 'copywriter for SaaS companies')",
+                    },
+                    their_context: {
+                        type: "string",
+                        description: "Optional: what you know about their situation or need (e.g. 'you're looking for help with a product launch', 'you need a new website before the summer'). Makes the email feel specific rather than generic.",
+                    },
+                    proposed_next_step: {
+                        type: "string",
+                        description: "Optional: what you want to happen next (e.g. 'a 20-minute call this week', 'a quick call to learn more about the project'). Defaults to suggesting a call.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["prospect_name", "introducer_name", "your_specialty"],
+            },
+        },
+        {
+            name: "referral_thank_you",
+            description: "Write a warm, specific thank-you to someone who sent you a referral. Three modes based on where things stand: 'intro' (you've just been introduced, haven't connected yet), 'had_call' (you've spoken with the referral), or 'won_project' (you landed the work — the warmest thank-you). Most freelancers skip this entirely and miss a key moment to strengthen the referral relationship. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    referrer_name: {
+                        type: "string",
+                        description: "First name of the person who sent the referral",
+                    },
+                    referred_name: {
+                        type: "string",
+                        description: "First name of the person they referred you to",
+                    },
+                    outcome: {
+                        type: "string",
+                        enum: ["intro", "had_call", "won_project"],
+                        description: "Where things stand: 'intro' = just been introduced; 'had_call' = had a great call; 'won_project' = landed the work. Defaults to 'intro'.",
+                    },
+                    project_type: {
+                        type: "string",
+                        description: "Optional: brief description of the project or context (e.g. 'the branding work', 'a web project', 'a consulting engagement'). Makes the email feel specific rather than generic.",
+                    },
+                    reciprocate: {
+                        type: "boolean",
+                        description: "Optional: if true, adds an offer to return the favour — refer them back if the opportunity comes up. Default: true.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["referrer_name", "referred_name"],
+            },
+        },
+        {
+            name: "no_response_closure_email",
+            description: "Write the 'just closing the loop' email to a prospect who has gone dark after one or more follow-ups. Counter-intuitively, this email often gets a reply when earlier follow-ups didn't — it removes pressure, gives a clear out, and makes it easy for the prospect to re-engage if timing changes later. Calm, friendly, no guilt-tripping, under 80 words. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    prospect_name: {
+                        type: "string",
+                        description: "The prospect's first name",
+                    },
+                    project_or_context: {
+                        type: "string",
+                        description: "What you were discussing (e.g. 'the website redesign', 'the branding project', 'working together on your launch')",
+                    },
+                    keep_door_open: {
+                        type: "boolean",
+                        description: "Optional: if true, explicitly mention they're welcome to get in touch when timing is better. Default: true.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["prospect_name", "project_or_context"],
+            },
+        },
+        {
+            name: "price_quote_email",
+            description: "Write a short, confident email sending a price quote or estimate to a prospective client. For situations where a full formal proposal isn't needed — quick projects, hourly work, or a client who just asked 'how much?' Covers: the work, the price, what's included, and a clear next step. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_description: {
+                        type: "string",
+                        description: "What you're quoting for — brief description (e.g. 'the landing page redesign', 'copywriting for your website home page', 'a 2-hour strategy session')",
+                    },
+                    price: {
+                        type: "string",
+                        description: "Your quoted price or rate (e.g. '$2,400', '$1,800–$2,200', '$150/hr', '$800 flat')",
+                    },
+                    whats_included: {
+                        type: "string",
+                        description: "Optional: what the price includes — 2–4 bullet points (e.g. 'initial discovery call, first draft, two rounds of revisions, final files'). If omitted, the email states the deliverable only.",
+                    },
+                    timeline: {
+                        type: "string",
+                        description: "Optional: how long the work will take or when you can deliver (e.g. '5 business days after sign-off', 'ready by June 20', 'approx. 2 weeks')",
+                    },
+                    validity: {
+                        type: "string",
+                        description: "Optional: how long the quote is valid for (e.g. '30 days', 'until end of month'). Useful if your rates may change or capacity is limited.",
+                    },
+                    next_step: {
+                        type: "string",
+                        description: "Optional: what you'd like them to do next (e.g. 'let me know if you'd like to go ahead and I'll send the contract', 'reply to confirm and I can start next week'). Defaults to a simple confirmation ask.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_description", "price"],
+            },
+        },
+        {
+            name: "meeting_request_email",
+            description: "Write a short, focused email requesting a meeting — a discovery call with a new prospect, a check-in with an existing client, or a catch-up with a collaborator. Fills the workflow gap between sending a cold pitch or initial enquiry and running the actual discovery_call_prep. Offers specific time slots if provided, otherwise makes a flexible open ask. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    recipient_name: {
+                        type: "string",
+                        description: "The recipient's first name",
+                    },
+                    meeting_purpose: {
+                        type: "string",
+                        description: "What the meeting is for — one line (e.g. 'a quick discovery call to talk through your project', 'a 30-minute check-in on the current retainer', 'catching up on where things stand with the rebrand')",
+                    },
+                    time_options: {
+                        type: "string",
+                        description: "Optional: 2–3 suggested time slots (e.g. 'Tuesday 10am or Thursday 2pm GMT, or Friday morning'). If omitted, the email asks them to suggest a time that works.",
+                    },
+                    duration: {
+                        type: "string",
+                        description: "Optional: how long the meeting will take (e.g. '20 minutes', '30 minutes', 'an hour'). Defaults to a brief mention if omitted.",
+                    },
+                    platform: {
+                        type: "string",
+                        description: "Optional: how you'll meet (e.g. 'Zoom', 'Google Meet', 'a phone call', 'in person'). Omit if you don't mind either way.",
+                    },
+                    context: {
+                        type: "string",
+                        description: "Optional: one sentence of context explaining why now — especially useful for cold or semi-warm prospects (e.g. 'I've just wrapped a similar project and have a window opening up', 'following up on my email last week')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["recipient_name", "meeting_purpose"],
+            },
+        },
+        {
+            name: "contract_renewal_email",
+            description: "Write a professional email proposing to renew a contract, retainer, or ongoing engagement with a client. Warm but businesslike — references the work done together, proposes renewal terms, and invites a conversation. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_or_retainer: {
+                        type: "string",
+                        description: "What you're renewing (e.g. 'the monthly retainer', 'the SEO contract', 'our content arrangement')",
+                    },
+                    current_end_date: {
+                        type: "string",
+                        description: "When the current agreement ends (e.g. 'June 30', 'end of this month', 'July 15')",
+                    },
+                    renewal_terms: {
+                        type: "string",
+                        description: "Optional: the proposed renewal terms — same, updated scope, new rate (e.g. 'same scope and rate for another 3 months', 'updated scope covering X and Y at the same monthly rate', '$3,500/mo for the next quarter'). If omitted, the email proposes a call to discuss.",
+                    },
+                    highlight: {
+                        type: "string",
+                        description: "Optional: a result or milestone from the current engagement worth referencing (e.g. 'the site traffic increase', '3 months of consistent delivery', 'the rebrand launch'). Makes the email feel specific rather than templated.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_or_retainer", "current_end_date"],
+            },
+        },
+        {
+            name: "scope_change_email",
+            description: "Write a professional email to a client when work has grown beyond the original scope — new requests, added features, extra rounds of revisions. Raises the issue without accusation, outlines the impact, and presents options (change order, revised quote, or narrowing scope). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project name or description (e.g. 'the website redesign', 'your brand identity project')",
+                    },
+                    scope_change: {
+                        type: "string",
+                        description: "What has been added or changed beyond the original agreement (e.g. 'adding an e-commerce section to the website', 'three extra rounds of logo revisions', 'building a mobile app version')",
+                    },
+                    original_scope: {
+                        type: "string",
+                        description: "Optional: what was originally agreed (e.g. 'a 5-page brochure site', 'two logo concepts with one round of revisions'). Helps contrast clearly.",
+                    },
+                    time_impact: {
+                        type: "string",
+                        description: "Optional: how much extra time this adds (e.g. '2–3 extra days', 'roughly a week of additional work')",
+                    },
+                    cost_impact: {
+                        type: "string",
+                        description: "Optional: the additional cost or rate adjustment (e.g. '$800 at my standard day rate', 'an additional $1,200')",
+                    },
+                    proposed_options: {
+                        type: "string",
+                        description: "Optional: the options you are offering the client (e.g. 'proceed with a change order, or scale the project back to the original scope'). If omitted, a standard two-option proposal is used.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "scope_change"],
+            },
+        },
+        {
             name: "client_waiting_email",
             description: "Write a professional email to a client who hasn't delivered what they promised — assets, feedback, sign-off, content — and the project is blocked waiting on them. Keeps the tone factual and non-accusatory: the goal is to get what you need, not to assign blame. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4058,6 +4339,228 @@ ${yourName}`;
 Hi ${clientName},
 
 ${waitingLine}${impactLine}${deadlineLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "scope_change_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const scopeChange = String(args.scope_change);
+        const originalScope = args.original_scope ? String(args.original_scope) : null;
+        const timeImpact = args.time_impact ? String(args.time_impact) : null;
+        const costImpact = args.cost_impact ? String(args.cost_impact) : null;
+        const proposedOptions = args.proposed_options ? String(args.proposed_options) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const contextLine = originalScope
+            ? `The original scope was ${originalScope}. Since then, the project has grown to include ${scopeChange}.`
+            : `When we kicked off the project, the scope didn't include ${scopeChange} — but that's where things are heading.`;
+        const impactLines = [];
+        if (timeImpact)
+            impactLines.push(`Time: ${timeImpact} of additional work`);
+        if (costImpact)
+            impactLines.push(`Cost: ${costImpact}`);
+        const impactBlock = impactLines.length > 0
+            ? `\n\nHere's what that means in practice:\n${impactLines.map((l) => `  • ${l}`).join("\n")}`
+            : "\n\nThis adds meaningful time and effort outside what the original agreement covers.";
+        const optionsBlock = proposedOptions
+            ? `\n\nTo keep things moving, here are the options as I see them:\n  • ${proposedOptions}`
+            : `\n\nTo keep things moving, here are the options as I see them:\n  • I put together a change order for the additional work — happy to send it over.\n  • We scale the project back to the original scope and pick up the extras as a separate engagement.`;
+        const email = `Subject: ${projectName} — scope change
+
+Hi ${clientName},
+
+I wanted to flag something before we get too deep into it. ${contextLine}${impactBlock}
+
+I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
+
+Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "payment_received_email") {
+        const clientName = String(args.client_name);
+        const amount = String(args.amount);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const nextStep = args.next_step ? String(args.next_step) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectName ? ` for ${projectName}` : "";
+        const nextStepLine = nextStep
+            ? `\n\n${nextStep.charAt(0).toUpperCase() + nextStep.slice(1)}.`
+            : "\n\nWork continues as planned — I'll be in touch as things progress.";
+        const email = `Subject: Payment received — thank you
+
+Hi ${clientName},
+
+Just confirming I've received your payment of ${amount}${projectLine} — thank you.${nextStepLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "introduction_email") {
+        const prospectName = String(args.prospect_name);
+        const introducerName = String(args.introducer_name);
+        const yourSpecialty = String(args.your_specialty);
+        const theirContext = args.their_context ? String(args.their_context) : null;
+        const proposedNextStep = args.proposed_next_step ? String(args.proposed_next_step) : "a quick call to learn more about what you're working on";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const contextLine = theirContext
+            ? `\n\nI understand ${theirContext} — that's exactly the kind of work I focus on.`
+            : "";
+        const email = `Subject: Re: Introduction
+
+Thanks for the intro, ${introducerName} — I'll take it from here.
+
+Hi ${prospectName},
+
+Great to meet you. I'm a ${yourSpecialty}.${contextLine}
+
+Would you be up for ${proposedNextStep}? Happy to work around your schedule.
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "referral_thank_you") {
+        const referrerName = String(args.referrer_name);
+        const referredName = String(args.referred_name);
+        const outcome = args.outcome ? String(args.outcome) : "intro";
+        const projectType = args.project_type ? String(args.project_type) : null;
+        const reciprocate = args.reciprocate !== false;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectType ? ` on ${projectType}` : "";
+        const reciprocateLine = reciprocate
+            ? `\n\nIf I ever come across someone who'd be a good fit for what you do, I'll make sure to return the favour.`
+            : "";
+        let body;
+        if (outcome === "won_project") {
+            body = `Just wanted to let you know — I ended up working with ${referredName}${projectLine}. Really appreciate you making that introduction. It meant a lot that you thought of me.${reciprocateLine}`;
+        }
+        else if (outcome === "had_call") {
+            body = `Had a great call with ${referredName} — really glad you made the introduction. Whatever comes of it, I appreciate you thinking of me.${reciprocateLine}`;
+        }
+        else {
+            body = `Just reached out to ${referredName} — thanks so much for the introduction. I really appreciate you thinking of me${projectLine ? ` for ${projectType}` : ""}.${reciprocateLine}`;
+        }
+        const email = `Subject: Thank you for the intro
+
+Hi ${referrerName},
+
+${body}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "no_response_closure_email") {
+        const prospectName = String(args.prospect_name);
+        const projectOrContext = String(args.project_or_context);
+        const keepDoorOpen = args.keep_door_open !== false;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const doorLine = keepDoorOpen
+            ? `\n\nIf the timing changes down the line, feel free to get in touch — happy to pick up the conversation whenever it makes sense.`
+            : "";
+        const email = `Subject: Closing the loop
+
+Hi ${prospectName},
+
+I've tried reaching out a couple of times about ${projectOrContext} and haven't heard back, so I'll assume the timing isn't right and won't follow up again.
+
+No hard feelings at all — these things don't always line up.${doorLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "meeting_request_email") {
+        const recipientName = String(args.recipient_name);
+        const meetingPurpose = String(args.meeting_purpose);
+        const timeOptions = args.time_options ? String(args.time_options) : null;
+        const duration = args.duration ? String(args.duration) : null;
+        const platform = args.platform ? String(args.platform) : null;
+        const context = args.context ? String(args.context) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const contextLine = context ? `\n\n${context}.` : "";
+        const platformLine = platform ? ` on ${platform}` : "";
+        const durationLine = duration ? ` (${duration})` : "";
+        const timingBlock = timeOptions
+            ? `\n\nI have ${timeOptions} — any of those work for you?`
+            : `\n\nWhat does your diary look like over the next week or so?`;
+        const email = `Subject: Quick call — ${meetingPurpose}
+
+Hi ${recipientName},${contextLine}
+
+Would you be up for ${meetingPurpose}${platformLine}${durationLine}?${timingBlock}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "price_quote_email") {
+        const clientName = String(args.client_name);
+        const projectDescription = String(args.project_description);
+        const price = String(args.price);
+        const whatsIncluded = args.whats_included ? String(args.whats_included) : null;
+        const timeline = args.timeline ? String(args.timeline) : null;
+        const validity = args.validity ? String(args.validity) : null;
+        const nextStep = args.next_step ? String(args.next_step) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const includedLine = whatsIncluded
+            ? `\n\nThat covers: ${whatsIncluded}.`
+            : "";
+        const timelineLine = timeline
+            ? `\n\nTimeline: ${timeline}.`
+            : "";
+        const validityLine = validity
+            ? `\n\nThis quote is valid for ${validity}.`
+            : "";
+        const nextStepLine = nextStep
+            ? `\n\n${nextStep}`
+            : `\n\nLet me know if you'd like to go ahead or if you have any questions.`;
+        const email = `Subject: Quote for ${projectDescription}
+
+Hi ${clientName},
+
+Thanks for the brief — here's my quote for ${projectDescription}.
+
+Investment: ${price}${includedLine}${timelineLine}${validityLine}${nextStepLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "contract_renewal_email") {
+        const clientName = String(args.client_name);
+        const projectOrRetainer = String(args.project_or_retainer);
+        const currentEndDate = String(args.current_end_date);
+        const renewalTerms = args.renewal_terms ? String(args.renewal_terms) : null;
+        const highlight = args.highlight ? String(args.highlight) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const highlightLine = highlight
+            ? `\n\n${highlight} — that kind of result is exactly what I want to build on.`
+            : "";
+        const renewalBlock = renewalTerms
+            ? `\n\nI'd like to propose renewing on the following terms: ${renewalTerms}. If that works for you, I can get a new agreement over by the end of the week.`
+            : `\n\nIf you'd like to continue working together, I'm happy to put together renewal terms — same scope, updated scope, whatever makes sense for where you're at. Let me know if a quick call makes sense.`;
+        const email = `Subject: Renewing ${projectOrRetainer}
+
+Hi ${clientName},
+
+${projectOrRetainer.charAt(0).toUpperCase() + projectOrRetainer.slice(1)} wraps up on ${currentEndDate} and I wanted to get in touch before it expires.${highlightLine}${renewalBlock}
+
+Let me know either way — no pressure if the timing isn't right.
 
 ${yourName}`;
         return {
