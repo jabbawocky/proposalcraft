@@ -1645,8 +1645,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
-            name: "scope_change_email",
-            description: "Write the email sent when a client requests work that falls outside the original agreement — formally notifies them that the change is outside scope, states the additional cost and/or time required, and invites them to approve before work proceeds. Calm, firm, and collaborative — not a complaint or an invoice ambush. Prevents unpaid overruns and positions the extra work as a natural next step rather than a confrontation. Distinct from revision_response_email (pushing back on excess revisions within scope) and budget_update_email (budget changes driven by cost factors rather than scope expansion). Does not count against your monthly draft limit.",
+            name: "late_payment_reminder",
+            description: "Write a professional overdue-payment reminder when a client has not paid an invoice by the due date. States the invoice details clearly, keeps the tone firm but not hostile, and gives a direct path to pay. A second-reminder variant adds a firmer note about next steps (late fee, pausing work). Distinct from invoice_cover_email (accompanying a fresh invoice) and deposit_request_email (requesting upfront payment). Does not count against your monthly draft limit.",
             inputSchema: {
                 type: "object",
                 properties: {
@@ -1654,36 +1654,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                         type: "string",
                         description: "First name or full name of the client",
                     },
-                    project_name: {
+                    invoice_number: {
                         type: "string",
-                        description: "Name of the project",
+                        description: "Invoice reference number (e.g. 'INV-042', '#2024-07')",
                     },
-                    change_requested: {
+                    amount: {
                         type: "string",
-                        description: "Description of what the client has asked for that is outside the original scope (e.g. 'adding a fourth page to the website', 'rewriting the mobile app flow in addition to desktop')",
+                        description: "The overdue amount as a string (e.g. '$1,200', '£850')",
                     },
-                    original_scope: {
+                    due_date: {
                         type: "string",
-                        description: "Brief description of what was originally agreed, to anchor the conversation (e.g. 'three-page website', 'desktop UI only')",
+                        description: "The original due date (e.g. 'June 5', '5 June 2026')",
                     },
-                    additional_cost: {
+                    days_overdue: {
+                        type: "number",
+                        description: "How many days past the due date the invoice is (e.g. 7, 14, 30)",
+                    },
+                    payment_link: {
                         type: "string",
-                        description: "The extra cost for this change, as a string (e.g. '£450', '$600', '£200–£350 depending on final requirements')",
+                        description: "A direct payment link or portal URL if you have one",
                     },
-                    additional_time: {
-                        type: "string",
-                        description: "Extra time the change will require (e.g. '3 additional days', 'one extra week', 'pushed delivery to 30 June')",
-                    },
-                    offer_proceed: {
+                    is_second_reminder: {
                         type: "boolean",
-                        description: "Whether to offer to proceed once the client approves — defaults to true",
+                        description: "Set to true for a firmer second reminder that mentions next steps (late fee, pausing work) — defaults to false",
                     },
                     your_name: {
                         type: "string",
                         description: "Your name for the sign-off",
                     },
                 },
-                required: ["client_name", "change_requested"],
+                required: ["client_name"],
             },
         },
         {
@@ -4824,36 +4824,37 @@ ${yourName}`;
             content: [{ type: "text", text: email }],
         };
     }
-    if (name === "scope_change_email") {
+    if (name === "late_payment_reminder") {
         const clientName = String(args.client_name);
-        const projectName = args.project_name ? String(args.project_name) : null;
-        const changeRequested = String(args.change_requested);
-        const originalScope = args.original_scope ? String(args.original_scope) : null;
-        const additionalCost = args.additional_cost ? String(args.additional_cost) : null;
-        const additionalTime = args.additional_time ? String(args.additional_time) : null;
-        const offerProceed = args.offer_proceed !== false;
+        const invoiceNumber = args.invoice_number ? String(args.invoice_number) : null;
+        const amount = args.amount ? String(args.amount) : null;
+        const dueDate = args.due_date ? String(args.due_date) : null;
+        const daysOverdue = args.days_overdue ? Number(args.days_overdue) : null;
+        const paymentLink = args.payment_link ? String(args.payment_link) : null;
+        const isSecondReminder = args.is_second_reminder === true;
         const yourName = args.your_name ? String(args.your_name) : "Your name";
-        const projectRef = projectName ? ` on ${projectName}` : "";
-        const scopeRef = originalScope
-            ? ` Our original agreement covered ${originalScope}.`
+        const invoiceRef = invoiceNumber ? ` (${invoiceNumber})` : "";
+        const amountRef = amount ? ` for ${amount}` : "";
+        const dueDateRef = dueDate ? `, which was due on ${dueDate}` : "";
+        const overdueRef = daysOverdue ? ` — now ${daysOverdue} days overdue` : "";
+        const subjectInvoice = invoiceNumber ? `Invoice ${invoiceNumber}` : "Outstanding invoice";
+        const subjectSuffix = isSecondReminder ? " — second notice" : amount ? ` — ${amount} overdue` : " overdue";
+        const paymentLine = paymentLink
+            ? `\nYou can pay online here: ${paymentLink}`
+            : "\nPlease transfer payment at your earliest convenience using the details on the invoice.";
+        const firmingLine = isSecondReminder
+            ? `\n\nIf this isn't resolved in the next few days I'll need to apply the late fee outlined in our agreement and pause any ongoing work until the balance is cleared.`
             : "";
-        const costLine = additionalCost
-            ? `\nThe additional cost for this work is **${additionalCost}**.`
-            : "";
-        const timeLine = additionalTime
-            ? `\nThis would also add **${additionalTime}** to the timeline.`
-            : "";
-        const proceedLine = offerProceed
-            ? `\nHappy to get started on this as soon as you give the go-ahead${additionalCost ? " and confirm the additional fee" : ""} — just reply to this email.`
-            : "";
-        const email = `Subject: Scope change${projectRef}${projectName ? "" : " — " + changeRequested.slice(0, 40)}
+        const exitLine = isSecondReminder
+            ? "\nIf there's a problem with the invoice or you're experiencing a delay, please reply and let me know — I'm happy to discuss it."
+            : "\nIf there's been an oversight or you're experiencing a delay, just let me know.";
+        const email = `Subject: ${subjectInvoice}${subjectSuffix}
 
 Hi ${clientName},
 
-Thanks for the note.${scopeRef} The work you've described — ${changeRequested} — falls outside the original scope, so I wanted to flag that before proceeding rather than surprise you later.${costLine}${timeLine}
-${proceedLine}
+Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outstanding${overdueRef}.${paymentLine}${firmingLine}
 
-Let me know how you'd like to handle it.
+${exitLine}
 
 ${yourName}`;
         return {
