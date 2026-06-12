@@ -2056,6 +2056,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_name", "what_you_need"],
             },
         },
+        {
+            name: "project_completion_email",
+            description: "Write a professional email to a client when you deliver the final output and close out a project. Confirms what's been delivered, thanks the client, and optionally asks for a testimonial and points toward future work. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project name or description (e.g. 'the website redesign', 'your brand identity')",
+                    },
+                    what_you_delivered: {
+                        type: "string",
+                        description: "What you are handing over — be specific (e.g. 'the final logo files and brand guide', 'the live website and all source files', 'the completed reports and raw data export')",
+                    },
+                    delivery_location: {
+                        type: "string",
+                        description: "Optional: where you are sending or where they can find the deliverables (e.g. 'attached', 'in the shared Dropbox folder', 'via the WeTransfer link below')",
+                    },
+                    highlight: {
+                        type: "string",
+                        description: "Optional: one thing you are particularly proud of or want to call out (e.g. 'the mobile animations turned out especially well', 'the new flow cut checkout steps from 6 to 2')",
+                    },
+                    testimonial_request: {
+                        type: "boolean",
+                        description: "Optional: whether to include a brief ask for a testimonial or review (default true). Set false to omit.",
+                    },
+                    future_work: {
+                        type: "string",
+                        description: "Optional: mention of potential next steps or future work (e.g. 'I would love to help with the next phase', 'if you ever need ongoing support, I am available')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "what_you_delivered"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -4740,6 +4782,42 @@ Hi ${clientName},
 ${projectOrRetainer.charAt(0).toUpperCase() + projectOrRetainer.slice(1)} wraps up on ${currentEndDate} and I wanted to get in touch before it expires.${highlightLine}${renewalBlock}
 
 Let me know either way — no pressure if the timing isn't right.
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "project_completion_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const whatYouDelivered = String(args.what_you_delivered);
+        const deliveryLocation = args.delivery_location ? String(args.delivery_location) : null;
+        const highlight = args.highlight ? String(args.highlight) : null;
+        const testimonialRequest = args.testimonial_request !== false;
+        const futureWork = args.future_work ? String(args.future_work) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const deliveryLine = deliveryLocation
+            ? ` You will find ${whatYouDelivered} ${deliveryLocation}.`
+            : ` I have included ${whatYouDelivered}.`;
+        const highlightLine = highlight
+            ? `\n\n${highlight.charAt(0).toUpperCase() + highlight.slice(1)}.`
+            : "";
+        const testimonialLine = testimonialRequest
+            ? `\n\nIf you are happy with the work, I would really appreciate a short testimonial — even a couple of sentences means a lot and helps me a great deal.`
+            : "";
+        const futureLine = futureWork
+            ? `\n\n${futureWork.charAt(0).toUpperCase() + futureWork.slice(1)}.`
+            : "";
+        const email = `Subject: ${projectName} — all done
+
+Hi ${clientName},
+
+${projectName.charAt(0).toUpperCase() + projectName.slice(1)} is complete.${deliveryLine}${highlightLine}
+
+It has been a pleasure working with you on this — thank you for being such a great client.${testimonialLine}${futureLine}
+
+Wishing you all the best with it.
 
 ${yourName}`;
         return {
