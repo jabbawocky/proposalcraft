@@ -1743,6 +1743,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "referral_thank_you",
+      description:
+        "Write a warm, specific thank-you to someone who sent you a referral. Three modes based on where things stand: 'intro' (you've just been introduced, haven't connected yet), 'had_call' (you've spoken with the referral), or 'won_project' (you landed the work — the warmest thank-you). Most freelancers skip this entirely and miss a key moment to strengthen the referral relationship. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          referrer_name: {
+            type: "string",
+            description: "First name of the person who sent the referral",
+          },
+          referred_name: {
+            type: "string",
+            description: "First name of the person they referred you to",
+          },
+          outcome: {
+            type: "string",
+            enum: ["intro", "had_call", "won_project"],
+            description: "Where things stand: 'intro' = just been introduced; 'had_call' = had a great call; 'won_project' = landed the work. Defaults to 'intro'.",
+          },
+          project_type: {
+            type: "string",
+            description: "Optional: brief description of the project or context (e.g. 'the branding work', 'a web project', 'a consulting engagement'). Makes the email feel specific rather than generic.",
+          },
+          reciprocate: {
+            type: "boolean",
+            description: "Optional: if true, adds an offer to return the favour — refer them back if the opportunity comes up. Default: true.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["referrer_name", "referred_name"],
+      },
+    },
+    {
       name: "no_response_closure_email",
       description:
         "Write the 'just closing the loop' email to a prospect who has gone dark after one or more follow-ups. Counter-intuitively, this email often gets a reply when earlier follow-ups didn't — it removes pressure, gives a clear out, and makes it easy for the prospect to re-engage if timing changes later. Calm, friendly, no guilt-tripping, under 80 words. Does not count against your monthly draft limit.",
@@ -4603,6 +4639,41 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "referral_thank_you") {
+    const referrerName = String(args!.referrer_name);
+    const referredName = String(args!.referred_name);
+    const outcome = args!.outcome ? String(args!.outcome) : "intro";
+    const projectType = args!.project_type ? String(args!.project_type) : null;
+    const reciprocate = args!.reciprocate !== false;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectLine = projectType ? ` on ${projectType}` : "";
+    const reciprocateLine = reciprocate
+      ? `\n\nIf I ever come across someone who'd be a good fit for what you do, I'll make sure to return the favour.`
+      : "";
+
+    let body: string;
+    if (outcome === "won_project") {
+      body = `Just wanted to let you know — I ended up working with ${referredName}${projectLine}. Really appreciate you making that introduction. It meant a lot that you thought of me.${reciprocateLine}`;
+    } else if (outcome === "had_call") {
+      body = `Had a great call with ${referredName} — really glad you made the introduction. Whatever comes of it, I appreciate you thinking of me.${reciprocateLine}`;
+    } else {
+      body = `Just reached out to ${referredName} — thanks so much for the introduction. I really appreciate you thinking of me${projectLine ? ` for ${projectType}` : ""}.${reciprocateLine}`;
+    }
+
+    const email = `Subject: Thank you for the intro
+
+Hi ${referrerName},
+
+${body}
 
 ${yourName}`;
 
