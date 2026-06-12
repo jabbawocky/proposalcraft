@@ -1743,6 +1743,55 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "onboarding_questionnaire",
+      description:
+        "Write the onboarding questionnaire email sent to a new client right after they sign the contract. Gathers everything you need to start work: goals, target audience, brand assets, access credentials, tone/style preferences, examples they like or dislike, key contacts, and approval workflow. Includes optional custom questions for project-specific needs. Avoids the back-and-forth that slows down project starts and sets a professional tone from day one. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project",
+          },
+          due_date: {
+            type: "string",
+            description:
+              "Date by which you need the questionnaire returned (e.g. 'Friday 20 June', 'by end of week')",
+          },
+          kickoff_date: {
+            type: "string",
+            description:
+              "Planned project kickoff or start date — used to frame why the deadline matters",
+          },
+          access_needed: {
+            type: "string",
+            description:
+              "Specific access or credentials you'll need (e.g. 'CMS login, Google Analytics, brand asset folder')",
+          },
+          brand_assets_needed: {
+            type: "boolean",
+            description:
+              "Whether to ask for brand assets (logo, fonts, colours, guidelines) — defaults to true",
+          },
+          custom_questions: {
+            type: "array",
+            items: { type: "string" },
+            description:
+              "Any project-specific questions to append (e.g. 'Who is the primary approver for copy?', 'Do you have existing customer personas?')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name"],
+      },
+    },
+    {
       name: "portfolio_request_email",
       description:
         "Write the email asking a past client for permission to feature their project in your portfolio, website, or case studies. Specifies exactly what you want to show, where it will appear, and offers them a preview before it goes live. Gives an easy out if they'd rather not — or offers to anonymise the work instead. Distinct from testimonial_request (asking for a quote) and case_study_outline (writing the case study itself) — this is the consent ask that must happen first. Does not count against your monthly draft limit.",
@@ -5051,6 +5100,69 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "onboarding_questionnaire") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const dueDate = args!.due_date ? String(args!.due_date) : null;
+    const kickoffDate = args!.kickoff_date ? String(args!.kickoff_date) : null;
+    const accessNeeded = args!.access_needed ? String(args!.access_needed) : null;
+    const brandAssetsNeeded = args!.brand_assets_needed !== false;
+    const customQuestions: string[] = Array.isArray(args!.custom_questions)
+      ? (args!.custom_questions as string[]).map(String)
+      : [];
+    const yourName = args!.your_name ? String(args!.your_name) : "Your name";
+
+    const deadlineLine = dueDate
+      ? `Could you send your answers back by **${dueDate}**?${kickoffDate ? ` That keeps us on track for our ${kickoffDate} start.` : ""}`
+      : kickoffDate
+      ? `Could you send your answers back before our ${kickoffDate} kickoff?`
+      : "Could you send your answers back by end of this week so we can hit the ground running?";
+
+    const accessLine = accessNeeded
+      ? `\n**Access & credentials needed:**\n${accessNeeded}\n\n(If you use a password manager, you can share securely via that — or let me know your preferred method.)\n`
+      : "";
+
+    const brandLine = brandAssetsNeeded
+      ? `**Brand assets:**\n- Logo files (SVG or high-res PNG if available)\n- Brand colours (hex codes if you have them)\n- Fonts in use\n- Any brand guidelines or style guide\n\n`
+      : "";
+
+    const customLines =
+      customQuestions.length > 0
+        ? `**A few project-specific questions:**\n${customQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n")}\n\n`
+        : "";
+
+    const email = `Subject: ${projectName} — quick onboarding questions
+
+Hi ${clientName},
+
+Excited to get started on ${projectName}. To hit the ground running and avoid back-and-forth once we're underway, I'd love to get a few things from you upfront.
+
+**About the project:**
+1. What does success look like for this project — what's the single most important outcome?
+2. Who is the primary audience? (Demographics, role, what they care about most.)
+3. Are there any constraints I should know about? (Deadlines, stakeholders who need sign-off, anything off-limits.)
+
+**Tone and style:**
+4. How would you describe the voice/tone you're going for? (Three adjectives work well here.)
+5. Any examples of work you love — from your own brand or elsewhere?
+6. Anything you've seen that definitely *doesn't* fit the direction you want?
+
+${brandLine}**Approvals and comms:**
+7. Who's the main point of contact for feedback and approvals on this project?
+8. What's your preferred way to share feedback — email, comments in a doc, a tool like Notion?
+9. Is there a maximum turnaround time I should plan around for your review rounds?
+
+${accessLine}${customLines}${deadlineLine}
+
+No need for a long answer on every question — bullet points are fine. Once I have your responses I'll start work straight away.
 
 ${yourName}`;
 
