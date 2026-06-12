@@ -1743,6 +1743,54 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "scope_change_email",
+      description:
+        "Write the email sent when a client requests work that falls outside the original agreement — formally notifies them that the change is outside scope, states the additional cost and/or time required, and invites them to approve before work proceeds. Calm, firm, and collaborative — not a complaint or an invoice ambush. Prevents unpaid overruns and positions the extra work as a natural next step rather than a confrontation. Distinct from revision_response_email (pushing back on excess revisions within scope) and budget_update_email (budget changes driven by cost factors rather than scope expansion). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project",
+          },
+          change_requested: {
+            type: "string",
+            description:
+              "Description of what the client has asked for that is outside the original scope (e.g. 'adding a fourth page to the website', 'rewriting the mobile app flow in addition to desktop')",
+          },
+          original_scope: {
+            type: "string",
+            description:
+              "Brief description of what was originally agreed, to anchor the conversation (e.g. 'three-page website', 'desktop UI only')",
+          },
+          additional_cost: {
+            type: "string",
+            description:
+              "The extra cost for this change, as a string (e.g. '£450', '$600', '£200–£350 depending on final requirements')",
+          },
+          additional_time: {
+            type: "string",
+            description:
+              "Extra time the change will require (e.g. '3 additional days', 'one extra week', 'pushed delivery to 30 June')",
+          },
+          offer_proceed: {
+            type: "boolean",
+            description:
+              "Whether to offer to proceed once the client approves — defaults to true",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "change_requested"],
+      },
+    },
+    {
       name: "unclear_brief_email",
       description:
         "Write the email sent when a client's brief is too vague to start work safely — asks targeted clarifying questions before time is spent. Lists the specific unclear points concisely, explains why each matters (to avoid rework or surprises), and offers a quick call if it's easier than written answers. Professional and collaborative in tone — not a complaint, not a lecture. Prevents scope creep and misaligned deliverables from the start. Distinct from scope_change_email (used mid-project when scope expands) and revision_response_email (used after client feedback). Does not count against your monthly draft limit.",
@@ -5139,6 +5187,49 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "scope_change_email") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const changeRequested = String(args!.change_requested);
+    const originalScope = args!.original_scope ? String(args!.original_scope) : null;
+    const additionalCost = args!.additional_cost ? String(args!.additional_cost) : null;
+    const additionalTime = args!.additional_time ? String(args!.additional_time) : null;
+    const offerProceed = args!.offer_proceed !== false;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your name";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const scopeRef = originalScope
+      ? ` Our original agreement covered ${originalScope}.`
+      : "";
+
+    const costLine = additionalCost
+      ? `\nThe additional cost for this work is **${additionalCost}**.`
+      : "";
+
+    const timeLine = additionalTime
+      ? `\nThis would also add **${additionalTime}** to the timeline.`
+      : "";
+
+    const proceedLine = offerProceed
+      ? `\nHappy to get started on this as soon as you give the go-ahead${additionalCost ? " and confirm the additional fee" : ""} — just reply to this email.`
+      : "";
+
+    const email = `Subject: Scope change${projectRef}${projectName ? "" : " — " + changeRequested.slice(0, 40)}
+
+Hi ${clientName},
+
+Thanks for the note.${scopeRef} The work you've described — ${changeRequested} — falls outside the original scope, so I wanted to flag that before proceeding rather than surprise you later.${costLine}${timeLine}
+${proceedLine}
+
+Let me know how you'd like to handle it.
 
 ${yourName}`;
 
