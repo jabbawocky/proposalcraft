@@ -1743,6 +1743,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "introduction_email",
+      description:
+        "Write the reply-all when a mutual contact introduces you to a potential client over email. A specific, high-stakes email: the introducer is on CC, so you need to acknowledge them briefly while making a strong direct impression on the prospect — all in under 120 words. Fills the workflow gap between a referral and the discovery call. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          prospect_name: {
+            type: "string",
+            description: "First name of the person you're being introduced to",
+          },
+          introducer_name: {
+            type: "string",
+            description: "First name of the mutual contact who made the introduction (they'll be on CC)",
+          },
+          your_specialty: {
+            type: "string",
+            description: "What you do — one line (e.g. 'freelance web developer', 'brand strategist', 'copywriter for SaaS companies')",
+          },
+          their_context: {
+            type: "string",
+            description: "Optional: what you know about their situation or need (e.g. 'you're looking for help with a product launch', 'you need a new website before the summer'). Makes the email feel specific rather than generic.",
+          },
+          proposed_next_step: {
+            type: "string",
+            description: "Optional: what you want to happen next (e.g. 'a 20-minute call this week', 'a quick call to learn more about the project'). Defaults to suggesting a call.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["prospect_name", "introducer_name", "your_specialty"],
+      },
+    },
+    {
       name: "referral_thank_you",
       description:
         "Write a warm, specific thank-you to someone who sent you a referral. Three modes based on where things stand: 'intro' (you've just been introduced, haven't connected yet), 'had_call' (you've spoken with the referral), or 'won_project' (you landed the work — the warmest thank-you). Most freelancers skip this entirely and miss a key moment to strengthen the referral relationship. Does not count against your monthly draft limit.",
@@ -4639,6 +4674,35 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "introduction_email") {
+    const prospectName = String(args!.prospect_name);
+    const introducerName = String(args!.introducer_name);
+    const yourSpecialty = String(args!.your_specialty);
+    const theirContext = args!.their_context ? String(args!.their_context) : null;
+    const proposedNextStep = args!.proposed_next_step ? String(args!.proposed_next_step) : "a quick call to learn more about what you're working on";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const contextLine = theirContext
+      ? `\n\nI understand ${theirContext} — that's exactly the kind of work I focus on.`
+      : "";
+
+    const email = `Subject: Re: Introduction
+
+Thanks for the intro, ${introducerName} — I'll take it from here.
+
+Hi ${prospectName},
+
+Great to meet you. I'm a ${yourSpecialty}.${contextLine}
+
+Would you be up for ${proposedNextStep}? Happy to work around your schedule.
 
 ${yourName}`;
 
