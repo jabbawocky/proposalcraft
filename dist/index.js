@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.7" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.8" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -1642,6 +1642,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name", "deposit_amount"],
+            },
+        },
+        {
+            name: "client_waiting_email",
+            description: "Write a professional email to a client who hasn't delivered what they promised — assets, feedback, sign-off, content — and the project is blocked waiting on them. Keeps the tone factual and non-accusatory: the goal is to get what you need, not to assign blame. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project name or description (e.g. 'the website redesign', 'your rebrand')",
+                    },
+                    what_you_need: {
+                        type: "string",
+                        description: "What you are waiting on — be specific (e.g. 'the approved copy for the homepage', 'your sign-off on the wireframes', 'the brand logo files')",
+                    },
+                    days_waiting: {
+                        type: "number",
+                        description: "Optional: how many days you have been waiting (e.g. 5). Used to calibrate the tone.",
+                    },
+                    original_deadline: {
+                        type: "string",
+                        description: "Optional: when the client said they would deliver it (e.g. 'last Friday', 'June 10th', 'end of last week')",
+                    },
+                    impact: {
+                        type: "string",
+                        description: "Optional: what this delay blocks or affects (e.g. 'the launch date', 'the development sprint starting Monday', 'handing the final files over')",
+                    },
+                    new_deadline: {
+                        type: "string",
+                        description: "Optional: the specific date you need it by to stay on schedule (e.g. 'by Thursday EOD', 'by June 16th')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "what_you_need"],
             },
         },
     ],
@@ -3981,6 +4023,45 @@ ${yourName}`;
                     text: email,
                 },
             ],
+        };
+    }
+    if (name === "client_waiting_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const whatYouNeed = String(args.what_you_need);
+        const daysWaiting = args.days_waiting ? Number(args.days_waiting) : null;
+        const originalDeadline = args.original_deadline ? String(args.original_deadline) : null;
+        const impact = args.impact ? String(args.impact) : null;
+        const newDeadline = args.new_deadline ? String(args.new_deadline) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        let waitingLine;
+        if (daysWaiting && originalDeadline) {
+            waitingLine = `I'm still waiting on ${whatYouNeed}, which was due ${originalDeadline} — that's ${daysWaiting} day${daysWaiting === 1 ? "" : "s"} ago now.`;
+        }
+        else if (originalDeadline) {
+            waitingLine = `I'm still waiting on ${whatYouNeed} — you mentioned ${originalDeadline} as the delivery date and I haven't received it yet.`;
+        }
+        else if (daysWaiting) {
+            waitingLine = `I'm still waiting on ${whatYouNeed}. It's been ${daysWaiting} day${daysWaiting === 1 ? "" : "s"} since I last flagged this.`;
+        }
+        else {
+            waitingLine = `I'm still waiting on ${whatYouNeed} and wanted to follow up before it causes any knock-on issues.`;
+        }
+        const impactLine = impact
+            ? `\n\nWithout it, I can't move forward with ${impact} — so the sooner I have it, the better.`
+            : "\n\nI can't move to the next stage until I have it, so I wanted to flag it before it affects the schedule.";
+        const deadlineLine = newDeadline
+            ? `\n\nIf you can get it to me by ${newDeadline}, I can keep everything on track. If that's not going to work, let me know and we can talk through the options.`
+            : "\n\nIf there's a hold-up on your end, just let me know — I'd rather know now than find out when it affects the timeline.";
+        const email = `Subject: ${projectName} — waiting on you
+
+Hi ${clientName},
+
+${waitingLine}${impactLine}${deadlineLine}
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
         };
     }
     throw new Error(`Unknown tool: ${name}`);
