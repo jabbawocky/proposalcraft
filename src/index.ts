@@ -1743,6 +1743,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "no_response_closure_email",
+      description:
+        "Write the 'just closing the loop' email to a prospect who has gone dark after one or more follow-ups. Counter-intuitively, this email often gets a reply when earlier follow-ups didn't — it removes pressure, gives a clear out, and makes it easy for the prospect to re-engage if timing changes later. Calm, friendly, no guilt-tripping, under 80 words. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          prospect_name: {
+            type: "string",
+            description: "The prospect's first name",
+          },
+          project_or_context: {
+            type: "string",
+            description: "What you were discussing (e.g. 'the website redesign', 'the branding project', 'working together on your launch')",
+          },
+          keep_door_open: {
+            type: "boolean",
+            description: "Optional: if true, explicitly mention they're welcome to get in touch when timing is better. Default: true.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["prospect_name", "project_or_context"],
+      },
+    },
+    {
       name: "price_quote_email",
       description:
         "Write a short, confident email sending a price quote or estimate to a prospective client. For situations where a full formal proposal isn't needed — quick projects, hourly work, or a client who just asked 'how much?' Covers: the work, the price, what's included, and a clear next step. Does not count against your monthly draft limit.",
@@ -4576,6 +4603,31 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "no_response_closure_email") {
+    const prospectName = String(args!.prospect_name);
+    const projectOrContext = String(args!.project_or_context);
+    const keepDoorOpen = args!.keep_door_open !== false;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const doorLine = keepDoorOpen
+      ? `\n\nIf the timing changes down the line, feel free to get in touch — happy to pick up the conversation whenever it makes sense.`
+      : "";
+
+    const email = `Subject: Closing the loop
+
+Hi ${prospectName},
+
+I've tried reaching out a couple of times about ${projectOrContext} and haven't heard back, so I'll assume the timing isn't right and won't follow up again.
+
+No hard feelings at all — these things don't always line up.${doorLine}
 
 ${yourName}`;
 
