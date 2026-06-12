@@ -1645,6 +1645,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "project_handover_email",
+            description: "Write the email that delivers final project files to a client. Distinct from project_closure_email (which handles the relationship close and testimonial ask) — this is the practical handover: here are your files, here's what's included, here's what you need to do next. Sends with the final deliverables attached or linked. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    deliverables: {
+                        type: "string",
+                        description: "What you're handing over — list the files, assets, or items (e.g. 'final logo files (SVG, PNG, PDF), brand guidelines PDF, and font licences', 'the completed website, admin login, and documentation')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name (e.g. 'the brand identity project', 'your new website')",
+                    },
+                    access_instructions: {
+                        type: "string",
+                        description: "Optional: any login credentials, access links, or transfer instructions the client needs (e.g. 'I've transferred ownership of the Figma file to your email', 'admin login details are in the attached doc')",
+                    },
+                    support_period: {
+                        type: "string",
+                        description: "Optional: any included post-handover support window (e.g. '7 days of minor amends', '2 weeks of questions via email')",
+                    },
+                    next_steps_for_client: {
+                        type: "string",
+                        description: "Optional: what the client needs to do after receiving the files (e.g. 'let me know if anything needs adjusting once you've had a chance to review', 'your developer can now start implementation using the Figma file')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "deliverables"],
+            },
+        },
+        {
             name: "invoice_cover_email",
             description: "Write the short professional email that accompanies a sent invoice. Most freelancers attach invoices to a blank or one-line email — this tool generates the cover email that frames the invoice, states the amount and due date, and gives the client a clear next step. Under 80 words. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4508,6 +4546,37 @@ I wanted to flag something before we get too deep into it. ${contextLine}${impac
 I'm not raising this to be difficult — I just want us to be on the same page so there are no surprises at the end.${optionsBlock}
 
 Either way works for me. Let me know what you'd prefer and we can sort it quickly.
+
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "project_handover_email") {
+        const clientName = String(args.client_name);
+        const deliverables = String(args.deliverables);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const accessInstructions = args.access_instructions ? String(args.access_instructions) : null;
+        const supportPeriod = args.support_period ? String(args.support_period) : null;
+        const nextStepsForClient = args.next_steps_for_client ? String(args.next_steps_for_client) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectName ? ` for ${projectName}` : "";
+        const accessLine = accessInstructions ? `\n\n${accessInstructions}.` : "";
+        const supportLine = supportPeriod
+            ? `\n\nI'm available for ${supportPeriod} if anything needs adjusting.`
+            : "";
+        const nextStepsLine = nextStepsForClient
+            ? `\n\n${nextStepsForClient.charAt(0).toUpperCase() + nextStepsForClient.slice(1)}.`
+            : "\n\nLet me know once you've had a chance to look everything over.";
+        const email = `Subject: Final files${projectLine ? ` — ${projectName}` : ""}
+
+Hi ${clientName},
+
+Everything is ready — please find the final files${projectLine} attached.
+
+What's included: ${deliverables}.${accessLine}${supportLine}${nextStepsLine}
+
+It's been a pleasure working with you on this.
 
 ${yourName}`;
         return {
