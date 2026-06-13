@@ -3011,6 +3011,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "expense_description", "amount"],
       },
     },
+    {
+      name: "meeting_cancellation_email",
+      description:
+        "Write a professional email to cancel or reschedule a meeting. Required: client_name, meeting_description (e.g. 'our Thursday check-in call', 'the kick-off meeting on Friday'). Optional: reason (brief, honest one-line — omit if no clean reason), action (default 'cancel' — use 'reschedule' to propose a new time), new_time (proposed replacement slot if rescheduling, e.g. 'next Tuesday at 2pm'), your_name. Pairs with meeting_request_email (scheduling) and meeting_recap_email (after a meeting that did take place). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          meeting_description: {
+            type: "string",
+            description: "Brief description of the meeting being cancelled or rescheduled (e.g. 'our Thursday check-in call', 'the kick-off meeting scheduled for Friday at 10am', 'tomorrow's review call')",
+          },
+          reason: {
+            type: "string",
+            description: "Optional one-sentence reason for the cancellation (e.g. 'a scheduling conflict has come up', 'I have been unwell and need to reschedule', 'something urgent has arisen on another project'). If omitted, the email apologises without giving a reason — professional and always appropriate.",
+          },
+          action: {
+            type: "string",
+            enum: ["cancel", "reschedule"],
+            description: "Whether you are cancelling outright ('cancel') or proposing to reschedule ('reschedule'). Default: 'cancel'.",
+          },
+          new_time: {
+            type: "string",
+            description: "Proposed replacement time if rescheduling (e.g. 'next Tuesday at 2pm', 'any time next week that works for you', 'Thursday or Friday afternoon'). Omit if action is 'cancel' or if you want to leave it open.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "meeting_description"],
+      },
+    },
   ],
 }));
 
@@ -6885,6 +6921,54 @@ Hi ${clientName},
 I wanted to flag a project expense I have incurred on your behalf: ${expenseDescription}${projectRef}, totalling ${amount}.${receiptLine}${paymentLine}
 
 Happy to answer any questions about this.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "meeting_cancellation_email") {
+    const clientName = String(args!.client_name);
+    const meetingDescription = String(args!.meeting_description);
+    const reason = args!.reason ? String(args!.reason) : null;
+    const action = args!.action === "reschedule" ? "reschedule" : "cancel";
+    const newTime = args!.new_time ? String(args!.new_time) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const reasonLine = reason ? ` — ${reason}` : "";
+    const apologyLine = reason
+      ? `I'm sorry for any inconvenience this causes.`
+      : `I'm sorry for any disruption to your schedule.`;
+
+    if (action === "reschedule") {
+      const rescheduleClose = newTime
+        ? `Would ${newTime} work for you? If not, let me know a few times that suit and I'll find a slot that works.`
+        : `Could you share a few times that work for you next week? I'll confirm as soon as possible.`;
+
+      const subject = `Subject: Rescheduling — ${meetingDescription}`;
+
+      const email = `${subject}
+
+Hi ${clientName},
+
+I need to reschedule ${meetingDescription}${reasonLine}. ${apologyLine}
+
+${rescheduleClose}
+
+${yourName}`;
+
+      return { content: [{ type: "text", text: email }] };
+    }
+
+    const subject = `Subject: Cancelling — ${meetingDescription}`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+I need to cancel ${meetingDescription}${reasonLine}. ${apologyLine}
+
+Please let me know if you would like to rearrange at a later date — I am happy to find a time that works.
 
 ${yourName}`;
 
