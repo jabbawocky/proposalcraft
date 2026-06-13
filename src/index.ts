@@ -1787,6 +1787,46 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "client_feedback_response_email",
+      description:
+        "Write the professional reply to critical or negative mid-project feedback from a client. Three response modes: 'accept' (default — feedback is valid, you acknowledge it and state your action plan), 'clarify' (there's a misunderstanding that needs resolving before you can act — asks one focused clarifying question without being defensive), 'discuss' (feedback is complex or directional enough that a call is needed to align properly). Distinct from revision_response_email (specific change requests like 'change the font' or 'rewrite section 2') — this is for qualitative, directional, or emotional feedback ('this doesn't feel right', 'I'm disappointed with the direction', 'this isn't what I was expecting'). Most freelancers either get defensive, over-apologise, or go silent — this is the professional middle path: acknowledges the concern, shows you heard them, and keeps the project moving forward. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          feedback_summary: {
+            type: "string",
+            description: "One sentence capturing what the client said (e.g. 'they said the overall direction feels off and not what they envisioned', 'they expressed disappointment with the visual style')",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project",
+          },
+          response_mode: {
+            type: "string",
+            enum: ["accept", "clarify", "discuss"],
+            description: "How to respond: 'accept' (valid feedback, you'll address it — default), 'clarify' (misunderstanding needs resolving first), 'discuss' (complex enough to warrant a call)",
+          },
+          action_plan: {
+            type: "string",
+            description: "What you'll do to address the feedback (used in 'accept' mode — e.g. 'revisit the colour palette and send two alternative directions by Thursday')",
+          },
+          clarification_question: {
+            type: "string",
+            description: "The single most important question to ask (used in 'clarify' mode — e.g. 'were you expecting a more minimal layout, or is it the content hierarchy that feels off?')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "feedback_summary"],
+      },
+    },
+    {
       name: "price_increase_email",
       description:
         "Write the email notifying a long-term client that your rates are increasing. One of the hardest emails a freelancer writes — most either avoid it entirely (and undercharge for years) or frame it apologetically (which invites pushback). This email is confident, warm, and forward-looking: gives clear notice (typically 30–60 days), states the new rate plainly, optionally anchors it in specific value delivered, and closes with an offer to discuss. Distinct from budget_proposal (negotiating a project price before signing), discount_request_response (responding to a client's pushback on price), and budget_update_email (explaining a cost overrun on a current project) — this is the proactive rate change communication to an ongoing client or retainer. Does not count against your monthly draft limit.",
@@ -5475,6 +5515,59 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "client_feedback_response_email") {
+    const clientName = String(args!.client_name);
+    const feedbackSummary = String(args!.feedback_summary);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const responseMode = args!.response_mode ? String(args!.response_mode) : "accept";
+    const actionPlan = args!.action_plan ? String(args!.action_plan) : null;
+    const clarificationQuestion = args!.clarification_question ? String(args!.clarification_question) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your Name";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+
+    let body: string;
+
+    if (responseMode === "clarify") {
+      const question = clarificationQuestion
+        ? clarificationQuestion
+        : "could you help me understand which specific aspect isn't landing as expected?";
+      body = `Thanks for flagging this${projectRef} — I'd rather hear it now than later, so I appreciate you saying something.
+
+Before I dive in and make changes, I want to make sure I'm addressing the right thing: ${question}
+
+Once I understand that, I can give you a concrete plan for where we go from here.`;
+    } else if (responseMode === "discuss") {
+      body = `Thanks for being direct about this${projectRef} — that's exactly the kind of feedback I need to hear early.
+
+I think this warrants a proper conversation rather than a back-and-forth over email. Could we find 20–30 minutes this week to talk through it? I want to make sure I fully understand what you're looking for so I can get this right.
+
+Happy to work around your schedule — just let me know what works.`;
+    } else {
+      const plan = actionPlan
+        ? `\n\nHere's what I'll do: ${actionPlan}.`
+        : `\n\nLet me take another look with fresh eyes and come back to you with a revised approach.`;
+      body = `Thanks for telling me — I'd much rather hear this now than at the end.
+
+I hear you: ${feedbackSummary}. That's useful, and I take it seriously.${plan}
+
+I'll be in touch shortly. If anything else comes to mind in the meantime, please send it through.`;
+    }
+
+    const email = `Subject: Re: ${projectName ?? "Your feedback"}
+
+Hi ${clientName},
+
+${body}
+
+Best,
 ${yourName}`;
 
     return {
