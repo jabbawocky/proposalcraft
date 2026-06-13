@@ -3234,6 +3234,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "new_service"],
       },
     },
+    {
+      name: "project_go_live_email",
+      description:
+        "Write a short celebratory email to a client when their project goes live — website launch, app release, campaign drop, product ship. Different from project_completion_email (the handover) and project_closure_email (the relationship wrap-up) — this is the real-world moment when the thing you built together is in front of real users and getting real results. Under 100 words. Warm, genuine, forward-looking. Positions you as invested in their success, not just the delivery. Natural moment to plant a seed for next work without pitching. Required: client_name, what_went_live. Optional: live_url (shareable link), early_result (any early metric or signal — e.g. '47 sign-ups in the first hour', '200 views in 3 hours'), next_hook (a natural follow-on if something obvious presents itself — e.g. 'once you have a few weeks of traffic data, it would be worth running an A/B test on the hero'), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          what_went_live: {
+            type: "string",
+            description: "What just launched (e.g. 'the new site', 'the iOS app', 'the rebrand campaign', 'the landing page')",
+          },
+          live_url: {
+            type: "string",
+            description: "Optional: the live URL — included as a direct link so the email is shareable and bookmarkable",
+          },
+          early_result: {
+            type: "string",
+            description: "Optional: any early signal or metric worth acknowledging (e.g. '47 sign-ups in the first hour', 'already ranking on page 1 for the target keyword', '200 organic views in 3 hours'). Omit if it's too early for data.",
+          },
+          next_hook: {
+            type: "string",
+            description: "Optional: a natural follow-on suggestion — keep it one sentence, observation-based not pitch-based (e.g. 'once you have a few weeks of traffic data, it would be worth running an A/B test on the hero', 'the next logical step is wiring up the email sequence so every sign-up gets a follow-up'). Omit if nothing obvious presents itself.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "what_went_live"],
+      },
+    },
   ],
 }));
 
@@ -7354,6 +7389,33 @@ Hi ${clientName},
 Wanted to give you a quick heads-up before I mention this more broadly: I've started offering ${newService}.${relevantLine}${proofLine}${offerLine}
 
 No pitch here — just wanted you to know it's available if it's ever useful. Happy to share more detail or jump on a quick call if you want to hear what it looks like in practice.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "project_go_live_email") {
+    const clientName = String(args!.client_name);
+    const whatWentLive = String(args!.what_went_live);
+    const liveUrl = args!.live_url ? String(args!.live_url) : null;
+    const earlyResult = args!.early_result ? String(args!.early_result) : null;
+    const nextHook = args!.next_hook ? String(args!.next_hook) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const urlLine = liveUrl ? `\n\n${liveUrl}` : "";
+    const resultLine = earlyResult ? `\n\n${earlyResult} — great early sign.` : "";
+    const hookLine = nextHook ? `\n\n${nextHook}.` : "";
+
+    const subject = `Subject: ${whatWentLive.charAt(0).toUpperCase() + whatWentLive.slice(1)} is live`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+Just saw ${whatWentLive} go live — congratulations.${urlLine}${resultLine}
+
+It was genuinely good to work on this one. Hope it performs well for you.${hookLine}
 
 ${yourName}`;
 
