@@ -1787,6 +1787,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "project_extension_email",
+      description:
+        "Write the email requesting more time on a project when the agreed deadline can no longer be met — the confirmed ask, not a risk warning. Distinct from project_delay_warning (sent when a deadline is at risk but not yet missed) and late_delivery_apology (sent after you've already missed it): this is the professional middle ground — you know you need more time, you're requesting it before the deadline passes, and you're being specific about the new date. Structure: states the current deadline, requests the specific extension needed, gives a brief honest reason (one sentence), and confirms what will be delivered by the new date. Does not grovel or over-explain. Most freelancers either say nothing until they're late, or send a vague 'I might need a bit more time' — this is the direct, professional ask that respects the client's schedule. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project",
+          },
+          original_deadline: {
+            type: "string",
+            description: "The agreed deadline (e.g. 'Friday 20 June' or 'end of this week')",
+          },
+          new_deadline: {
+            type: "string",
+            description: "The specific new date or timeframe being requested (e.g. 'Wednesday 25 June' or 'the following Monday')",
+          },
+          reason: {
+            type: "string",
+            description: "Brief honest reason for the extension — one sentence (e.g. 'the API integration took longer than anticipated', 'I had an unavoidable client emergency this week')",
+          },
+          deliverable: {
+            type: "string",
+            description: "What you will deliver by the new date (if different from the full project, e.g. 'the first draft', 'the complete build')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "original_deadline", "new_deadline"],
+      },
+    },
+    {
       name: "budget_update_email",
       description:
         "Write the email informing a client that the project will cost more than originally estimated — due to unforeseen technical complexity, third-party cost increases, or scope that proved harder than anticipated. This is distinct from scope_change_email (client requested extra work) and budget_proposal (client said your quote was too high): this is the honest update when your own estimate turns out to be off, and you need to raise the number before proceeding. Structure: clear statement of original vs. updated figure, a brief honest reason (one sentence — not an essay), and a question asking how they'd like to proceed before you go further. Tone: direct and professional, not grovelling or defensive. Most freelancers either absorb the cost silently or surprise clients with a higher invoice — this is the professional middle path that respects the client's budget and your rate. Does not count against your monthly draft limit.",
@@ -5300,6 +5339,39 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "project_extension_email") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const originalDeadline = String(args!.original_deadline);
+    const newDeadline = String(args!.new_deadline);
+    const reason = args!.reason ? String(args!.reason) : null;
+    const deliverable = args!.deliverable ? String(args!.deliverable) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your Name";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const reasonLine = reason ? ` ${reason}.` : "";
+    const deliverableLine = deliverable
+      ? `\n\nI'll have ${deliverable} to you by ${newDeadline}.`
+      : `\n\nI'll have everything to you by ${newDeadline}.`;
+
+    const email = `Subject: Extension request — ${projectName ?? "project deadline"}
+
+Hi ${clientName},
+
+I'm writing to flag a change to the deadline${projectRef}.
+
+Our agreed date is ${originalDeadline}. I'm not going to be able to meet that — I'd like to request an extension to ${newDeadline}.${reasonLine}${deliverableLine}
+
+I wanted to let you know before the deadline rather than after. If the new date causes any problems on your end, let me know and we can discuss how to handle it.
+
+Best,
 ${yourName}`;
 
     return {
