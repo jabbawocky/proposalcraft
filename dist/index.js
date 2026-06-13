@@ -2856,6 +2856,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "pre_meeting_email",
+            description: "Write a short email sent 24 hours before a scheduled meeting to share the agenda and confirm the format. Required: client_name, meeting_description (e.g. 'our discovery call tomorrow at 10am'). Optional: agenda_items (comma-separated list of topics — auto-formatted as a numbered list), meeting_format ('video call', 'phone call', 'in person', etc.), meeting_link (Zoom/Meet/Teams URL), prep_request (one thing you need the client to have ready, e.g. 'your current pricing structure', 'the brief you mentioned'), your_name. Completes the meeting lifecycle: meeting_request_email (scheduling) → pre_meeting_email (day before) → [meeting] → meeting_recap_email (after). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    meeting_description: {
+                        type: "string",
+                        description: "Brief description of the upcoming meeting (e.g. 'our discovery call tomorrow at 10am', 'Thursday\\'s check-in', 'our kick-off call on Friday at 2pm')",
+                    },
+                    agenda_items: {
+                        type: "string",
+                        description: "Comma-separated list of topics you plan to cover (e.g. 'project goals, budget, timeline, next steps'). Auto-formatted as a numbered list. Omit to keep the email simple — useful for informal check-ins.",
+                    },
+                    meeting_format: {
+                        type: "string",
+                        description: "How the meeting will happen — e.g. 'video call', 'phone call', 'in person', 'Google Meet'. Omit if already clear from context.",
+                    },
+                    meeting_link: {
+                        type: "string",
+                        description: "Video call URL (Zoom, Google Meet, Teams, etc.) — included as a direct join link if provided.",
+                    },
+                    prep_request: {
+                        type: "string",
+                        description: "One specific thing you would like the client to have ready before the call (e.g. 'your current proposal process or any examples of briefs you typically receive', 'the draft copy you mentioned', 'your brand guidelines if you have them'). Omit if nothing specific is needed.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "meeting_description"],
+            },
+        },
+        {
             name: "meeting_cancellation_email",
             description: "Write a professional email to cancel or reschedule a meeting. Required: client_name, meeting_description (e.g. 'our Thursday check-in call', 'the kick-off meeting on Friday'). Optional: reason (brief, honest one-line — omit if no clean reason), action (default 'cancel' — use 'reschedule' to propose a new time), new_time (proposed replacement slot if rescheduling, e.g. 'next Tuesday at 2pm'), your_name. Pairs with meeting_request_email (scheduling) and meeting_recap_email (after a meeting that did take place). Does not count against your monthly draft limit.",
             inputSchema: {
@@ -6416,6 +6454,37 @@ Hi ${clientName},
 I need to cancel ${meetingDescription}${reasonLine}. ${apologyLine}
 
 Please let me know if you would like to rearrange at a later date — I am happy to find a time that works.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "pre_meeting_email") {
+        const clientName = String(args.client_name);
+        const meetingDescription = String(args.meeting_description);
+        const agendaItems = args.agenda_items ? String(args.agenda_items) : null;
+        const meetingFormat = args.meeting_format ? String(args.meeting_format) : null;
+        const meetingLink = args.meeting_link ? String(args.meeting_link) : null;
+        const prepRequest = args.prep_request ? String(args.prep_request) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const agendaSection = agendaItems
+            ? `\n\nAgenda:\n${agendaItems
+                .split(",")
+                .map((item, i) => `${i + 1}. ${item.trim()}`)
+                .join("\n")}`
+            : "";
+        const formatLine = meetingFormat ? ` (${meetingFormat})` : "";
+        const linkLine = meetingLink ? `\n\nJoin link: ${meetingLink}` : "";
+        const prepLine = prepRequest
+            ? `\n\nIf you have a moment beforehand, it would help to have ${prepRequest} handy — no need to prepare anything formal, just useful context.`
+            : "";
+        const subject = `Subject: Agenda — ${meetingDescription}`;
+        const email = `${subject}
+
+Hi ${clientName},
+
+Looking forward to ${meetingDescription}${formatLine}.${agendaSection}${linkLine}${prepLine}
+
+Let me know if you would like to adjust the agenda or if anything has come up on your end.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
