@@ -1787,6 +1787,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "testimonial_follow_up_email",
+      description:
+        "Write a gentle follow-up when a testimonial request has gone unanswered — sent one to two weeks after the initial testimonial_request. Distinct from testimonial_request (the first ask): this is the nudge that dramatically increases conversion because most clients meant to respond but let it slip. The key technique: offer to write a short draft for them to edit or approve — this removes the blank-page friction that kills most testimonial requests. Under 80 words, no guilt, no pressure. Optional offer_draft param (default true) adds the draft offer, which is the highest-impact line in the email. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project (helps make the email feel specific rather than templated)",
+          },
+          offer_draft: {
+            type: "boolean",
+            description: "Whether to offer to write a short draft for the client to edit (default true — this is the highest-impact offer you can make in a testimonial follow-up)",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
+    {
       name: "third_party_delay_email",
       description:
         "Write the email notifying a client of a delay caused by an external dependency outside your control — a subcontractor running late, a third-party API or platform outage, a supplier delay, or a required approval not arriving. Distinct from project_delay_warning (your own work is at risk), project_extension_email (you need more time), and late_delivery_apology (you missed a deadline): this is the specific communication for when the blocker is external. Structure: states what is delayed and why (naming the external cause clearly), what you're doing to manage or mitigate it, and a revised timeline if known. Tone: transparent and proactive, not defensive — you didn't cause this but you own communicating it. Does not count against your monthly draft limit.",
@@ -5378,6 +5405,33 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "testimonial_follow_up_email") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const offerDraft = args!.offer_draft !== false;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your Name";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const draftLine = offerDraft
+      ? ` If it's easier, I'm happy to write a short draft for you to edit or approve — just say the word.`
+      : ``;
+
+    const email = `Subject: Re: Testimonial request${projectRef}
+
+Hi ${clientName},
+
+Just a quick follow-up on the testimonial I mentioned${projectRef}. I know it's easy for these things to slip down the list.${draftLine}
+
+No pressure at all — but if you're up for it, it would mean a lot.
+
+Best,
 ${yourName}`;
 
     return {
