@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.8" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.40" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -2811,6 +2811,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "rush_deadline", "rush_fee"],
+            },
+        },
+        {
+            name: "expense_reimbursement_email",
+            description: "Write the professional email requesting reimbursement from a client for project expenses you have incurred on their behalf — stock images, fonts, software licences, hosting, printing, materials, travel. Required: client_name, expense_description (what you bought and why it was needed), amount. Optional: project_name, receipt_note (e.g. 'I have attached the receipt'), add_to_next_invoice (default false — if true, frames this as a heads-up addition to the next invoice rather than a standalone request), payment_instructions (e.g. 'via your usual payment portal', 'by bank transfer to the details on my invoice'), your_name. Distinct from budget_update_email (cost overrun from increased project scope or time) and invoice_cover_email (billing for your own labour). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    expense_description: {
+                        type: "string",
+                        description: "What you purchased and why it was needed for the project (e.g. 'a stock photography licence for the hero image', 'a Figma seat to collaborate on your design files', 'return travel to your office for the kick-off meeting')",
+                    },
+                    amount: {
+                        type: "string",
+                        description: "The amount to be reimbursed (e.g. '$85', '£120', '€200')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or description of the project (e.g. 'the website redesign', 'your brand identity project')",
+                    },
+                    receipt_note: {
+                        type: "string",
+                        description: "Optional note about the receipt (e.g. 'I have attached the receipt for your records', 'receipt available on request'). If omitted, no receipt line is added.",
+                    },
+                    add_to_next_invoice: {
+                        type: "boolean",
+                        description: "If true, frames the email as a transparency heads-up that this will appear on the next invoice, rather than a standalone reimbursement request. Default: false.",
+                    },
+                    payment_instructions: {
+                        type: "string",
+                        description: "How you would like to be paid (e.g. 'via your usual payment portal', 'by bank transfer — details on my invoice', 'alongside the next milestone payment'). Omit if add_to_next_invoice is true.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "expense_description", "amount"],
             },
         },
     ],
@@ -6262,6 +6304,47 @@ ${yourName}`;
         return {
             content: [{ type: "text", text: email }],
         };
+    }
+    if (name === "expense_reimbursement_email") {
+        const clientName = String(args.client_name);
+        const expenseDescription = String(args.expense_description);
+        const amount = String(args.amount);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const receiptNote = args.receipt_note ? String(args.receipt_note) : null;
+        const addToNextInvoice = args.add_to_next_invoice === true;
+        const paymentInstructions = args.payment_instructions ? String(args.payment_instructions) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const subjectProject = projectName ? `${projectName} — ` : "";
+        if (addToNextInvoice) {
+            const subject = `Subject: ${subjectProject}Project expense — heads up`;
+            const receiptLine = receiptNote ? `\n\n${receiptNote}.` : "";
+            const email = `${subject}
+
+Hi ${clientName},
+
+Just a quick heads-up: I purchased ${expenseDescription}${projectRef}, which comes to ${amount}. I will include this on my next invoice so it does not appear as a surprise.${receiptLine}
+
+Let me know if you have any questions.
+
+${yourName}`;
+            return { content: [{ type: "text", text: email }] };
+        }
+        const subject = `Subject: ${subjectProject}Expense reimbursement — ${amount}`;
+        const receiptLine = receiptNote ? `\n\n${receiptNote}.` : "";
+        const paymentLine = paymentInstructions
+            ? `\n\nTo reimburse, please send ${amount} ${paymentInstructions}.`
+            : `\n\nPlease let me know your preferred method for reimbursement and I will send over the details.`;
+        const email = `${subject}
+
+Hi ${clientName},
+
+I wanted to flag a project expense I have incurred on your behalf: ${expenseDescription}${projectRef}, totalling ${amount}.${receiptLine}${paymentLine}
+
+Happy to answer any questions about this.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
     }
     throw new Error(`Unknown tool: ${name}`);
 });
