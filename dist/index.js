@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.40" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.43" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -2926,6 +2926,52 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "meeting_description"],
+            },
+        },
+        {
+            name: "brief_confirmation_email",
+            description: "Write a short email confirming your written understanding of a project brief before work begins. Sends a concise scope summary — what you'll deliver, what's excluded, timeline, price, and what you need from the client to start — and asks them to confirm or correct before you begin. Prevents scope disputes by creating written alignment upfront. Required: client_name, deliverables (comma-separated list of what you're delivering), total (your price or rate, e.g. '$2,400 fixed' or '$120/hr, ~20hrs'). Optional: project_name, out_of_scope (up to 3 items explicitly excluded — omit if nothing needs spelling out), timeline (overall project duration or deadline, e.g. '3 weeks' or 'delivered by July 15'), start_date, what_you_need (assets, access, or information you need from the client to start — e.g. 'brand guidelines and CMS login'), your_name. Workflow: receive brief → discovery_call_follow_up_email (recap) → brief_confirmation_email (written scope sign-off) → project_kickoff_email (start). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    deliverables: {
+                        type: "string",
+                        description: "Comma-separated list of what you will deliver (e.g. 'homepage redesign, 3 interior page templates, mobile-responsive CSS, one round of revisions')",
+                    },
+                    total: {
+                        type: "string",
+                        description: "Your agreed price or rate (e.g. '$2,400 fixed fee', '$120/hr estimated 20hrs', '$3,000 split 50/50')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Short name for the project — used in the subject line and opening (e.g. 'the website redesign', 'your brand refresh', 'the Q3 campaign'). Omit to keep the opening general.",
+                    },
+                    out_of_scope: {
+                        type: "string",
+                        description: "Up to 3 items that are explicitly NOT included — spell these out when they are the likeliest source of scope creep (e.g. 'copywriting, SEO optimisation, ongoing maintenance'). Omit if nothing needs excluding.",
+                    },
+                    timeline: {
+                        type: "string",
+                        description: "Overall project duration or delivery deadline (e.g. '3 weeks from start', 'delivered by 30 July', '2-week turnaround'). Omit if not yet confirmed.",
+                    },
+                    start_date: {
+                        type: "string",
+                        description: "Planned start date if confirmed (e.g. 'Monday 21 July'). Omit if not yet set.",
+                    },
+                    what_you_need: {
+                        type: "string",
+                        description: "Assets, access, or information you need from the client before work can begin (e.g. 'brand guidelines, CMS login, and final copy', 'existing logo files and Google Analytics access'). Omit if you have everything needed.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "deliverables", "total"],
             },
         },
     ],
@@ -6485,6 +6531,55 @@ Hi ${clientName},
 Looking forward to ${meetingDescription}${formatLine}.${agendaSection}${linkLine}${prepLine}
 
 Let me know if you would like to adjust the agenda or if anything has come up on your end.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "brief_confirmation_email") {
+        const clientName = String(args.client_name);
+        const deliverables = String(args.deliverables);
+        const total = String(args.total);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const outOfScope = args.out_of_scope ? String(args.out_of_scope) : null;
+        const timeline = args.timeline ? String(args.timeline) : null;
+        const startDate = args.start_date ? String(args.start_date) : null;
+        const whatYouNeed = args.what_you_need ? String(args.what_you_need) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const deliverableLines = deliverables
+            .split(",")
+            .map((d) => `- ${d.trim()}`)
+            .join("\n");
+        const scopeSection = outOfScope
+            ? `\n\nNot included:\n${outOfScope
+                .split(",")
+                .map((s) => `- ${s.trim()}`)
+                .join("\n")}`
+            : "";
+        const timelineLines = [];
+        if (timeline)
+            timelineLines.push(`Timeline: ${timeline}`);
+        if (startDate)
+            timelineLines.push(`Start: ${startDate}`);
+        const timingSection = timelineLines.length
+            ? `\n\n${timelineLines.join("\n")}`
+            : "";
+        const needsSection = whatYouNeed
+            ? `\n\nTo get started I'll need: ${whatYouNeed}.`
+            : "";
+        const subject = `Subject: Confirming scope${projectRef}`;
+        const email = `${subject}
+
+Hi ${clientName},
+
+Following our conversation, here is my understanding of the project scope. Please let me know if anything needs adjusting before I begin.
+
+Deliverables:
+${deliverableLines}${scopeSection}${timingSection}
+
+Total: ${total}${needsSection}
+
+If this looks right, just reply to confirm and I'll get started. If anything is off, now is the right time to catch it.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
