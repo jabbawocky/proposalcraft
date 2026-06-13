@@ -2882,6 +2882,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "project_name", "what_you_delivered"],
       },
     },
+    {
+      name: "payment_plan_proposal",
+      description:
+        "Write the professional email proposing an installment payment plan when a client cannot pay an invoice in full immediately — either proactively offered when you sense payment difficulty, or as a structured reply when a client has asked for more time. States the plan clearly (number of payments, amounts, schedule), confirms the arrangement in writing, and keeps the tone solution-focused rather than punitive. Distinct from late_payment_reminder (chasing an already-overdue invoice), invoice_dispute_response_email (client is disputing a charge), and deposit_request_email (requesting upfront payment before work begins). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          invoice_total: {
+            type: "string",
+            description: "The total amount owed (e.g. '$3,500', '£2,200')",
+          },
+          invoice_number: {
+            type: "string",
+            description: "Invoice reference number (e.g. 'INV-051') — included in subject line if provided",
+          },
+          number_of_payments: {
+            type: "number",
+            description: "How many instalments the plan is split into (e.g. 2, 3, 4) — defaults to 2 if not provided",
+          },
+          first_payment: {
+            type: "string",
+            description: "Amount due in the first instalment (e.g. '$1,750', '50%') — if omitted, equal splits are implied",
+          },
+          schedule_description: {
+            type: "string",
+            description: "When subsequent payments are due (e.g. 'every two weeks', 'on the 1st of each month', '30 days after the first payment')",
+          },
+          total_period: {
+            type: "string",
+            description: "Optional: total timeframe the plan spans (e.g. 'six weeks', 'three months') — used to frame the offer naturally",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project for context (e.g. 'the brand identity project', 'your website')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "invoice_total"],
+      },
+    },
   ],
 }));
 
@@ -6617,6 +6664,54 @@ ${projectName.charAt(0).toUpperCase() + projectName.slice(1)} is complete.${deli
 It has been a pleasure working with you on this — thank you for being such a great client.${testimonialLine}${futureLine}
 
 Wishing you all the best with it.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "payment_plan_proposal") {
+    const clientName = String(args!.client_name);
+    const invoiceTotal = String(args!.invoice_total);
+    const invoiceNumber = args!.invoice_number ? String(args!.invoice_number) : null;
+    const numPayments = args!.number_of_payments ? Number(args!.number_of_payments) : 2;
+    const firstPayment = args!.first_payment ? String(args!.first_payment) : null;
+    const scheduleDescription = args!.schedule_description ? String(args!.schedule_description) : null;
+    const totalPeriod = args!.total_period ? String(args!.total_period) : null;
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const subjectRef = invoiceNumber ? `${invoiceNumber} — ` : projectName ? `${projectName} — ` : "";
+    const subject = `Subject: ${subjectRef}Payment plan`;
+
+    const projectRef = projectName ? ` for ${projectName}` : "";
+    const openLine = `I understand that settling ${invoiceTotal}${projectRef} in one go may not be straightforward right now.`;
+
+    let planDescription: string;
+    if (firstPayment && scheduleDescription) {
+      planDescription = `Here is what I am happy to arrange:\n\n— First payment: ${firstPayment} now\n— Remaining balance: split equally across the next ${numPayments - 1} payment${numPayments - 1 > 1 ? "s" : ""}, due ${scheduleDescription}`;
+    } else if (scheduleDescription) {
+      planDescription = `Here is what I am happy to arrange:\n\n${numPayments} equal instalments of approximately ${invoiceTotal} divided by ${numPayments}, due ${scheduleDescription}`;
+    } else {
+      planDescription = `Here is what I am happy to arrange:\n\n${numPayments} equal instalments${totalPeriod ? ` spread over ${totalPeriod}` : ""}, with the first due now and the remainder at agreed intervals`;
+    }
+
+    const periodNote = totalPeriod ? ` over the next ${totalPeriod}` : "";
+    const closingLine = `If this works for you, please reply to confirm and I will send a revised payment schedule${periodNote}. Once we have agreed the plan in writing, I am happy to proceed on that basis.`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+${openLine}
+
+${planDescription}
+
+${closingLine}
+
+Let me know if you would like to adjust the schedule — I want to find something that works for both of us.
 
 ${yourName}`;
 
