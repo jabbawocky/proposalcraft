@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.44" },
+  { name: "proposalcraft", version: "1.4.46" },
   { capabilities: { tools: {} } }
 );
 
@@ -3197,6 +3197,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "period"],
+      },
+    },
+    {
+      name: "new_service_announcement_email",
+      description:
+        "Write a personal announcement email to an existing client introducing a new service you're now offering. Warmer than cold outreach because you already have a relationship — the goal is to let trusted clients hear first, plant the seed for future work, and feel like insiders. Reads as personal and considered, not a mass newsletter blast. Workflow: draft here → send individually with personalised why_relevant per client. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          new_service: {
+            type: "string",
+            description: "The new service you are now offering (e.g. 'quarterly website audits', 'brand identity design', 'video production', 'fractional CMO retainers')",
+          },
+          why_relevant: {
+            type: "string",
+            description: "Optional: why this client specifically might benefit — reference shared history or something you noticed (e.g. 'given the site we built last year, a quarterly audit would catch issues before they compound', 'you mentioned wanting to add video — that's now something I can handle end-to-end'). The more specific, the better.",
+          },
+          proof_point: {
+            type: "string",
+            description: "Optional: a credibility signal for the new service (e.g. 'I have completed three audits this quarter', 'just wrapped my first brand film for a fintech startup'). Omit if you are launching fresh.",
+          },
+          offer: {
+            type: "string",
+            description: "Optional: any early-access or founding-client incentive (e.g. 'a founding-client rate of $X for the first three months', 'the first audit on me so you can see the format'). Keep it genuine — do not manufacture urgency.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "new_service"],
       },
     },
   ],
@@ -7284,6 +7319,41 @@ Hope ${period} has been a good one.${summarySection}${upcomingSection}
 ${newNeedsQuestion}
 
 Let me know — happy to jump on a call if easier.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "new_service_announcement_email") {
+    const clientName = String(args!.client_name);
+    const newService = String(args!.new_service);
+    const whyRelevant = args!.why_relevant ? String(args!.why_relevant) : null;
+    const proofPoint = args!.proof_point ? String(args!.proof_point) : null;
+    const offer = args!.offer ? String(args!.offer) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const relevantLine = whyRelevant
+      ? `\n\nI thought of you specifically — ${whyRelevant}.`
+      : `\n\nYou came to mind as someone who might find this useful.`;
+
+    const proofLine = proofPoint
+      ? `\n\n${proofPoint}.`
+      : "";
+
+    const offerLine = offer
+      ? `\n\nAs a heads up for existing clients: ${offer}.`
+      : "";
+
+    const subject = `Subject: Something new I'm now offering`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+Wanted to give you a quick heads-up before I mention this more broadly: I've started offering ${newService}.${relevantLine}${proofLine}${offerLine}
+
+No pitch here — just wanted you to know it's available if it's ever useful. Happy to share more detail or jump on a quick call if you want to hear what it looks like in practice.
 
 ${yourName}`;
 
