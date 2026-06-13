@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.46" },
+  { name: "proposalcraft", version: "1.4.48" },
   { capabilities: { tools: {} } }
 );
 
@@ -3232,6 +3232,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "new_service"],
+      },
+    },
+    {
+      name: "post_launch_check_in_email",
+      description:
+        "Write a short check-in email sent 30–60 days after a project went live — the follow-up that most freelancers never send, and that creates the highest-conversion upsell moment in the client lifecycle. Different from project_go_live_email (sent on launch day), project_completion_email (the handover), and upsell_email (which can be sent anytime). This is the specific 4–8 week post-launch window when you have real data to reference, the client is seeing real results (or real problems), and your work is still top of mind. Three goals: check on how the project is performing, offer to help with anything that's surfaced, and naturally open the door to next work without pitching. Under 120 words. Required: client_name, what_launched. Optional: time_since_launch (e.g. '5 weeks', '2 months' — makes timing concrete), result_to_reference (any result or signal you know about — traffic, sign-ups, revenue, feedback — shows you've been paying attention), next_offer (a specific follow-on that fits logically — keep it observation-based, not pitch-based), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          what_launched: {
+            type: "string",
+            description: "What you built together (e.g. 'the new site', 'the iOS app', 'the rebrand')",
+          },
+          time_since_launch: {
+            type: "string",
+            description: "Optional: how long ago it launched (e.g. '5 weeks', '2 months', 'about a month') — makes the check-in feel timely and intentional",
+          },
+          result_to_reference: {
+            type: "string",
+            description: "Optional: any result or signal you know about (e.g. 'you mentioned traffic was up 30%', 'the sign-up rate looked strong in the early numbers', 'I saw the product got a mention in TechCrunch'). Shows you've been paying attention. Omit if you have nothing concrete.",
+          },
+          next_offer: {
+            type: "string",
+            description: "Optional: a specific follow-on observation or offer — keep it one sentence, grounded in what naturally comes next (e.g. 'if the traffic data shows a clear drop-off point, an A/B test on the CTA would be worth running', 'now that the MVP is out, the next logical step is the referral loop'). Omit if nothing obvious fits.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "what_launched"],
       },
     },
     {
@@ -7389,6 +7424,41 @@ Hi ${clientName},
 Wanted to give you a quick heads-up before I mention this more broadly: I've started offering ${newService}.${relevantLine}${proofLine}${offerLine}
 
 No pitch here — just wanted you to know it's available if it's ever useful. Happy to share more detail or jump on a quick call if you want to hear what it looks like in practice.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "post_launch_check_in_email") {
+    const clientName = String(args!.client_name);
+    const whatLaunched = String(args!.what_launched);
+    const timeSinceLaunch = args!.time_since_launch ? String(args!.time_since_launch) : null;
+    const resultToReference = args!.result_to_reference ? String(args!.result_to_reference) : null;
+    const nextOffer = args!.next_offer ? String(args!.next_offer) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const timingLine = timeSinceLaunch
+      ? `It's been ${timeSinceLaunch} since ${whatLaunched} went live.`
+      : `${whatLaunched.charAt(0).toUpperCase() + whatLaunched.slice(1)} has been live for a little while now.`;
+
+    const resultLine = resultToReference
+      ? ` ${resultToReference} — good to see it working.`
+      : " Hoping it's performing well for you.";
+
+    const offerLine = nextOffer
+      ? `\n\n${nextOffer}.`
+      : "";
+
+    const subject = `Subject: Checking in on ${whatLaunched}`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+${timingLine}${resultLine} Just wanted to check in and see how things are tracking — and whether anything has surfaced that's worth looking at.${offerLine}
+
+Worth a quick call if there's anything I can help with. No pressure either way.
 
 ${yourName}`;
 
