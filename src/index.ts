@@ -1787,6 +1787,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "discovery_call_follow_up_email",
+      description:
+        "Write the short follow-up email sent within 24 hours of a discovery call with a new prospect. Fills the critical workflow gap: meeting_request_email → [call happens] → discovery_call_follow_up_email → draft_proposal. Distinct from project_kickoff_email (sent after signing, not after an intro call) and meeting_request_email (schedules the call — this follows it). Structure: warm one-line open, brief summary of the 2–3 key things discussed (confirms you were listening and reduces 'what did we actually agree?' friction), confirmed next step with a date if available, and a low-pressure 'let me know if I've missed anything' close. Under 150 words. The email most freelancers skip — which is why sending it immediately differentiates you. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or type of project discussed (e.g. 'the rebrand', 'your new website')",
+          },
+          what_discussed: {
+            type: "string",
+            description: "2–3 key points covered in the call, comma-separated (e.g. 'timeline of 6 weeks, design-only scope, launching before Q4'). Auto-formatted as a short summary.",
+          },
+          confirmed_next_step: {
+            type: "string",
+            description: "The agreed next action (e.g. 'I'll have a proposal to you by Thursday', 'you'll send over the existing brand assets', 'we'll reconnect after your board meeting'). If omitted, the email closes with a general next-step offer.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "what_discussed"],
+      },
+    },
+    {
       name: "testimonial_follow_up_email",
       description:
         "Write a gentle follow-up when a testimonial request has gone unanswered — sent one to two weeks after the initial testimonial_request. Distinct from testimonial_request (the first ask): this is the nudge that dramatically increases conversion because most clients meant to respond but let it slip. The key technique: offer to write a short draft for them to edit or approve — this removes the blank-page friction that kills most testimonial requests. Under 80 words, no guilt, no pressure. Optional offer_draft param (default true) adds the draft offer, which is the highest-impact line in the email. Does not count against your monthly draft limit.",
@@ -5405,6 +5436,41 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "discovery_call_follow_up_email") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const whatDiscussed = String(args!.what_discussed);
+    const confirmedNextStep = args!.confirmed_next_step ? String(args!.confirmed_next_step) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your Name";
+
+    const projectRef = projectName ? ` about ${projectName}` : "";
+    const points = whatDiscussed
+      .split(/,\s*/)
+      .filter((p) => p.trim())
+      .map((p) => `- ${p.trim().charAt(0).toUpperCase() + p.trim().slice(1)}`)
+      .join("\n");
+    const nextStepLine = confirmedNextStep
+      ? `\n\nNext step: ${confirmedNextStep}.`
+      : `\n\nI'll follow up shortly with next steps — but let me know in the meantime if there's anything you'd like to add or clarify.`;
+
+    const email = `Subject: Great speaking with you${projectRef}
+
+Hi ${clientName},
+
+Thanks for taking the time to chat today. Here's a quick summary of what we covered:
+
+${points}${nextStepLine}
+
+Let me know if I've missed anything or if anything's changed since we spoke.
+
+Best,
 ${yourName}`;
 
     return {
