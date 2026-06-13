@@ -2929,6 +2929,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "invoice_total"],
       },
     },
+    {
+      name: "rush_fee_email",
+      description:
+        "Write the professional email notifying a client that their request for expedited delivery comes with a rush fee — and asking for approval before you start. States the accelerated deadline you can hit, the additional charge, and what it covers (weekend hours, rescheduled commitments, etc.), then makes a clear yes/no ask so the timeline doesn't slip further while waiting for a response. Keeps tone matter-of-fact and collaborative, not apologetic. Distinct from budget_update_email (cost overrun from project complexity), scope_change_email (client requests additional work), and project_extension_email (you requesting more time). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          rush_deadline: {
+            type: "string",
+            description: "The accelerated delivery date the client is requesting (e.g. 'Friday', 'end of day tomorrow', 'Wednesday 5pm')",
+          },
+          rush_fee: {
+            type: "string",
+            description: "The additional charge for rush delivery (e.g. '$400', '30%', '£250')",
+          },
+          original_deadline: {
+            type: "string",
+            description: "Your standard delivery timeline for this project (e.g. 'the end of next week', 'Wednesday the 18th') — named to make the acceleration concrete",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or description of the project (e.g. 'the landing page', 'your brand identity')",
+          },
+          what_it_covers: {
+            type: "string",
+            description: "One-line explanation of what the rush fee reflects — helps the client understand it is fair, not arbitrary (e.g. 'weekend hours and rescheduling two other client commitments', 'two late evenings to hit your deadline')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "rush_deadline", "rush_fee"],
+      },
+    },
   ],
 }));
 
@@ -6712,6 +6751,46 @@ ${planDescription}
 ${closingLine}
 
 Let me know if you would like to adjust the schedule — I want to find something that works for both of us.
+
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "rush_fee_email") {
+    const clientName = String(args!.client_name);
+    const rushDeadline = String(args!.rush_deadline);
+    const rushFee = String(args!.rush_fee);
+    const originalDeadline = args!.original_deadline ? String(args!.original_deadline) : null;
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const whatItCovers = args!.what_it_covers ? String(args!.what_it_covers) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const subjectProject = projectName ? `${projectName} — ` : "";
+    const subject = `Subject: ${subjectProject}Rush delivery fee`;
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const openLine = `I can hit ${rushDeadline}${projectRef}.`;
+
+    const timelineContext = originalDeadline
+      ? ` My standard timeline for this is ${originalDeadline} — moving to ${rushDeadline} means ${whatItCovers ? whatItCovers : "rescheduling other commitments"} to make it happen.`
+      : whatItCovers
+      ? ` That means ${whatItCovers}.`
+      : "";
+
+    const feeBlock = `To confirm the expedited delivery, there is a rush fee of ${rushFee}.${timelineContext}`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+${openLine}
+
+${feeBlock}
+
+Happy to proceed as soon as you confirm — just reply with a yes and I will reprioritise immediately. If the timeline is flexible, I am also happy to stick with the original schedule at the standard rate.
 
 ${yourName}`;
 
