@@ -2975,6 +2975,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "capacity_waitlist_email",
+            description: "Write a professional email to a prospect when you're fully booked but don't want to lose them. Parks them warmly — acknowledges their enquiry, explains you're at capacity, gives an availability window (if known), and offers first priority when your schedule opens. Most freelancers either decline (and lose the prospect for good) or go silent (worse). This is the professional middle path that creates a warm pipeline for your next available slot. Required: client_name. Optional: project_description (what they came to you about — makes the email feel specific rather than templated), available_from (when you'll next have capacity, e.g. 'mid-July', 'early Q4', 'end of August' — omit if uncertain), offer_priority_slot (default true — offers to confirm intent now so you can hold the slot when it opens), your_name. Distinct from client_decline_email (permanent no for fit/budget reasons) and reactivation_email (following up on a cold prospect). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    project_description: {
+                        type: "string",
+                        description: "Optional: brief description of what they want to hire you for (e.g. 'the website redesign', 'your brand identity project', 'the copywriting work you mentioned'). Makes the email feel specific rather than a generic 'I'm busy' note.",
+                    },
+                    available_from: {
+                        type: "string",
+                        description: "Optional: when you'll next have capacity (e.g. 'mid-July', 'early Q4', 'the end of August', 'late September'). Omit if genuinely uncertain — the email handles that case gracefully.",
+                    },
+                    offer_priority_slot: {
+                        type: "boolean",
+                        description: "Whether to offer to hold a priority slot for the prospect when your calendar opens. Default true — include the offer unless you're not sure you want the work.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name"],
+            },
+        },
+        {
             name: "retainer_check_in_email",
             description: "Write a monthly check-in email to a retainer client. Summarises what was covered during the period, previews upcoming work, and opens the door to new needs — the natural upsell moment in an ongoing relationship. Keeps retainer relationships active without feeling like a report. Required: client_name, period (e.g. 'May', 'last month', 'Q2'). Optional: work_summary (1-2 lines of what you covered this period — omit to keep it brief and open), upcoming_work (what's planned next period — omit if not yet set), new_needs_question (a specific question to surface unmet needs, e.g. 'Are there any new campaigns or projects on your radar for next quarter?'  — defaults to a general open-ended check), your_name. Workflow: retainer_proposal (close the deal) → project_kickoff_email (start) → retainer_check_in_email (monthly) → contract_renewal_email (renew). Does not count against your monthly draft limit.",
             inputSchema: {
@@ -6614,6 +6644,35 @@ ${deliverableLines}${scopeSection}${timingSection}
 Total: ${total}${needsSection}
 
 If this looks right, just reply to confirm and I'll get started. If anything is off, now is the right time to catch it.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "capacity_waitlist_email") {
+        const clientName = String(args.client_name);
+        const projectDescription = args.project_description ? String(args.project_description) : null;
+        const availableFrom = args.available_from ? String(args.available_from) : null;
+        const offerPrioritySlot = args.offer_priority_slot !== false;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectDescription
+            ? ` regarding ${projectDescription}`
+            : "";
+        const availabilityLine = availableFrom
+            ? `I'm currently fully booked, but I'm expecting capacity to open from ${availableFrom}.`
+            : `I'm currently fully booked and don't have a firm opening date yet, but I'm expecting space to come available in the next few weeks.`;
+        const priorityLine = offerPrioritySlot
+            ? `\n\nIf the timing could work, I'd be happy to put you at the top of the list when my calendar opens — just reply here and I'll confirm as soon as a slot is free.`
+            : `\n\nI'll keep your project in mind, and if anything changes on my end sooner, I'll reach out.`;
+        const subject = `Subject: Re: Your enquiry${projectDescription ? ` — ${projectDescription}` : ""}`;
+        const email = `${subject}
+
+Hi ${clientName},
+
+Thanks for getting in touch${projectLine} — it sounds like an interesting project.
+
+${availabilityLine}${priorityLine}
+
+Either way, I wanted to make sure you weren't left waiting without a response. I hope you find the right person for the work.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
