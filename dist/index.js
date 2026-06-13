@@ -1687,6 +1687,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "third_party_delay_email",
+            description: "Write the email notifying a client of a delay caused by an external dependency outside your control — a subcontractor running late, a third-party API or platform outage, a supplier delay, or a required approval not arriving. Distinct from project_delay_warning (your own work is at risk), project_extension_email (you need more time), and late_delivery_apology (you missed a deadline): this is the specific communication for when the blocker is external. Structure: states what is delayed and why (naming the external cause clearly), what you're doing to manage or mitigate it, and a revised timeline if known. Tone: transparent and proactive, not defensive — you didn't cause this but you own communicating it. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project",
+                    },
+                    what_is_delayed: {
+                        type: "string",
+                        description: "What specifically is delayed (e.g. 'the design handover', 'the API integration', 'the final build')",
+                    },
+                    external_cause: {
+                        type: "string",
+                        description: "The external party or cause (e.g. 'the payment gateway API', 'our print supplier', 'the client-side legal sign-off', 'a subcontractor')",
+                    },
+                    mitigation: {
+                        type: "string",
+                        description: "What you are doing about it (e.g. 'I've escalated with the supplier', 'I'm building a workaround in parallel', 'I'm in daily contact with the team')",
+                    },
+                    revised_eta: {
+                        type: "string",
+                        description: "Revised delivery date or timeframe if known (e.g. 'Thursday 26 June', 'early next week'). Omit if genuinely unknown.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "what_is_delayed", "external_cause"],
+            },
+        },
+        {
             name: "project_extension_email",
             description: "Write the email requesting more time on a project when the agreed deadline can no longer be met — the confirmed ask, not a risk warning. Distinct from project_delay_warning (sent when a deadline is at risk but not yet missed) and late_delivery_apology (sent after you've already missed it): this is the professional middle ground — you know you need more time, you're requesting it before the deadline passes, and you're being specific about the new date. Structure: states the current deadline, requests the specific extension needed, gives a brief honest reason (one sentence), and confirms what will be delivered by the new date. Does not grovel or over-explain. Most freelancers either say nothing until they're late, or send a vague 'I might need a bit more time' — this is the direct, professional ask that respects the client's schedule. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4963,6 +5001,37 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "third_party_delay_email") {
+        const clientName = String(args.client_name);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const whatIsDelayed = String(args.what_is_delayed);
+        const externalCause = String(args.external_cause);
+        const mitigation = args.mitigation ? String(args.mitigation) : null;
+        const revisedEta = args.revised_eta ? String(args.revised_eta) : null;
+        const yourName = args.your_name ? String(args.your_name) : "Your Name";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const mitigationLine = mitigation
+            ? `\n\nIn the meantime, ${mitigation}.`
+            : `\n\nI'm actively working to resolve this as quickly as possible.`;
+        const etaLine = revisedEta
+            ? `\n\nBased on what I know now, I'm expecting to have ${whatIsDelayed} to you by ${revisedEta}. I'll confirm as soon as that's locked in.`
+            : `\n\nI don't have a firm revised date yet — I'll update you as soon as I do, and I won't leave you guessing.`;
+        const email = `Subject: Update on ${whatIsDelayed}${projectRef}
+
+Hi ${clientName},
+
+I want to keep you in the loop on a delay that's come up${projectRef}.
+
+${whatIsDelayed.charAt(0).toUpperCase() + whatIsDelayed.slice(1)} is being held up by ${externalCause}. This is outside my direct control, but it's my job to flag it to you as soon as I'm aware of it.${mitigationLine}${etaLine}
+
+Sorry for the disruption — I'll keep you updated.
+
+Best,
 ${yourName}`;
         return {
             content: [{ type: "text", text: email }],
