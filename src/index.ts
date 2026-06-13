@@ -1787,6 +1787,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "price_increase_email",
+      description:
+        "Write the email notifying a long-term client that your rates are increasing. One of the hardest emails a freelancer writes — most either avoid it entirely (and undercharge for years) or frame it apologetically (which invites pushback). This email is confident, warm, and forward-looking: gives clear notice (typically 30–60 days), states the new rate plainly, optionally anchors it in specific value delivered, and closes with an offer to discuss. Distinct from budget_proposal (negotiating a project price before signing), discount_request_response (responding to a client's pushback on price), and budget_update_email (explaining a cost overrun on a current project) — this is the proactive rate change communication to an ongoing client or retainer. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          new_rate: {
+            type: "string",
+            description: "Your new rate or pricing (e.g. '$150/hour', '$5,000/month retainer', '$2,800 per project')",
+          },
+          current_rate: {
+            type: "string",
+            description: "Your current rate — including it makes the change concrete and shows transparency (e.g. '$120/hour')",
+          },
+          effective_date: {
+            type: "string",
+            description: "When the new rate takes effect (e.g. 'August 1', 'from your next project', 'in 60 days') — gives the client time to plan",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the ongoing engagement or retainer, if relevant",
+          },
+          value_highlight: {
+            type: "string",
+            description: "A specific result or achievement from your work together that anchors the value (e.g. 'tripling their newsletter open rate', 'launching three products on time and on budget') — optional but makes the email stronger",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "new_rate"],
+      },
+    },
+    {
       name: "discovery_call_follow_up_email",
       description:
         "Write the short follow-up email sent within 24 hours of a discovery call with a new prospect. Fills the critical workflow gap: meeting_request_email → [call happens] → discovery_call_follow_up_email → draft_proposal. Distinct from project_kickoff_email (sent after signing, not after an intro call) and meeting_request_email (schedules the call — this follows it). Structure: warm one-line open, brief summary of the 2–3 key things discussed (confirms you were listening and reduces 'what did we actually agree?' friction), confirmed next step with a date if available, and a low-pressure 'let me know if I've missed anything' close. Under 150 words. The email most freelancers skip — which is why sending it immediately differentiates you. Does not count against your monthly draft limit.",
@@ -5436,6 +5475,42 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+
+    return {
+      content: [{ type: "text", text: email }],
+    };
+  }
+
+  if (name === "price_increase_email") {
+    const clientName = String(args!.client_name);
+    const newRate = String(args!.new_rate);
+    const currentRate = args!.current_rate ? String(args!.current_rate) : null;
+    const effectiveDate = args!.effective_date ? String(args!.effective_date) : null;
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const valueHighlight = args!.value_highlight ? String(args!.value_highlight) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Your Name";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const rateChange = currentRate
+      ? `from ${currentRate} to ${newRate}`
+      : `to ${newRate}`;
+    const effectiveLine = effectiveDate
+      ? `This will take effect from ${effectiveDate}.`
+      : `This will apply to new work going forward.`;
+    const valueLine = valueHighlight
+      ? `\n\nI'm really proud of what we've built together${projectRef} — ${valueHighlight} — and I'm committed to continuing to deliver that level of work.`
+      : `\n\nI've genuinely valued working with you${projectRef}, and I'm committed to continuing to deliver work you're proud of.`;
+
+    const email = `Subject: Upcoming rate change${projectRef}
+
+Hi ${clientName},
+
+I wanted to give you advance notice that I'm updating my rates${projectRef}. From ${effectiveDate ?? "the new year"}, my rate will be moving ${rateChange}. ${effectiveLine}${valueLine}
+
+I wanted to let you know well in advance so you can plan ahead. Happy to jump on a call if you'd like to talk through what this means for our work together.
+
+Best,
 ${yourName}`;
 
     return {
