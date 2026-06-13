@@ -1687,6 +1687,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "invoice_dispute_response_email",
+            description: "Write the professional reply when a client disputes or questions a charge on an invoice — 'I thought this was included', 'We agreed on a lower price', 'I don't recognise this line item'. Three response modes: 'explain' (default — the charge is valid and correct, explain clearly and calmly why), 'adjust' (you'll credit or reduce the invoice as a goodwill gesture or because of a genuine error), 'clarify' (you need more information from them before you can respond fully). Distinct from late_payment_reminder (client hasn't paid but hasn't disputed), budget_update_email (you're informing of a cost increase before invoicing), and scope_change_email (formal change order for extra work) — this is the specific situation where a client has received your invoice and is pushing back on a line item. Professional, calm, not defensive — resolves the dispute without damaging the relationship. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    disputed_item: {
+                        type: "string",
+                        description: "What they're disputing (e.g. 'the additional hour charge', 'the rush fee', 'the final milestone payment')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project",
+                    },
+                    response_mode: {
+                        type: "string",
+                        enum: ["explain", "adjust", "clarify"],
+                        description: "How to respond: 'explain' (charge is valid, explain it — default), 'adjust' (you'll credit or reduce the invoice), 'clarify' (you need more detail before responding)",
+                    },
+                    explanation: {
+                        type: "string",
+                        description: "Why the charge is valid (used in 'explain' mode — e.g. 'this covers the two additional revision rounds requested on June 3rd beyond the three included in the original scope')",
+                    },
+                    adjustment: {
+                        type: "string",
+                        description: "What you'll do to resolve it (used in 'adjust' mode — e.g. 'remove the rush fee', 'credit $200 against the balance', 'issue a revised invoice at the originally discussed rate')",
+                    },
+                    invoice_number: {
+                        type: "string",
+                        description: "Invoice number for reference in the subject line (e.g. 'INV-047')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "disputed_item"],
+            },
+        },
+        {
             name: "client_feedback_response_email",
             description: "Write the professional reply to critical or negative mid-project feedback from a client. Three response modes: 'accept' (default — feedback is valid, you acknowledge it and state your action plan), 'clarify' (there's a misunderstanding that needs resolving before you can act — asks one focused clarifying question without being defensive), 'discuss' (feedback is complex or directional enough that a call is needed to align properly). Distinct from revision_response_email (specific change requests like 'change the font' or 'rewrite section 2') — this is for qualitative, directional, or emotional feedback ('this doesn't feel right', 'I'm disappointed with the direction', 'this isn't what I was expecting'). Most freelancers either get defensive, over-apologise, or go silent — this is the professional middle path: acknowledges the concern, shows you heard them, and keeps the project moving forward. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -5134,6 +5177,54 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "invoice_dispute_response_email") {
+        const clientName = String(args.client_name);
+        const disputedItem = String(args.disputed_item);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const responseMode = args.response_mode ? String(args.response_mode) : "explain";
+        const explanation = args.explanation ? String(args.explanation) : null;
+        const adjustment = args.adjustment ? String(args.adjustment) : null;
+        const invoiceNumber = args.invoice_number ? String(args.invoice_number) : null;
+        const yourName = args.your_name ? String(args.your_name) : "Your Name";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const invoiceRef = invoiceNumber ? ` (${invoiceNumber})` : "";
+        const subjectRef = invoiceNumber ? `Invoice${invoiceRef} query` : `Invoice query${projectRef}`;
+        let body;
+        if (responseMode === "adjust") {
+            const adjustDetail = adjustment
+                ? adjustment
+                : "adjust the invoice and send you a revised version";
+            body = `Thanks for flagging this${projectRef}. I've reviewed the invoice${invoiceRef} and I'm happy to ${adjustDetail}.
+
+I'll send through the updated invoice shortly. Let me know if there's anything else you'd like to clarify.`;
+        }
+        else if (responseMode === "clarify") {
+            body = `Thanks for getting in touch about the invoice${invoiceRef}${projectRef}. I want to make sure I respond properly to your query about ${disputedItem}.
+
+Could you share a bit more detail about what you were expecting? Once I have that, I can give you a clear answer or send through a revised invoice if needed.`;
+        }
+        else {
+            const explainDetail = explanation
+                ? explanation
+                : `this reflects the work delivered as agreed in our original scope`;
+            body = `Thanks for reaching out about the invoice${invoiceRef}${projectRef}. Happy to clarify the charge for ${disputedItem}.
+
+${explainDetail.charAt(0).toUpperCase() + explainDetail.slice(1)}.
+
+I hope that helps explain it. If you'd like to talk it through, I'm happy to jump on a quick call — just let me know.`;
+        }
+        const email = `Subject: Re: ${subjectRef}
+
+Hi ${clientName},
+
+${body}
+
+Best,
 ${yourName}`;
         return {
             content: [{ type: "text", text: email }],
