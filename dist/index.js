@@ -1687,6 +1687,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "budget_update_email",
+            description: "Write the email informing a client that the project will cost more than originally estimated — due to unforeseen technical complexity, third-party cost increases, or scope that proved harder than anticipated. This is distinct from scope_change_email (client requested extra work) and budget_proposal (client said your quote was too high): this is the honest update when your own estimate turns out to be off, and you need to raise the number before proceeding. Structure: clear statement of original vs. updated figure, a brief honest reason (one sentence — not an essay), and a question asking how they'd like to proceed before you go further. Tone: direct and professional, not grovelling or defensive. Most freelancers either absorb the cost silently or surprise clients with a higher invoice — this is the professional middle path that respects the client's budget and your rate. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project",
+                    },
+                    original_estimate: {
+                        type: "string",
+                        description: "The original cost estimate (e.g. '$2,500' or '20 hours')",
+                    },
+                    updated_cost: {
+                        type: "string",
+                        description: "The revised cost or estimate (e.g. '$3,200' or '28 hours')",
+                    },
+                    reason: {
+                        type: "string",
+                        description: "Brief explanation for the increase — e.g. 'the integration required a custom solution we didn't anticipate', 'the third-party API pricing changed'. One sentence max.",
+                    },
+                    approval_needed: {
+                        type: "boolean",
+                        description: "Whether to ask for client approval before proceeding (default true — always recommended)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "original_estimate", "updated_cost"],
+            },
+        },
+        {
             name: "client_decline_email",
             description: "Write a professional email declining a client project inquiry — when you can't or shouldn't take the work. Covers four common situations: capacity (you're fully booked), not_fit (the project isn't the right match for your skills or style), timing (wrong timing — project start doesn't align), or budget (their budget doesn't meet your rates). Warm and respectful throughout: preserves the relationship, never burns a bridge. Optionally offers to refer them to someone better suited — turning a decline into goodwill. Most freelancers either ghost prospects or write awkward excuses; this is the professional middle path that keeps the door open for future work. Does not count against your monthly draft limit.",
             inputSchema: {
@@ -4887,6 +4925,35 @@ Just a reminder that invoice${invoiceRef}${amountRef}${dueDateRef} is still outs
 
 ${exitLine}
 
+${yourName}`;
+        return {
+            content: [{ type: "text", text: email }],
+        };
+    }
+    if (name === "budget_update_email") {
+        const clientName = String(args.client_name);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const originalEstimate = String(args.original_estimate);
+        const updatedCost = String(args.updated_cost);
+        const reason = args.reason ? String(args.reason) : null;
+        const approvalNeeded = args.approval_needed !== false;
+        const yourName = args.your_name ? String(args.your_name) : "Your Name";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const reasonLine = reason
+            ? `\n\nThe reason for the increase: ${reason}.`
+            : `\n\nThe project has proved more involved than I initially scoped.`;
+        const approvalLine = approvalNeeded
+            ? `\n\nI wanted to flag this before going further rather than surprise you at invoice time. Let me know how you'd like to proceed — happy to discuss if you'd like to talk it through.`
+            : `\n\nI've noted the updated figure and will continue from here — just wanted to make sure you had the full picture.`;
+        const email = `Subject: Updated cost estimate${projectRef}
+
+Hi ${clientName},
+
+I want to be upfront with you about a change to the cost estimate${projectRef}.
+
+When we agreed the project, I estimated ${originalEstimate}. Based on where things stand now, the revised figure is ${updatedCost}.${reasonLine}${approvalLine}
+
+Best,
 ${yourName}`;
         return {
             content: [{ type: "text", text: email }],
