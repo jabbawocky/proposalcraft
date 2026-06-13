@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.43" },
+  { name: "proposalcraft", version: "1.4.44" },
   { capabilities: { tools: {} } }
 );
 
@@ -3131,6 +3131,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "deliverables", "total"],
+      },
+    },
+    {
+      name: "retainer_check_in_email",
+      description:
+        "Write a monthly check-in email to a retainer client. Summarises what was covered during the period, previews upcoming work, and opens the door to new needs — the natural upsell moment in an ongoing relationship. Keeps retainer relationships active without feeling like a report. Required: client_name, period (e.g. 'May', 'last month', 'Q2'). Optional: work_summary (1-2 lines of what you covered this period — omit to keep it brief and open), upcoming_work (what's planned next period — omit if not yet set), new_needs_question (a specific question to surface unmet needs, e.g. 'Are there any new campaigns or projects on your radar for next quarter?'  — defaults to a general open-ended check), your_name. Workflow: retainer_proposal (close the deal) → project_kickoff_email (start) → retainer_check_in_email (monthly) → contract_renewal_email (renew). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          period: {
+            type: "string",
+            description: "The period this check-in covers (e.g. 'May', 'last month', 'Q2', 'the past few weeks')",
+          },
+          work_summary: {
+            type: "string",
+            description: "Optional: 1-2 line summary of what you covered or delivered this period (e.g. 'three blog posts, one email campaign, and the landing page revisions'). Omit to keep the check-in short and relationship-focused.",
+          },
+          upcoming_work: {
+            type: "string",
+            description: "Optional: what you have planned or tentatively scheduled for the coming period (e.g. 'the product launch email sequence', 'two more posts and the monthly newsletter'). Omit if nothing is confirmed yet.",
+          },
+          new_needs_question: {
+            type: "string",
+            description: "Optional: a specific question to surface any new work or unmet needs (e.g. 'Are there any new campaigns or projects on your radar for next quarter?', 'Is there anything you'd like to prioritise differently going forward?'). Defaults to a general open-ended check if omitted.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "period"],
       },
     },
   ],
@@ -7147,6 +7182,41 @@ ${deliverableLines}${scopeSection}${timingSection}
 Total: ${total}${needsSection}
 
 If this looks right, just reply to confirm and I'll get started. If anything is off, now is the right time to catch it.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "retainer_check_in_email") {
+    const clientName = String(args!.client_name);
+    const period = String(args!.period);
+    const workSummary = args!.work_summary ? String(args!.work_summary) : null;
+    const upcomingWork = args!.upcoming_work ? String(args!.upcoming_work) : null;
+    const newNeedsQuestion = args!.new_needs_question
+      ? String(args!.new_needs_question)
+      : "Is there anything new on your radar or anything you'd like to adjust going forward?";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const summarySection = workSummary
+      ? `\n\nFor ${period}, I covered: ${workSummary}.`
+      : `\n\nJust checking in on how ${period} has felt from your end.`;
+
+    const upcomingSection = upcomingWork
+      ? `\n\nComing up: ${upcomingWork}.`
+      : "";
+
+    const subject = `Subject: Check-in — ${period}`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+Hope ${period} has been a good one.${summarySection}${upcomingSection}
+
+${newNeedsQuestion}
+
+Let me know — happy to jump on a call if easier.
 
 ${yourName}`;
 
