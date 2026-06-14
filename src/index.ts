@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.50" },
+  { name: "proposalcraft", version: "1.4.51" },
   { capabilities: { tools: {} } }
 );
 
@@ -3374,6 +3374,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           differentiator: {
             type: "string",
             description: "Optional: the one concrete thing that separates your work from the competitor — e.g. 'previous work on similar-scale projects', 'single point of contact through delivery', 'I already know your brand and team'. Specific beats generic.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
+    {
+      name: "work_sample_response_email",
+      description:
+        "Write a professional email responding to a prospect who has asked to see work samples or portfolio pieces before deciding whether to hire you. Two modes: have_samples (default — you have directly relevant work to share; links or describes the samples with brief context on why they're relevant to this client's situation), no_exact_match (you don't have a perfect example in this specific niche or format, but you have closely adjacent work that demonstrates the same underlying skill; acknowledges the gap honestly without being apologetic, explains what the adjacent work shows, and offers a next step — call, test piece, or scoped pilot). The no_exact_match mode is often more persuasive than it sounds: handled well, it signals integrity and directness. Required: client_name. Optional: project_context (what the prospect is evaluating you for — makes the email specific rather than generic), sample_description (one-line description of what you're sharing or linking — e.g. 'three brand strategy decks for similar-scale clients', 'a website redesign for a professional services firm'), sample_link (direct URL or 'attached' — if omitted, email offers to send on request), adjacent_work (for no_exact_match mode: what you have that's adjacent — e.g. 'I haven't done X specifically, but here are two projects where I did Y under the same constraints'), next_step (what you're proposing after the sample review — e.g. 'happy to jump on a 20-minute call', 'I can put together a short test piece'), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Prospect's first name",
+          },
+          project_context: {
+            type: "string",
+            description: "Optional: what they're evaluating you for — makes the email feel specific. E.g. 'the brand identity project', 'the content retainer', 'rewriting your website copy'.",
+          },
+          sample_description: {
+            type: "string",
+            description: "Optional: one-line description of what you're sharing — e.g. 'three brand strategy decks for professional services clients', 'a UX audit and redesign for an e-commerce site'.",
+          },
+          sample_link: {
+            type: "string",
+            description: "Optional: URL to portfolio or samples, or 'attached' if sending as a file. If omitted, the email offers to send on request.",
+          },
+          adjacent_work: {
+            type: "string",
+            description: "Optional (used in no_exact_match mode): what closely adjacent work you have — e.g. 'I haven't done fintech specifically, but I've worked on three regulated-industry brands where the same constraints applied'. Be specific.",
+          },
+          response_mode: {
+            type: "string",
+            enum: ["have_samples", "no_exact_match"],
+            description: "have_samples (default — you have directly relevant work to share), no_exact_match (you don't have a perfect match but have adjacent work that demonstrates the same skill).",
+          },
+          next_step: {
+            type: "string",
+            description: "Optional: what you're proposing after the sample review — e.g. 'happy to jump on a 20-minute call to walk through them', 'I can put together a short test piece if that would help'.",
           },
           your_name: {
             type: "string",
@@ -7677,6 +7721,81 @@ ${yourName}`;
     }
 
     return { content: [{ type: "text", text: body }] };
+  }
+
+  if (name === "work_sample_response_email") {
+    const clientName = String(args!.client_name);
+    const projectContext = args!.project_context ? String(args!.project_context) : null;
+    const sampleDescription = args!.sample_description ? String(args!.sample_description) : null;
+    const sampleLink = args!.sample_link ? String(args!.sample_link) : null;
+    const adjacentWork = args!.adjacent_work ? String(args!.adjacent_work) : null;
+    const responseMode = args!.response_mode ? String(args!.response_mode) : "have_samples";
+    const nextStep = args!.next_step ? String(args!.next_step) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const contextRef = projectContext ? ` for ${projectContext}` : "";
+    const nextStepLine = nextStep
+      ? `\n\n${nextStep.charAt(0).toUpperCase() + nextStep.slice(1)}.`
+      : "\n\nHappy to jump on a short call if you'd like to talk through anything.";
+
+    let email: string;
+
+    if (responseMode === "have_samples") {
+      const sampleLine = sampleDescription
+        ? `Here's what I'd point you to: ${sampleDescription}.`
+        : "I've pulled together some relevant examples.";
+
+      const linkLine = sampleLink
+        ? (sampleLink.toLowerCase() === "attached"
+          ? " I've attached them to this email."
+          : `\n\n${sampleLink}`)
+        : " Let me know and I'll send them over.";
+
+      const subject = projectContext
+        ? `Subject: Work samples — ${projectContext}`
+        : `Subject: Work samples`;
+
+      email = `${subject}
+
+Hi ${clientName},
+
+Of course. ${sampleLine}${linkLine}
+
+I've picked these specifically because they're closest to what you're working on${contextRef} — the brief, the constraints, or the type of output. Happy to give you more context on any of them.${nextStepLine}
+
+${yourName}`;
+    } else {
+      // no_exact_match
+      const gapAcknowledgement = adjacentWork
+        ? `I don't have an exact match${contextRef}, but — ${adjacentWork}.`
+        : `I don't have an exact match${contextRef}.`;
+
+      const sampleLine = sampleDescription
+        ? ` What I can share: ${sampleDescription}.`
+        : "";
+
+      const linkLine = sampleLink
+        ? (sampleLink.toLowerCase() === "attached"
+          ? " I've attached them to this email."
+          : `\n\n${sampleLink}`)
+        : "";
+
+      const subject = projectContext
+        ? `Subject: Work samples — ${projectContext}`
+        : `Subject: Work samples`;
+
+      email = `${subject}
+
+Hi ${clientName},
+
+${gapAcknowledgement}${sampleLine}${linkLine}
+
+I'd rather be upfront about that than send you something tangentially related and let you draw your own conclusions. The underlying skill is the same — the context is different.${nextStepLine}
+
+${yourName}`;
+    }
+
+    return { content: [{ type: "text", text: email }] };
   }
 
   throw new Error(`Unknown tool: ${name}`);
