@@ -3304,6 +3304,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "what_went_live"],
       },
     },
+    {
+      name: "client_anniversary_email",
+      description:
+        "Write a short, warm email marking the anniversary of working with a long-term client — 1 year, 2 years, or any meaningful milestone. Different from annual_review_email (which summarises deliverables and results in a structured retrospective) — this is the relationship-first touchpoint that makes a client feel like a long-term partner, not a transaction. No deliverables list, no pitch, no ask. Just a genuine acknowledgment of the working relationship and a light forward-looking line. Under 100 words. The goal is to be memorable and human, not to upsell — though it naturally positions you top-of-mind when their next need arises. Required: client_name, milestone (e.g. '1 year', '2 years', '18 months'). Optional: project_or_relationship (what you've worked on together — a named project or 'our work together' — makes the milestone feel specific), standout_moment (one specific thing from the relationship worth acknowledging — a result, a challenge you solved, a moment that stood out), forward_line (a single sentence looking ahead — what you're looking forward to, or an open door for what comes next), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          milestone: {
+            type: "string",
+            description: "The anniversary milestone (e.g. '1 year', '2 years', '18 months', '3 years')",
+          },
+          project_or_relationship: {
+            type: "string",
+            description: "Optional: what you've worked on together — a named project ('the site redesign'), an ongoing relationship ('our work together'), or a category ('the branding work'). Makes the milestone feel specific rather than generic.",
+          },
+          standout_moment: {
+            type: "string",
+            description: "Optional: one specific thing from the relationship worth acknowledging — a result ('the campaign that hit 3x target'), a challenge you solved together ('getting through the launch crunch'), or a moment that stood out ('the direction pivot that ended up being the right call'). Omit if nothing obvious fits.",
+          },
+          forward_line: {
+            type: "string",
+            description: "Optional: a single sentence looking ahead — what you're looking forward to ('looking forward to what we build this year'), an open door ('if there's anything you're thinking about for next year, I'd love to hear it'), or just warmth for the future. Omit to let the email close naturally.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "milestone"],
+      },
+    },
   ],
 }));
 
@@ -7486,6 +7521,41 @@ Hi ${clientName},
 Just saw ${whatWentLive} go live — congratulations.${urlLine}${resultLine}
 
 It was genuinely good to work on this one. Hope it performs well for you.${hookLine}
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "client_anniversary_email") {
+    const clientName = String(args!.client_name);
+    const milestone = String(args!.milestone);
+    const projectOrRelationship = args!.project_or_relationship ? String(args!.project_or_relationship) : null;
+    const standoutMoment = args!.standout_moment ? String(args!.standout_moment) : null;
+    const forwardLine = args!.forward_line ? String(args!.forward_line) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const relationshipRef = projectOrRelationship
+      ? ` working on ${projectOrRelationship}`
+      : " working together";
+
+    const standoutLine = standoutMoment
+      ? `\n\n${standoutMoment}.`
+      : "";
+
+    const closingLine = forwardLine
+      ? `\n\n${forwardLine}`
+      : "";
+
+    const subject = `Subject: ${milestone}`;
+
+    const email = `${subject}
+
+Hi ${clientName},
+
+Just noticed it's been ${milestone} since we started${relationshipRef}.${standoutLine}
+
+Genuinely glad we got to work together. Hoping this next year is a good one for you.${closingLine}
 
 ${yourName}`;
 
