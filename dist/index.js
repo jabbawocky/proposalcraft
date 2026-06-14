@@ -3260,6 +3260,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name"],
             },
         },
+        {
+            name: "project_feedback_request_email",
+            description: "Write a professional email asking a client for feedback after completing a project. Two modes: feedback_only (default — a genuine, non-pressuring request for their thoughts; asks 1-2 specific questions to make responding easy), feedback_and_testimonial (combines the feedback ask with a soft request for a testimonial or review, framed as 'if you're happy to' — never demanding). Feedback requests sent within a week of delivery get 3x the response rate of requests sent later. The email is short, specific, and makes the client feel like their opinion matters rather than like they're being harvested for marketing content. Required: client_name, project_name. Optional: specific_question (one focused question about the project — e.g. 'Was the turnaround time what you needed?', 'Did the final copy feel like your voice?'), testimonial_platform (where you'd like a testimonial if they're happy to leave one — e.g. 'LinkedIn', 'Google', 'your website'; used only in feedback_and_testimonial mode), request_mode (feedback_only or feedback_and_testimonial), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or short description of the completed project — e.g. 'the website redesign', 'the Q2 content package', 'the brand identity'.",
+                    },
+                    specific_question: {
+                        type: "string",
+                        description: "Optional: one focused question you genuinely want answered — e.g. 'Was the turnaround time what you needed?', 'Did the final copy feel like your voice?', 'Were the deliverables what you expected from the brief?'. Specific questions get more useful responses than generic 'any feedback?' asks.",
+                    },
+                    testimonial_platform: {
+                        type: "string",
+                        description: "Optional (used in feedback_and_testimonial mode): where you'd like a testimonial if they're happy to leave one — e.g. 'LinkedIn', 'Google', 'my website'. Keep it to one platform — multiple requests reduce follow-through.",
+                    },
+                    request_mode: {
+                        type: "string",
+                        enum: ["feedback_only", "feedback_and_testimonial"],
+                        description: "feedback_only (default — genuine feedback ask, no testimonial request), feedback_and_testimonial (feedback ask with a soft, optional testimonial request).",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -7160,6 +7195,50 @@ Hi ${clientName},
 ${gapAcknowledgement}${sampleLine}${linkLine}
 
 I'd rather be upfront about that than send you something tangentially related and let you draw your own conclusions. The underlying skill is the same — the context is different.${nextStepLine}
+
+${yourName}`;
+        }
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "project_feedback_request_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const specificQuestion = args.specific_question ? String(args.specific_question) : null;
+        const testimonialPlatform = args.testimonial_platform ? String(args.testimonial_platform) : null;
+        const requestMode = args.request_mode ? String(args.request_mode) : "feedback_only";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const questionLine = specificQuestion
+            ? `One thing I'd genuinely like to know: ${specificQuestion.endsWith("?") ? specificQuestion : specificQuestion + "?"}`
+            : `If there's one thing that worked well — or one thing I could have handled better — I'd love to know.`;
+        let email;
+        if (requestMode === "feedback_only") {
+            email = `Subject: Quick question about ${projectName}
+
+Hi ${clientName},
+
+Now that ${projectName} is wrapped up, I wanted to check in on how it landed on your end.
+
+${questionLine}
+
+No need to write a lot — a line or two is plenty. I ask because I take this stuff seriously and it actually changes how I work.
+
+${yourName}`;
+        }
+        else {
+            const testimonialLine = testimonialPlatform
+                ? `If you're happy with how it went and have a couple of minutes, a short note on ${testimonialPlatform} would mean a lot — it's genuinely the most useful thing you can do for a freelancer's business. No pressure at all if timing's not right.`
+                : `If you're happy with how it went, a short testimonial — even two sentences — would mean a lot. No pressure at all if timing's not right.`;
+            email = `Subject: Quick question about ${projectName}
+
+Hi ${clientName},
+
+Now that ${projectName} is done, I wanted to check in on how it all landed.
+
+${questionLine}
+
+And if you're happy with the outcome — ${testimonialLine}
+
+Either way, it was good work. Hope to collaborate again.
 
 ${yourName}`;
         }
