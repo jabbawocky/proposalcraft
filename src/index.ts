@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.48" },
+  { name: "proposalcraft", version: "1.4.50" },
   { capabilities: { tools: {} } }
 );
 
@@ -3337,6 +3337,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "milestone"],
+      },
+    },
+    {
+      name: "competitor_response_email",
+      description:
+        "Write a professional reply when a client tells you another provider quoted lower — or asks you to match a competitor's price. Three response modes: hold_rate (default — acknowledge the comparison, clarify what differentiates your work, hold your price without apologising or justifying at length; best when your rate reflects genuine experience and scope), adjust_scope (offer a reduced scope or phased approach that delivers real value at a lower price — not a discount, a trade; best when there's genuine flexibility in what's needed), or match_with_context (match or approach the price but anchor it clearly to a specific reason — limited capacity window, long-term relationship, or strategic fit; do not use just to close a deal). None of these modes cave, get defensive, or lecture the client about what they're 'really getting'. All three respect that the client is comparing options. Required: client_name. Optional: competitor_name (who they're comparing to — omit to keep vague), competitor_price (the competing quote), your_price (your quoted price), project_name, response_mode ('hold_rate', 'adjust_scope', 'match_with_context' — default hold_rate), differentiator (the one concrete thing that separates your work — e.g. 'previous work on similar-scale projects', 'full ownership of the project without handoffs', 'I already know your brand well'; omit for a clean close without specifics), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          competitor_name: {
+            type: "string",
+            description: "Optional: who they're comparing to (e.g. 'the other agency', 'Vendor X'). Omit to keep the reply general.",
+          },
+          competitor_price: {
+            type: "string",
+            description: "Optional: the competing quote (e.g. '$3,000', '$15/hr'). Including it lets the reply address the gap directly.",
+          },
+          your_price: {
+            type: "string",
+            description: "Optional: your quoted price. Including both prices lets the reply frame the gap concretely.",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project being discussed.",
+          },
+          response_mode: {
+            type: "string",
+            enum: ["hold_rate", "adjust_scope", "match_with_context"],
+            description: "How to respond: hold_rate (default — hold your price, explain value without apologising), adjust_scope (offer a smaller scope at a lower price — a trade, not a discount), match_with_context (approach or match the price with a clear, specific reason).",
+          },
+          differentiator: {
+            type: "string",
+            description: "Optional: the one concrete thing that separates your work from the competitor — e.g. 'previous work on similar-scale projects', 'single point of contact through delivery', 'I already know your brand and team'. Specific beats generic.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
       },
     },
   ],
@@ -7560,6 +7604,79 @@ Genuinely glad we got to work together. Hoping this next year is a good one for 
 ${yourName}`;
 
     return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "competitor_response_email") {
+    const clientName = String(args!.client_name);
+    const competitorName = args!.competitor_name ? String(args!.competitor_name) : null;
+    const competitorPrice = args!.competitor_price ? String(args!.competitor_price) : null;
+    const yourPrice = args!.your_price ? String(args!.your_price) : null;
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const responseMode = args!.response_mode ? String(args!.response_mode) : "hold_rate";
+    const differentiator = args!.differentiator ? String(args!.differentiator) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const competitorRef = competitorName ? competitorName : "another provider";
+    const projectRef = projectName ? ` for ${projectName}` : "";
+
+    const priceGapLine = (competitorPrice && yourPrice)
+      ? ` The gap between ${competitorPrice} and ${yourPrice} is real — I want to address it directly.`
+      : competitorPrice
+        ? ` I understand the ${competitorPrice} quote is compelling.`
+        : "";
+
+    const differentiatorLine = differentiator
+      ? `\n\n${differentiator.charAt(0).toUpperCase() + differentiator.slice(1)}.`
+      : "";
+
+    const subject = projectName
+      ? `Subject: Re: ${projectName}`
+      : `Subject: Re: your quote`;
+
+    let body: string;
+
+    if (responseMode === "hold_rate") {
+      body = `${subject}
+
+Hi ${clientName},
+
+Thanks for being upfront about the other quote${priceGapLine}
+
+I'm not going to match it — and I want to be straightforward about why.${differentiatorLine} The rate I've quoted reflects what it takes to deliver${projectRef} at the level I've outlined, without cutting corners that show up later.
+
+If ${competitorRef}'s approach fits your needs and your budget, that's a completely reasonable call. But if you have any questions about what's included in my proposal — or want to talk through scope — I'm happy to do that.
+
+${yourName}`;
+    } else if (responseMode === "adjust_scope") {
+      body = `${subject}
+
+Hi ${clientName},
+
+Thanks for being upfront about the other quote.${priceGapLine}
+
+I'd rather give you a smaller scope I'm confident in than cut the budget on the same scope and deliver something I'm not proud of. Here's what I can do:${differentiatorLine}
+
+[Describe the adjusted scope here — what's included, what's deferred to phase 2, and what you'll deliver by when.]
+
+If that works for you, I can have a revised proposal over today. If the full scope is a firm requirement, I understand — but I won't be able to move on the price for it.
+
+${yourName}`;
+    } else {
+      // match_with_context
+      body = `${subject}
+
+Hi ${clientName},
+
+Thanks for the transparency.${priceGapLine}
+
+I can work with you on the rate${projectRef}.${differentiatorLine} I want to be clear that this isn't something I'd do for every project — it's specific to this one and this timing.
+
+My proposal and timeline stay the same. If you want to go ahead on that basis, let me know and I'll send over the updated paperwork.
+
+${yourName}`;
+    }
+
+    return { content: [{ type: "text", text: body }] };
   }
 
   throw new Error(`Unknown tool: ${name}`);
