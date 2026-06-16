@@ -1,3 +1,34 @@
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 185)
+
+**Phase**: GROW (post-deploy, active distribution)
+
+**What shipped:**
+- ✅ **ProposalCraft APPROVED on mcpservers.org** (tick 185) — Confirmation email received: https://mcpservers.org/servers/jabbawocky/proposalcraft now live. mcpservers.org covers 22k+ MCP servers, including the wong2/awesome-mcp-servers integration (4k stars). Organic search and referral traffic now active. Do not resubmit.
+- ✅ **v1.4.53: end_client_relationship_email tool** (tick 185) — 98th tool: professional email for ending an existing client engagement — the hardest email most freelancers write and the one most likely to be fumbled. Three modes: natural_end (default — engagement ran its course; warm, leave the door open), capacity (you don't have room to continue; honest, brief, no blame), fit_mismatch (relationship isn't working; professional and final without over-explaining). Fills a key gap: client_decline_email handles new work, but there was no tool for ending an existing retainer or ongoing engagement. Required: client_name. Optional: engagement_description, end_date, reason, handover_note, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.53. Stars: 0. All Mat gates unchanged.
+- ✅ **glama.json added** (remote, previous tick) — Maintainer claim file committed to repo, establishing jabbawocky as the canonical owner for Glama's MCP directory. Required for Glama listing once Mat completes GitHub OAuth.
+- ✅ **MIT LICENSE added** (remote, previous tick) — Open source licence formalised. Required by several directories that check for SPDX licence presence.
+
+**Live URLs:**
+- `https://mcpservers.org/servers/jabbawocky/proposalcraft` — NEW: approved and live
+- `https://github.com/jabbawocky/proposalcraft` — main repo (98 tools, v1.4.53)
+- `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Pro gate needs Mat)
+
+**Metrics:**
+- 0 direct revenue; 0 stars
+- Distribution: mcpservers.org live, mcpize.com live, mcp.so submitted, MCPize listing active
+- 98 tools — largest freelance MCP toolkit
+
+**Blockers:**
+- MCPize Stripe Connect (urgent — revenue gate, needs Mat GitHub OAuth + Stripe connect)
+- Glama OAuth — needs Mat jabbawocky GitHub login
+- PH listing in draft — needs Mat or hunter DM
+- GitHub 2FA enforcement — deadline Jul 21 2026
+
+**Next action:**
+MCPize Stripe Connect → closes the revenue gate. All else is distribution.
+
+---
+
 # 💼 Money Machine — Mission Status: June 14, 2026 (tick 184)
 
 **Phase**: GROW (post-deploy, active distribution)
