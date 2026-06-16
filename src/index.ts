@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.51" },
+  { name: "proposalcraft", version: "1.4.53" },
   { capabilities: { tools: {} } }
 );
 
@@ -3461,6 +3461,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name"],
+      },
+    },
+    {
+      name: "end_client_relationship_email",
+      description:
+        "Write a professional email to end an existing client relationship or retainer. Three modes: natural_end (the engagement has run its course — use when the project is done and you're not renewing; warm, leave the door open for future work), capacity (you genuinely don't have room to continue — honest, no blame, brief), fit_mismatch (the working relationship isn't working — handled carefully; professional and final without being cold or over-explaining). Most freelancers write these too apologetically (which reads as uncertain) or too abruptly (which burns the bridge). This tool finds the professional middle: clear, direct, warm where appropriate. Required: client_name. Optional: engagement_description (what you've been doing together — e.g. 'the monthly retainer', 'the content work', 'the design contract'), end_date (when the engagement ends — e.g. 'end of this month', 'June 30', 'after the current milestone'), reason (natural_end | capacity | fit_mismatch — defaults to natural_end), handover_note (optional: what you're doing to wrap up or help them transition — e.g. 'I'll deliver the final files by Friday', 'happy to brief a replacement'), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          engagement_description: {
+            type: "string",
+            description: "Optional: what you've been doing together — e.g. 'the monthly retainer', 'the content work', 'the design contract', 'our arrangement'. Helps make the email specific rather than generic.",
+          },
+          end_date: {
+            type: "string",
+            description: "Optional: when the engagement ends — e.g. 'end of this month', 'June 30', 'after the current milestone is delivered'. If omitted, the email stays slightly open on timing.",
+          },
+          reason: {
+            type: "string",
+            enum: ["natural_end", "capacity", "fit_mismatch"],
+            description: "natural_end (default — engagement has run its course; warm and future-friendly), capacity (you don't have room to continue; honest, brief, no blame), fit_mismatch (working relationship isn't working; professional and final, avoids over-explaining).",
+          },
+          handover_note: {
+            type: "string",
+            description: "Optional: what you're doing to wrap up or help them transition — e.g. 'I'll deliver the final files by Friday', 'happy to brief a replacement if that's useful', 'everything is documented in the shared folder'. Including a handover gesture is good professional practice and often softens the message.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
       },
     },
   ],
@@ -7876,6 +7912,64 @@ ${questionLine}
 And if you're happy with the outcome — ${testimonialLine}
 
 Either way, it was good work. Hope to collaborate again.
+
+${yourName}`;
+    }
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "end_client_relationship_email") {
+    const clientName = String(args!.client_name);
+    const engagementDescription = args!.engagement_description ? String(args!.engagement_description) : null;
+    const endDate = args!.end_date ? String(args!.end_date) : null;
+    const reason = args!.reason ? String(args!.reason) : "natural_end";
+    const handoverNote = args!.handover_note ? String(args!.handover_note) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const engagementRef = engagementDescription ? ` ${engagementDescription}` : " our engagement";
+    const endDateLine = endDate ? ` — my last day will be ${endDate}` : "";
+    const handoverLine = handoverNote
+      ? `\n\n${handoverNote.charAt(0).toUpperCase() + handoverNote.slice(1)}.`
+      : "";
+
+    let email: string;
+
+    if (reason === "natural_end") {
+      email = `Subject: Wrapping up${engagementDescription ? " — " + engagementDescription : ""}
+
+Hi ${clientName},
+
+I wanted to let you know that I'll be bringing${engagementRef} to a close${endDateLine}.
+
+It's been genuinely good work — I've appreciated the collaboration and what we've built together.${handoverLine}
+
+If there's anything you'd like to cover before we wrap up, let me know. And if something comes up down the track where I can help, don't hesitate to reach out.
+
+${yourName}`;
+    } else if (reason === "capacity") {
+      email = `Subject: Stepping back from${engagementDescription ? " " + engagementDescription : " our work together"}
+
+Hi ${clientName},
+
+I wanted to be straight with you: I don't have the capacity to continue${engagementRef} at the level you deserve${endDateLine}.
+
+I'd rather tell you now than let the quality slip. This isn't about the work — it's a bandwidth issue on my end.${handoverLine}
+
+I'm sorry for the disruption. Happy to help make the handover as smooth as possible.
+
+${yourName}`;
+    } else {
+      // fit_mismatch
+      email = `Subject: Ending${engagementDescription ? " " + engagementDescription : " our engagement"}
+
+Hi ${clientName},
+
+I've been thinking about this carefully, and I've decided not to continue${engagementRef}${endDateLine}.
+
+I don't think this is the right working relationship for either of us, and I'd rather be honest about that than drag it out.${handoverLine}
+
+I wish you well with the project and hope you find the right person for what you need.
 
 ${yourName}`;
     }
