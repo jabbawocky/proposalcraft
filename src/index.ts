@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.53" },
+  { name: "proposalcraft", version: "1.4.54" },
   { capabilities: { tools: {} } }
 );
 
@@ -3497,6 +3497,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name"],
+      },
+    },
+    {
+      name: "cold_pitch_follow_up",
+      description:
+        "Write a short, professional follow-up when a cold pitch has gone unanswered. Shorter than the original pitch — brevity signals confidence. Doesn't repeat everything; just resurfaces the key hook, gives an easy out, and asks for one yes/no. Distinct from client_followup (which is for post-proposal follow-up after a prospect showed interest) and win_back_email (re-engaging a lapsed client). This is for genuine cold silence — they never replied at all. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          recipient_name: {
+            type: "string",
+            description: "First name of the person you're following up with",
+          },
+          company_name: {
+            type: "string",
+            description: "Optional: company name — helps personalise the subject line",
+          },
+          original_pitch_summary: {
+            type: "string",
+            description: "One-sentence summary of what you offered in the original pitch (e.g. 'UX help for your onboarding flow', 'copywriting for your pricing page rewrite', 'React development for the mobile app')",
+          },
+          days_since_pitch: {
+            type: "number",
+            description: "Optional: how long ago you sent the original pitch (e.g. 7, 14, 21). Used to calibrate tone — shorter gap = lighter touch, longer gap = slightly more direct.",
+          },
+          new_angle: {
+            type: "string",
+            description: "Optional: something new to add that wasn't in the original pitch — a relevant observation, a result you can now reference, a question that reframes the value. Omit if you have nothing genuinely new to say.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["recipient_name", "original_pitch_summary"],
       },
     },
   ],
@@ -7973,6 +8008,37 @@ I wish you well with the project and hope you find the right person for what you
 
 ${yourName}`;
     }
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "cold_pitch_follow_up") {
+    const recipientName = String(args!.recipient_name);
+    const companyName = args!.company_name ? String(args!.company_name) : null;
+    const originalPitchSummary = String(args!.original_pitch_summary);
+    const daysSincePitch = args!.days_since_pitch ? Number(args!.days_since_pitch) : null;
+    const newAngle = args!.new_angle ? String(args!.new_angle) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const subjectCompany = companyName ? ` — ${companyName}` : "";
+    const newAngleLine = newAngle ? `\n\n${newAngle}` : "";
+
+    let timeLine = "";
+    if (daysSincePitch && daysSincePitch <= 10) {
+      timeLine = "I know inboxes get busy — ";
+    } else if (daysSincePitch && daysSincePitch > 10) {
+      timeLine = "I sent this a couple of weeks ago and wanted to circle back briefly — ";
+    }
+
+    const email = `Subject: Re: ${originalPitchSummary}${subjectCompany}
+
+Hi ${recipientName},
+
+${timeLine}just a quick bump on the note I sent about ${originalPitchSummary}.${newAngleLine}
+
+If the timing's off or it's not the right fit, just say the word — no hard feelings at all. But if there's any interest, I'd love a 15-minute call.
+
+${yourName}`;
 
     return { content: [{ type: "text", text: email }] };
   }

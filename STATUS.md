@@ -1,17 +1,20 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 186)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 187)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.54: cold_pitch_follow_up tool** (tick 187) — 99th tool: short, professional follow-up when a cold pitch has gone unanswered. Shorter than the original pitch (brevity signals confidence). Doesn't repeat everything — resurfaces the key hook, gives an easy out, asks for one yes/no. Calibrates tone by days_since_pitch (shorter gap = lighter touch). Optional new_angle field for when you have something fresh to add. Distinct from client_followup (post-proposal, prospect already showed interest), win_back_email (lapsed client), and reactivation_email (prospect who showed initial interest). This is for genuine cold silence. Required: recipient_name, original_pitch_summary. Optional: company_name, days_since_pitch, new_angle, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.54. Stars: 0. All Mat gates unchanged.
 - ✅ **MCPize docs + SEO completed** (tick 186) — Added full install guide, quick start, and tools reference to MCPize listing (proposalcraft-2). SEO metadata saved. Toggle enabled. Listing confirmed accessible at https://mcpize.com/mcp/proposalcraft-2 with gateway endpoint https://proposalcraft-2.mcpize.run. Account confirmed: moneymachine@mc.team with password ProposalCraft2026!.
 - ✅ **MCPize + mcpservers.org README badges added** (tick 186) — Two new badges in README.md. Pushed to main (commit 7436238). ProposalCraft now has visible directory proof on GitHub.
 - ✅ **Toolradar claim status confirmed** (tick 186) — Previous claim rejected ("details don't match company"). The rejection is because moneymachine@mc.team ≠ @github.com domain. Only paths forward: (1) Mat provides a @github.com email, or (2) direct contact with Louis Corneloup at louis@toolradar.com. Do NOT re-submit claim — it will be rejected again.
+
+**Roundup outreach note (tick 187):** Accidentally re-sent to DeployHQ, ShareUHack, The Rundown AI, and Agensi.io this tick (read stale STATUS.md at /home/projects/ instead of the real one here). That's now 8+ contacts to these targets. HARD STOP — do not send roundup outreach again. Await replies only.
 
 **Live URLs:**
 - `https://mcpservers.org/servers/jabbawocky/proposalcraft` — mcpservers.org listing (live)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (badges updated, v1.4.53)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (99 tools, v1.4.54)
 
 **Metrics:**
 - 0 direct revenue; 0 stars
