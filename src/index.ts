@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.54" },
+  { name: "proposalcraft", version: "1.4.55" },
   { capabilities: { tools: {} } }
 );
 
@@ -3532,6 +3532,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["recipient_name", "original_pitch_summary"],
+      },
+    },
+    {
+      name: "contract_unsigned_follow_up",
+      description:
+        "Write a short, professional follow-up when a client has agreed to move forward but hasn't returned the signed contract yet. The hardest follow-up to write because it feels pushy — but staying silent stalls the project, leaves income at risk, and signals that unsigned contracts are fine. Distinct from cold_pitch_follow_up (they never replied at all), client_followup (following up on a proposal they haven't approved yet), and no_response_closure_email (closing out a ghost). This is after the handshake: they said yes, you sent the contract, now it's sitting unsigned. Under 100 words. Matter-of-fact, no guilt, gives them an easy out if something has changed. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: name or description of the project (e.g. 'the website redesign', 'the Q3 campaign'). Helps personalise the subject line.",
+          },
+          days_since_sent: {
+            type: "number",
+            description: "Optional: how many days ago you sent the contract (e.g. 3, 7, 14). Used to calibrate tone — shorter gap is lighter, longer gap is slightly more direct.",
+          },
+          start_date: {
+            type: "string",
+            description: "Optional: the planned project start date (e.g. 'June 23', 'next Monday'). Including this adds urgency without being pushy — it's a practical reason to get the contract back.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
       },
     },
   ],
@@ -8037,6 +8068,40 @@ Hi ${recipientName},
 ${timeLine}just a quick bump on the note I sent about ${originalPitchSummary}.${newAngleLine}
 
 If the timing's off or it's not the right fit, just say the word — no hard feelings at all. But if there's any interest, I'd love a 15-minute call.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "contract_unsigned_follow_up") {
+    const clientName = String(args!.client_name);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const daysSinceSent = args!.days_since_sent ? Number(args!.days_since_sent) : null;
+    const startDate = args!.start_date ? String(args!.start_date) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` for ${projectName}` : "";
+    const subjectProject = projectName ? ` — ${projectName}` : "";
+
+    let openingLine = "Just circling back on the contract I sent";
+    if (daysSinceSent && daysSinceSent <= 4) {
+      openingLine = "Just a quick nudge on the contract I sent";
+    } else if (daysSinceSent && daysSinceSent >= 10) {
+      openingLine = "I wanted to follow up on the contract I sent a couple of weeks ago";
+    }
+
+    const startLine = startDate
+      ? `\n\nWe're lined up to kick off ${startDate}, so returning it when you get a chance would help us stay on track.`
+      : "";
+
+    const email = `Subject: Contract${subjectProject}
+
+Hi ${clientName},
+
+${openingLine}${projectRef} — just wanted to make sure it didn't get buried.${startLine}
+
+If anything in it needs adjusting, or if circumstances have changed on your end, just let me know. Happy to sort it out.
 
 ${yourName}`;
 
