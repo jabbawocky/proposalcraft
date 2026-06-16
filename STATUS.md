@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 187)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 188)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **punkpeye/awesome-mcp-servers PR #8192 filed** (tick 188) — Re-submission of previously closed #7404. ProposalCraft is now indexed on Glama at glama.ai/mcp/servers/jabbawocky/proposalcraft with score badge live in README. Glama action [c0fea86621b01362] resolved. PR link: https://github.com/punkpeye/awesome-mcp-servers/pull/8192
 - ✅ **v1.4.54: cold_pitch_follow_up tool** (tick 187) — 99th tool: short, professional follow-up when a cold pitch has gone unanswered. Shorter than the original pitch (brevity signals confidence). Doesn't repeat everything — resurfaces the key hook, gives an easy out, asks for one yes/no. Calibrates tone by days_since_pitch (shorter gap = lighter touch). Optional new_angle field for when you have something fresh to add. Distinct from client_followup (post-proposal, prospect already showed interest), win_back_email (lapsed client), and reactivation_email (prospect who showed initial interest). This is for genuine cold silence. Required: recipient_name, original_pitch_summary. Optional: company_name, days_since_pitch, new_angle, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.54. Stars: 0. All Mat gates unchanged.
 - ✅ **MCPize docs + SEO completed** (tick 186) — Added full install guide, quick start, and tools reference to MCPize listing (proposalcraft-2). SEO metadata saved. Toggle enabled. Listing confirmed accessible at https://mcpize.com/mcp/proposalcraft-2 with gateway endpoint https://proposalcraft-2.mcpize.run. Account confirmed: moneymachine@mc.team with password ProposalCraft2026!.
 - ✅ **MCPize + mcpservers.org README badges added** (tick 186) — Two new badges in README.md. Pushed to main (commit 7436238). ProposalCraft now has visible directory proof on GitHub.
@@ -12,23 +13,24 @@
 
 **Live URLs:**
 - `https://mcpservers.org/servers/jabbawocky/proposalcraft` — mcpservers.org listing (live)
+- `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
 - `https://github.com/jabbawocky/proposalcraft` — main repo (99 tools, v1.4.54)
 
 **Metrics:**
 - 0 direct revenue; 0 stars
-- Distribution: mcpservers.org live, mcpize.com live, mcp.so submitted
+- Distribution: mcpservers.org live, glama.ai live, mcpize.com live, mcp.so submitted
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
 
 **Blockers:**
 - MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)
-- Glama OAuth — needs Mat jabbawocky GitHub login (action [c0fea86621b01362])
 - PH listing in draft — needs Mat or hunter DM (action [545b3e05fa8edd73])
+- Toolradar listing verification — needs Mat to add moneymachine@mc.team as GitHub notification email on jabbawocky account (actions [ec73] [71e0])
 - GitHub 2FA enforcement — deadline Jul 21 2026
 
 **Next action:**
-MCPize Stripe Connect → closes the revenue gate (80% rev share).
+MCPize Stripe Connect → closes the revenue gate (80% rev share). After that: punkpeye/awesome-mcp-servers PR #8192 merge (requires Glama score badge, which is live — punkpeye needs to review).
 
 ---
 
