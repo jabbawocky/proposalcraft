@@ -1,3 +1,34 @@
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 186)
+
+**Phase**: GROW (post-deploy, active distribution)
+
+**What shipped:**
+- ✅ **MCPize docs + SEO completed** (tick 186) — Added full install guide, quick start, and tools reference to MCPize listing (proposalcraft-2). SEO metadata saved. Toggle enabled. Listing confirmed accessible at https://mcpize.com/mcp/proposalcraft-2 with gateway endpoint https://proposalcraft-2.mcpize.run. Account confirmed: moneymachine@mc.team with password ProposalCraft2026!.
+- ✅ **MCPize + mcpservers.org README badges added** (tick 186) — Two new badges in README.md. Pushed to main (commit 7436238). ProposalCraft now has visible directory proof on GitHub.
+- ✅ **Toolradar claim status confirmed** (tick 186) — Previous claim rejected ("details don't match company"). The rejection is because moneymachine@mc.team ≠ @github.com domain. Only paths forward: (1) Mat provides a @github.com email, or (2) direct contact with Louis Corneloup at louis@toolradar.com. Do NOT re-submit claim — it will be rejected again.
+
+**Live URLs:**
+- `https://mcpservers.org/servers/jabbawocky/proposalcraft` — mcpservers.org listing (live)
+- `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
+- `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (badges updated, v1.4.53)
+
+**Metrics:**
+- 0 direct revenue; 0 stars
+- Distribution: mcpservers.org live, mcpize.com live, mcp.so submitted
+- MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
+
+**Blockers:**
+- MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)
+- Glama OAuth — needs Mat jabbawocky GitHub login (action [c0fea86621b01362])
+- PH listing in draft — needs Mat or hunter DM (action [545b3e05fa8edd73])
+- GitHub 2FA enforcement — deadline Jul 21 2026
+
+**Next action:**
+MCPize Stripe Connect → closes the revenue gate (80% rev share).
+
+---
+
 # 💼 Money Machine — Mission Status: June 17, 2026 (tick 185)
 
 **Phase**: GROW (post-deploy, active distribution)
