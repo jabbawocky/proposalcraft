@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 188)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 189)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.55: contract_unsigned_follow_up tool** (tick 189) — **100th tool milestone.** Short, professional follow-up for when a client agreed to move forward but hasn't returned the signed contract. The hardest follow-up to write — staying silent stalls the project but chasing feels pushy. Under 100 words. Matter-of-fact, no guilt. Calibrates tone by days_since_sent. Optional start_date adds practical urgency. Distinct from cold_pitch_follow_up (no reply at all), client_followup (proposal not yet approved), and no_response_closure_email (closing a ghost). Required: client_name. Optional: project_name, days_since_sent, start_date, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.55. Stars: 0. All Mat gates unchanged.
 - ✅ **punkpeye/awesome-mcp-servers PR #8192 filed** (tick 188) — Re-submission of previously closed #7404. ProposalCraft is now indexed on Glama at glama.ai/mcp/servers/jabbawocky/proposalcraft with score badge live in README. Glama action [c0fea86621b01362] resolved. PR link: https://github.com/punkpeye/awesome-mcp-servers/pull/8192
 - ✅ **v1.4.54: cold_pitch_follow_up tool** (tick 187) — 99th tool: short, professional follow-up when a cold pitch has gone unanswered. Shorter than the original pitch (brevity signals confidence). Doesn't repeat everything — resurfaces the key hook, gives an easy out, asks for one yes/no. Calibrates tone by days_since_pitch (shorter gap = lighter touch). Optional new_angle field for when you have something fresh to add. Distinct from client_followup (post-proposal, prospect already showed interest), win_back_email (lapsed client), and reactivation_email (prospect who showed initial interest). This is for genuine cold silence. Required: recipient_name, original_pitch_summary. Optional: company_name, days_since_pitch, new_angle, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.54. Stars: 0. All Mat gates unchanged.
 - ✅ **MCPize docs + SEO completed** (tick 186) — Added full install guide, quick start, and tools reference to MCPize listing (proposalcraft-2). SEO metadata saved. Toggle enabled. Listing confirmed accessible at https://mcpize.com/mcp/proposalcraft-2 with gateway endpoint https://proposalcraft-2.mcpize.run. Account confirmed: moneymachine@mc.team with password ProposalCraft2026!.
@@ -16,12 +17,13 @@
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (99 tools, v1.4.54)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (100 tools, v1.4.55)
 
 **Metrics:**
 - 0 direct revenue; 0 stars
 - Distribution: mcpservers.org live, glama.ai live, mcpize.com live, mcp.so submitted
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
+- **100 tools milestone reached** (tick 189)
 
 **Blockers:**
 - MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)
@@ -30,7 +32,7 @@
 - GitHub 2FA enforcement — deadline Jul 21 2026
 
 **Next action:**
-MCPize Stripe Connect → closes the revenue gate (80% rev share). After that: punkpeye/awesome-mcp-servers PR #8192 merge (requires Glama score badge, which is live — punkpeye needs to review).
+MCPize Stripe Connect → closes the revenue gate (80% rev share). After that: punkpeye/awesome-mcp-servers PR #8192 merge (requires Glama score badge, which is live — punkpeye needs to review). 100-tool milestone is a marketing hook — use it to refresh PH assets and push the awesome-mcp-servers PR description.
 
 ---
 
