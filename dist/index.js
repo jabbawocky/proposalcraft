@@ -3675,6 +3675,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["your_rate"],
             },
         },
+        {
+            name: "project_scope_acceptance_email",
+            description: "Write the professional email to send when you want to confirm a client's project scope before the formal contract arrives. Bridges the gap between verbal agreement and signed contract — confirms deliverables, timeline, and rate so there are no surprises when the paperwork lands. Does not count against your monthly draft limit. Required: client_name, project_description. Optional: scope_summary (bullet list of specific deliverables), timeline (e.g. 'kick off Monday June 23, deliver by July 18'), rate_summary (e.g. '$4,200 flat, 50% upfront'), next_step (e.g. 'send over the contract and I will countersign same day'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name of the client or contact",
+                    },
+                    project_description: {
+                        type: "string",
+                        description: "Brief description of the project (e.g. 'the Brand Refresh', 'your e-commerce site redesign', 'the Q3 content campaign')",
+                    },
+                    scope_summary: {
+                        type: "string",
+                        description: "Bullet-point summary of specific deliverables (e.g. 'logo suite, brand guidelines, 3 social templates'). Omit to keep the email high-level.",
+                    },
+                    timeline: {
+                        type: "string",
+                        description: "Agreed timeline or start date (e.g. 'kick off Monday June 23, first draft by July 4'). Omit to leave open.",
+                    },
+                    rate_summary: {
+                        type: "string",
+                        description: "Brief rate confirmation (e.g. '$4,200 flat, 50% upfront', '$150/hr against a 20-hour estimate'). Omit if rate has not yet been agreed.",
+                    },
+                    next_step: {
+                        type: "string",
+                        description: "The single next action you are waiting on from the client (e.g. 'send over the contract and I will countersign same day', 'confirm the start date and I will block it'). Omit to use the default.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_description"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8013,6 +8051,36 @@ ${greeting}
 ${specialtyLine}my rate is ${yourRate}${contextLine}.${availabilityLine}
 
 If you would like to move forward, I am ${nextStep}.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "project_scope_acceptance_email") {
+        const clientName = String(args.client_name);
+        const projectDescription = String(args.project_description);
+        const scopeSummary = args.scope_summary ? String(args.scope_summary) : null;
+        const timeline = args.timeline ? String(args.timeline) : null;
+        const rateSummary = args.rate_summary ? String(args.rate_summary) : null;
+        const nextStep = args.next_step
+            ? String(args.next_step)
+            : "let me know if anything here looks different from what you have in mind and we can sort it before the paperwork arrives";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const scopeLines = scopeSummary
+            ? `\n\nTo confirm the scope:\n${scopeSummary}`
+            : "";
+        const timelineLine = timeline
+            ? `\n\nTimeline: ${timeline}.`
+            : "";
+        const rateLine = rateSummary
+            ? `\n\nRate: ${rateSummary}.`
+            : "";
+        const email = `Subject: Confirming scope — ${projectDescription}
+
+Hi ${clientName},
+
+Glad we are moving forward with ${projectDescription}. I wanted to drop a quick note to make sure we are aligned on scope before the contract comes through.${scopeLines}${timelineLine}${rateLine}
+
+Happy to ${nextStep}.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
