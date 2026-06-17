@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.61" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.65" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -3711,6 +3711,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_description"],
+            },
+        },
+        {
+            name: "overdue_project_timeline_update",
+            description: "Write the proactive email when YOUR delivery is running behind the agreed deadline — sent before the client has to chase you. The hardest email a freelancer has to write: most either avoid it (and let the client discover the delay themselves) or over-apologise (which damages confidence more than the delay does). This generates a clear, confident update that acknowledges the slip, gives a realistic new date, and briefly states the cause without excessive excuse-making. Tone: matter-of-fact, not panicked, not grovelling. Keeps the relationship intact. Distinct from scope_change_email (change to scope, not timeline), client_waiting_email (client chasing you for an update — reactive), and project_kickoff_email (confirming start of a new project). Does not count against your monthly draft limit. Required: client_name, original_deadline (e.g. 'Friday 20 June', 'end of this week'), new_deadline (your revised commitment), project_name. Optional: delay_reason (brief honest explanation — e.g. 'a technical issue took longer to resolve than expected', 'I underestimated the scope of the research phase'; omit for a shorter email that skips the cause), mitigation (what you're doing to prevent further slippage — e.g. 'I've cleared my schedule for the next two days to focus on this', 'I've already completed X to make up ground'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name of the client",
+                    },
+                    original_deadline: {
+                        type: "string",
+                        description: "The originally agreed deadline (e.g. 'Friday 20 June', 'end of this week', 'last Thursday')",
+                    },
+                    new_deadline: {
+                        type: "string",
+                        description: "Your revised, realistic delivery date (e.g. 'Tuesday 24 June', 'end of next week')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or description of the project (e.g. 'the brand identity', 'your Q3 content plan', 'the checkout redesign')",
+                    },
+                    delay_reason: {
+                        type: "string",
+                        description: "Brief honest explanation for the delay (e.g. 'a technical issue took longer than expected', 'I underestimated the research phase'). Omit to skip explaining the cause.",
+                    },
+                    mitigation: {
+                        type: "string",
+                        description: "What you are doing to prevent further slippage (e.g. 'I have cleared my schedule to focus on this', 'I have already completed the first half'). Adds confidence.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "original_deadline", "new_deadline", "project_name"],
             },
         },
         {
@@ -8115,6 +8153,33 @@ Hi ${clientName},
 Glad we are moving forward with ${projectDescription}. I wanted to drop a quick note to make sure we are aligned on scope before the contract comes through.${scopeLines}${timelineLine}${rateLine}
 
 Happy to ${nextStep}.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "overdue_project_timeline_update") {
+        const clientName = String(args.client_name);
+        const originalDeadline = String(args.original_deadline);
+        const newDeadline = String(args.new_deadline);
+        const projectName = String(args.project_name);
+        const delayReason = args.delay_reason ? String(args.delay_reason) : null;
+        const mitigation = args.mitigation ? String(args.mitigation) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const reasonLine = delayReason
+            ? ` ${delayReason} — it took longer to resolve than I had planned for.`
+            : "";
+        const mitigationLine = mitigation
+            ? ` ${mitigation}.`
+            : "";
+        const email = `Subject: Updated timeline — ${projectName}
+
+Hi ${clientName},
+
+I wanted to reach out before you had to ask.${projectName ? ` ${projectName}` : " The project"} is running behind the ${originalDeadline} deadline I committed to.${reasonLine}
+
+My revised delivery date is ${newDeadline}.${mitigationLine}
+
+I appreciate your patience and will have it with you by then. If this creates a scheduling issue on your end, let me know and we can talk through it.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };

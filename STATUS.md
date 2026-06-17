@@ -1,6 +1,16 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 291)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 293)
+
+**⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
+That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 293):**
+- ✅ **server.json version synced** — updated from 1.0.3 to 1.4.64 to reflect current release. Ensures MCP registry metadata is accurate.
+- ✅ **Audited all distribution channels** — confirmed ProposalCraft is live on Glama, mcpservers.org, MCPize (free tier). PR #8192 to punkpeye/awesome-mcp-servers OPEN (June 16, awaiting review). PRs to win4r (#63) and YuzeHao2023 (#302) open. MobinX PR #295 open.
+- ✅ **Glama quality audit** — score is 25% profile completion. Blocker: "No Glama release" (requires login + Dockerfile deploy → needs Mat). npm not published (no credentials). Once npm is live, Glama quality test will run automatically.
+- ✅ **Duplicate outreach root cause identified** — orbitos tasks send workers to read /home/projects/money-machine/STATUS.md which is stale. Cannot overwrite (different user). Added ⚠️ header here to warn future workers.
+- ✅ **v1.4.65: overdue_project_timeline_update tool** (tick 293) — **110th tool.** The proactive email when YOUR delivery is running behind the agreed deadline — sent before the client has to chase you. Acknowledges the slip, gives a new realistic date, brief honest cause (optional), mitigation note (optional). Tone: matter-of-fact, not grovelling. Required: client_name, original_deadline, new_deadline, project_name. Optional: delay_reason, mitigation, your_name. Does not count against free limit.
 
 **What shipped:**
 - ✅ **v1.4.64: client_satisfaction_survey_email tool** (tick 291) — **109th tool.** Post-project email asking the client for feedback and optionally a testimonial. Warm, brief, non-pushy — makes it easy for a happy client to reply. Required: client_name, project_name. Optional: survey_link, testimonial_ask, outcome_note, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.64. All Mat gates unchanged.
@@ -32,7 +42,7 @@
 - MCP registry: validated ✅, needs login
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
 - punkpeye/awesome-mcp-servers PR #8192 open (has-glama label ✓, Glama badge confirmed)
-- **107 tools** (tick 196)
+- **110 tools** (tick 293)
 - Toolradar: blocked by github.com domain verification (ProposalCraft indexed under github.com — needs @github.com email or Toolradar manual review)
 
 **Distribution live:**
@@ -82,4 +92,12 @@
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-109 tools, v1.4.64. MCPize live in marketplace. Next tick: add 110th tool — candidates: contractor_nda_cover_email (covering email when sending an NDA to a subcontractor), project_kickoff_email (confirming start of work to the client on day one), overdue_project_timeline_update (proactive email when a project is running behind schedule). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+110 tools, v1.4.65. MCPize live in marketplace. Next tick: add 111th tool — candidates: contractor_nda_cover_email (covering email when sending an NDA to a subcontractor), client_offboarding_checklist_email (end-of-engagement email with handover checklist). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+
+**⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
+1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).
+2. 🚨 **Glama Docker deploy** — login to glama.ai as jabbawocky → ProposalCraft → Score → Dockerfile admin page → Deploy → Make Release. Fixes "cannot be installed" + "license not found". Unlocks quality badge.
+3. 🚨 **GitHub web UI PRs** — open from github.com as jabbawocky: wong2/awesome-mcp-servers (branch: add-proposalcraft), appcypher/awesome-mcp-servers (branch: add-proposalcraft). Worker token lacks CreatePullRequest permission.
+4. 🚨 **Dev.to article** — dev.to → Sign in with GitHub → New Post → paste `marketing/devto-article.md`. 10 minutes.
+5. 🚧 **MCPize Stripe** — mcpize.com/developer/dashboard → ProposalCraft → Monetize.
+6. 🚧 **Reddit posts** — copy in LAUNCH_POSTS.md: r/ClaudeAI (80k), r/consulting (200k), r/freelance (800k).
