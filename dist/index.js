@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.55" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.57" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -3392,6 +3392,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name"],
+            },
+        },
+        {
+            name: "equity_or_deferred_payment_response",
+            description: "Write a professional, considered response when a client proposes paying you in equity, exposure, revenue share, or deferred payment instead of (or alongside) a cash fee. The hardest part of this email is saying no without burning the relationship — or saying yes with the right conditions. Three modes: decline (default — polite, firm, no-door-slamming; explains your policy without moralising), counter (you're open to it under specific conditions — e.g. partial cash + equity, milestone-based deferred, or a minimum cash floor), and open_to_discuss (you'd like to hear more before committing either way — useful when the offer might be genuinely interesting but you need more information). Distinct from discount_request_response (which handles cash price negotiation). Does not count against your monthly draft limit. Required: client_name, proposal_type (e.g. 'equity stake', 'revenue share', 'deferred payment after launch', 'exposure and portfolio work'). Optional: response_mode (decline | counter | open_to_discuss), project_description, your_conditions (only used in counter mode — what would make you say yes, e.g. '50% cash upfront and 5% equity'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or the name they used to sign off",
+                    },
+                    proposal_type: {
+                        type: "string",
+                        description: "What they're offering instead of cash (e.g. 'equity stake', 'revenue share', 'deferred payment after launch', 'exposure and a portfolio piece'). Used to keep the reply specific, not generic.",
+                    },
+                    response_mode: {
+                        type: "string",
+                        enum: ["decline", "counter", "open_to_discuss"],
+                        description: "decline (default): polite, firm no — explains your policy, keeps the door open for paid work. counter: you'd say yes under specific conditions — state them clearly. open_to_discuss: you need more detail before deciding — ask the right questions.",
+                    },
+                    project_description: {
+                        type: "string",
+                        description: "Optional: brief description of the project (e.g. 'mobile app for their fintech startup'). Helps make the response feel specific.",
+                    },
+                    your_conditions: {
+                        type: "string",
+                        description: "Optional (counter mode only): what would make you say yes, stated plainly (e.g. '50% of the standard rate upfront and 5% equity', 'full fee deferred 90 days with a signed agreement', 'minimum $2k retainer plus revenue share above $10k monthly'). Auto-formatted into the email.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "proposal_type"],
             },
         },
         {
@@ -7487,6 +7522,66 @@ ${openingLine}${projectRef} — just wanted to make sure it didn't get buried.${
 If anything in it needs adjusting, or if circumstances have changed on your end, just let me know. Happy to sort it out.
 
 ${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "equity_or_deferred_payment_response") {
+        const clientName = String(args.client_name);
+        const proposalType = String(args.proposal_type);
+        const mode = args.response_mode ? String(args.response_mode) : "decline";
+        const projectDescription = args.project_description ? String(args.project_description) : null;
+        const yourConditions = args.your_conditions ? String(args.your_conditions) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectDescription
+            ? `I appreciate you sharing more about the ${projectDescription}.`
+            : "I appreciate you taking the time to reach out.";
+        let body;
+        if (mode === "counter") {
+            const conditionsText = yourConditions
+                ? yourConditions
+                : "a portion of the fee upfront with the remainder tied to milestones";
+            body = `Hi ${clientName},
+
+${projectLine}
+
+I've given the ${proposalType} structure some thought. It's not something I typically work with, but I'm open to a structure that works for both of us.
+
+What I'd need to make it work: ${conditionsText}.
+
+If that's in the right ballpark, happy to put something more formal together. If not, I understand — and I'm still interested in the project on standard terms if that ever makes sense.
+
+${yourName}`;
+        }
+        else if (mode === "open_to_discuss") {
+            body = `Hi ${clientName},
+
+${projectLine}
+
+The ${proposalType} model is something I'd want to understand better before I could give you a proper answer. A few things I'd need to get a clearer picture:
+
+- What does the ${proposalType} structure look like in practice — is there a cap, a timeline, a valuation basis?
+- What's the expected timeline from project delivery to meaningful returns?
+- Is there flexibility to include any cash component alongside?
+
+Happy to jump on a short call to talk it through if that's easier.
+
+${yourName}`;
+        }
+        else {
+            body = `Hi ${clientName},
+
+${projectLine}
+
+I appreciate you being upfront about the structure. I have a policy of working on a fixed-fee or time-based basis — it keeps things clean and lets me give the work the focus it deserves without the complexity of shared economics.
+
+It's not a reflection of confidence in the project; it's just how I operate.
+
+If the budget situation changes and a paid engagement makes sense down the line, I'd be glad to pick up the conversation.
+
+${yourName}`;
+        }
+        const email = `Subject: Re: [their subject line]
+
+${body}`;
         return { content: [{ type: "text", text: email }] };
     }
     if (name === "project_inquiry_response_email") {
