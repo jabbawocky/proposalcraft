@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.68" },
+  { name: "proposalcraft", version: "1.4.70" },
   { capabilities: { tools: {} } }
 );
 
@@ -4138,6 +4138,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: [],
+      },
+    },
+    {
+      name: "project_pause_email",
+      description:
+        "Write a professional email to pause a project mid-engagement — either at the client's request or yours. Covers the reason briefly, confirms what's been delivered so far, sets a resume date (or flags that one needs to be agreed), and keeps the relationship warm. Distinct from project_closure_email (which is a permanent end) and project_kickoff_email (which starts work). Does not count against your monthly draft limit. Required: client_name, project_name. Optional: reason (why the project is pausing — brief and honest), resume_date (expected restart date), completed_so_far (summary of what's been delivered before the pause), action_items (things either party should do during the pause), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or company name for the greeting",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or short description of the project being paused",
+          },
+          reason: {
+            type: "string",
+            description:
+              "Brief honest reason for the pause (e.g. 'your team is heads-down on a product launch', 'we've hit the current budget allocation', 'I'm stepping away for planned leave'). Omit to keep the email neutral and simply confirm the agreed pause.",
+          },
+          resume_date: {
+            type: "string",
+            description:
+              "Expected date to resume (e.g. 'July 14', 'early August'). Omit if no firm date has been agreed — the email will flag that a resumption date should be confirmed.",
+          },
+          completed_so_far: {
+            type: "string",
+            description:
+              "Brief summary of what has already been delivered or completed before the pause (e.g. 'wireframes and copywriting for sections 1–3'). Omit if not needed.",
+          },
+          action_items: {
+            type: "string",
+            description:
+              "Any tasks either party should handle during the pause (e.g. 'please review the draft scope doc and send feedback when you're ready to resume'). Omit if nothing is pending.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name"],
       },
     },
   ],
@@ -9376,6 +9419,47 @@ If there's a specific issue with the invoice or the work, please contact me imme
 
 ${yourName}`;
     }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_pause_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const reason = args!.reason ? String(args!.reason) : null;
+    const resumeDate = args!.resume_date ? String(args!.resume_date) : null;
+    const completedSoFar = args!.completed_so_far ? String(args!.completed_so_far) : null;
+    const actionItems = args!.action_items ? String(args!.action_items) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const reasonLine = reason ? `\n\nAs discussed, ${reason}.` : "";
+    const completedLine = completedSoFar
+      ? `\n\nTo recap where we've got to: ${completedSoFar}.`
+      : "";
+    const resumeLine = resumeDate
+      ? `I've noted ${resumeDate} as the target restart date.`
+      : "Once you're ready to pick things back up, just drop me a line and we'll agree a restart date.";
+    const actionLine = actionItems
+      ? `\n\nIn the meantime: ${actionItems}.`
+      : "";
+
+    const subject = `Pausing ${projectName} — resuming ${resumeDate ? resumeDate : "when you're ready"}`;
+    const body = `Hi ${clientName},${reasonLine}
+
+Following our conversation, I'm confirming that we're putting ${projectName} on hold for now.${completedLine}
+
+${resumeLine}${actionLine}
+
+Everything is documented and in good shape — there'll be no loss of context when we pick this back up. Feel free to reach out any time in the meantime.
+
+${yourName}`;
 
     return {
       content: [
