@@ -6,13 +6,13 @@
     "url": "https://github.com/jabbawocky/proposalcraft",
     "source": "github"
   },
-  "version": "1.4.65",
+  "version": "1.4.67",
   "packages": [
     {
       "registryType": "npm",
       "name": "proposalcraft",
       "identifier": "proposalcraft",
-      "version": "1.4.65",
+      "version": "1.4.67",
       "transport": {
         "type": "stdio",
         "command": "npx",

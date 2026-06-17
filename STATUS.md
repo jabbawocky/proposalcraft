@@ -1,9 +1,15 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 302)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 308)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 308):**
+- ✅ **v1.4.67: contractor_nda_cover_email tool (112th tool)** — short covering email to send alongside an NDA to a client or subcontractor. Auto-adapts tone for client vs. subcontractor relationship; optional signing_method field. Closes the nda_template workflow gap (generate NDA → send it). Pushed to main + dist.
+- ✅ **MCPize proposalcraft-2 confirmed live with $19/mo Pro tier** — "ProposalCraft Pro" visible in marketplace, "Get ProposalCraft Pro →" CTA active. Updated Jun 18, 2026. Stripe Connect still needed for payments to flow.
+- ✅ **Inbox reviewed** — Toolradar OTPs (expired, no action needed). Supertool/Rundown AI confirmation email already logged (tick 302). No replies needed.
+- ℹ️ **mcp.so** — ProposalCraft not yet indexed in search (PR chatmcp/mcpso#2636 still pending merge). Submission form requires GitHub/Google sign-in — blocked for worker.
 
 **What shipped (tick 302):**
 - ✅ **v1.4.66: draft_invoice tool (111th tool)** — generates a complete professional invoice document in Markdown. Line items support hourly/daily (quantity × rate) or fixed-fee amounts; optional tax line; payment instructions section. Closes the proposal → invoice workflow gap. Pushed to main + dist.
@@ -103,7 +109,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-111 tools, v1.4.66. MCPize live in marketplace. punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 112th tool — candidates: contractor_nda_cover_email (covering email when sending NDA to a subcontractor), client_offboarding_checklist_email (end-of-engagement handover). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+112 tools, v1.4.67. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 113th tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), project_pause_email (professional email to pause a project mid-engagement). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
 
 **⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
 1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).

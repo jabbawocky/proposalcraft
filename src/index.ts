@@ -4032,6 +4032,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "your_name", "line_items"],
       },
     },
+    {
+      name: "contractor_nda_cover_email",
+      description:
+        "Write the short covering email to send alongside an NDA (Non-Disclosure Agreement) to a client or subcontractor. Explains why you're sending the document, what it covers, and what to do with it — without being heavy or legalistic. Distinct from nda_template (which generates the NDA itself) and subcontractor_brief (which briefs a subcontractor on the work). Does not count against your monthly draft limit. Required: recipient_name. Optional: project_description (brief note on the project the NDA covers), relationship ('client' or 'subcontractor' — defaults to 'client'), signing_method (how they should return the signed copy, e.g. 'DocuSign', 'reply with a signed PDF', 'HelloSign'), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          recipient_name: {
+            type: "string",
+            description: "Name of the person receiving the NDA",
+          },
+          project_description: {
+            type: "string",
+            description: "Brief description of the project or engagement the NDA covers (e.g. 'the Acme Corp website redesign'). Omit to keep the email generic.",
+          },
+          relationship: {
+            type: "string",
+            description: "'client' (you are sending NDA to a client before sharing your process/pricing) or 'subcontractor' (you are sending NDA to someone you are bringing onto a project). Defaults to 'client'.",
+          },
+          signing_method: {
+            type: "string",
+            description: "How they should return the signed copy (e.g. 'reply with a signed PDF', 'via DocuSign', 'via HelloSign'). Omit to leave the return method open.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["recipient_name"],
+      },
+    },
   ],
 }));
 
@@ -9092,6 +9123,45 @@ Please reference **${invoiceNumber}** when making payment.
 *Thank you for your business.*`;
 
     return { content: [{ type: "text", text: doc }] };
+  }
+
+  if (name === "contractor_nda_cover_email") {
+    const recipientName = String(args!.recipient_name);
+    const projectDescription = args!.project_description ? String(args!.project_description) : null;
+    const relationship = args!.relationship ? String(args!.relationship).toLowerCase() : "client";
+    const signingMethod = args!.signing_method ? String(args!.signing_method) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectLine = projectDescription
+      ? ` for ${projectDescription}`
+      : "";
+
+    const contextLine =
+      relationship === "subcontractor"
+        ? `Before we kick off, I need to put a standard NDA in place — this keeps the client's information confidential and protects both of us while we work together.`
+        : `Before we move forward, I'd like to put a simple NDA in place${projectLine}. It's a standard one-way agreement — it keeps any information I share about my process, pricing, and approach confidential.`;
+
+    const returnLine = signingMethod
+      ? `\n\nPlease sign and return it ${signingMethod} when you get a chance.`
+      : "\n\nPlease sign and return a copy when you get a chance.";
+
+    const subjectLine = projectDescription
+      ? `NDA — ${projectDescription}`
+      : "NDA";
+
+    const email = `Subject: ${subjectLine}
+
+Hi ${recipientName},
+
+${contextLine}
+
+I have attached the NDA for your review. It's straightforward — no surprises.${returnLine}
+
+Let me know if you have any questions before signing.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
   }
 
   throw new Error(`Unknown tool: ${name}`);
