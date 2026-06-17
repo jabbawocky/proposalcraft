@@ -1,8 +1,10 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 197)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 289)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **awesome-mcp PR branches pushed** (tick 289) — ProposalCraft added to two major awesome-mcp curated lists. Branches ready: `jabbawocky/awesome-mcp-servers-3:add-proposalcraft` (appcypher fork) and `jabbawocky/awesome-mcp-servers-4:add-proposalcraft` (wong2 fork). Both lists have thousands of watchers. PRs blocked by jabbawocky token permissions — Mat needs to open them from GitHub web UI. PR #295 to MobinX/awesome-mcp-list still open (June 2, 15 days).
+- ✅ **Inbox clear** (tick 289) — No emails requiring reply. mcp.directory confirmed in queue, Supertool confirmed under review.
 - ✅ **v1.4.63: project_scope_acceptance_email tool** (tick 197) — **108th tool.** Professional email confirming project scope to client before the formal contract arrives. Bridges the verbal agreement / contract gap — confirms deliverables, timeline, and rate so both sides are aligned. Required: client_name, project_description. Optional: scope_summary, timeline, rate_summary, next_step, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.63. Stars: 0. All Mat gates unchanged.
 - ✅ **mcp.directory submitted** (tick 197) — Submitted to mcp.directory (2,002+ servers). Auto-pulls GitHub metadata, publishes within 24h. Contact: moneymachine@mc.team for notification.
 - ✅ **v1.4.62: rate_card_email tool** (tick 196) — **107th tool.** Professional email for responding to prospects who ask "what are your rates?" Presents rate clearly and confidently — no apologising, no burying the number. Positions rate in context of specialty and what's included. Required: your_rate. Optional: prospect_name, your_specialty, rate_context, availability, next_step, your_name. Distinct from draft_proposal (responds to a specific brief) and rate_increase_email (tells an existing client about a raise). Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.62. Stars: 0. All Mat gates unchanged.
