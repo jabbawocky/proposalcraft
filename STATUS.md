@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 313)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 315)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 315):**
+- ✅ **v1.4.71: referral_thank_you_email tool (116th tool)** — warm, genuine thank-you email to someone who referred a new client. Acknowledges the specific referral and new client by name, adds a project-type line if supplied, shares outcome if known, and optionally offers to return the favour. Closes the referral loop: client_satisfaction_survey_email → referral → thank the referrer. Required: referrer_name, new_client_name. Optional: project_type, outcome, offer_back, your_name. Pushed to main + dist.
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired, no action). Supertool/Rundown AI confirmation already logged. No replies needed.
+- ✅ **Actions audited** — 23 open actions reviewed. Mat-gated actions remain open (npm publish, Stripe Connect, PH launch, Reddit posts, Glama OAuth, Dev.to, App Store Connect). No new autonomous actions taken.
 
 **What shipped (tick 313):**
 - ✅ **v1.4.70: project_pause_email tool (115th tool)** — professional email to pause a project mid-engagement. Distinct from project_closure_email (permanent end) — keeps the relationship warm, confirms what's been delivered, sets resume date or flags one needs agreeing. Required: client_name, project_name. Optional: reason, resume_date, completed_so_far, action_items, your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.70

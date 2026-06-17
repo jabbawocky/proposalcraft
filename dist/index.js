@@ -3990,6 +3990,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_name"],
             },
         },
+        {
+            name: "referral_thank_you_email",
+            description: "Write a warm, genuine thank-you email to someone who referred a new client to you. Acknowledges the specific referral, expresses genuine appreciation without being gushing, and optionally offers to return the favour. Works whether the project is just starting, underway, or completed. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    referrer_name: {
+                        type: "string",
+                        description: "First name of the person who made the referral",
+                    },
+                    new_client_name: {
+                        type: "string",
+                        description: "Name of the person or company they referred (e.g. 'Sarah', 'the team at Acme') — makes the email specific rather than generic",
+                    },
+                    project_type: {
+                        type: "string",
+                        description: "Optional: brief description of the work (e.g. 'brand identity project', 'website redesign', 'strategy consultancy'). Adds specificity without oversharing client details.",
+                    },
+                    outcome: {
+                        type: "string",
+                        description: "Optional: how the engagement went, if it has started or concluded (e.g. 'we kicked off last week and it's going well', 'we wrapped up and the client was delighted'). Omit if you're writing before work has begun.",
+                    },
+                    offer_back: {
+                        type: "boolean",
+                        description: "Optional: whether to explicitly offer to return the favour by referring work to them or recommending them. Default: false.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["referrer_name", "new_client_name"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8682,6 +8716,39 @@ Following our conversation, I'm confirming that we're putting ${projectName} on 
 ${resumeLine}${actionLine}
 
 Everything is documented and in good shape — there'll be no loss of context when we pick this back up. Feel free to reach out any time in the meantime.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "referral_thank_you_email") {
+        const referrerName = String(args.referrer_name);
+        const newClientName = String(args.new_client_name);
+        const projectType = args.project_type ? String(args.project_type) : null;
+        const outcome = args.outcome ? String(args.outcome) : null;
+        const offerBack = args.offer_back === true;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLine = projectType
+            ? ` for the ${projectType}`
+            : "";
+        const outcomeLine = outcome
+            ? `\n\n${outcome.charAt(0).toUpperCase() + outcome.slice(1)} — exactly the kind of work I enjoy.`
+            : "";
+        const reciprocityLine = offerBack
+            ? `\n\nIf you ever come across someone who could use my help in return, or if there's anything I can do to support your work, please don't hesitate to ask.`
+            : "";
+        const subject = `Thank you for the introduction`;
+        const body = `Hi ${referrerName},
+
+I just wanted to say thank you for introducing me to ${newClientName}${projectLine}. I really appreciate you thinking of me.${outcomeLine}
+
+Referrals from people I trust and respect mean a great deal — thank you for putting your name to it.${reciprocityLine}
 
 ${yourName}`;
         return {
