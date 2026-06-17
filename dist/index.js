@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.65" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.66" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -3783,6 +3783,71 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name"],
+            },
+        },
+        {
+            name: "draft_invoice",
+            description: "Generate a complete, ready-to-send professional invoice document in Markdown format. Produces the actual invoice (not a cover email or reminder) with a professional header, itemised line items, subtotal, optional tax line, and total due. Ideal for converting an accepted proposal into a billable document. Distinct from invoice_cover_email (the email you send alongside the invoice), invoice_reminder (chasing a late payment), and payment_plan_proposal (offering instalments). The output is Markdown — paste into your invoicing tool, convert to PDF, or send as a formatted email. Required: client_name, your_name, line_items (array of work items). Optional: invoice_number, invoice_date, due_date, tax_rate, payment_instructions, currency, your_business_name, client_company.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Full name of the client or billing contact",
+                    },
+                    client_company: {
+                        type: "string",
+                        description: "Client's company name (omit for solo/individual clients)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your full name",
+                    },
+                    your_business_name: {
+                        type: "string",
+                        description: "Your business or trading name (omit if billing as an individual)",
+                    },
+                    invoice_number: {
+                        type: "string",
+                        description: "Invoice reference number (e.g. 'INV-2026-042'). Omit to leave as a placeholder.",
+                    },
+                    invoice_date: {
+                        type: "string",
+                        description: "Date of issue (e.g. '18 June 2026'). Defaults to today if omitted.",
+                    },
+                    due_date: {
+                        type: "string",
+                        description: "Payment due date (e.g. '2 July 2026' or 'Net 14'). Omit to use Net 14 from invoice date.",
+                    },
+                    currency: {
+                        type: "string",
+                        description: "Currency symbol or code (e.g. '$', '£', 'EUR'). Defaults to '$'.",
+                    },
+                    line_items: {
+                        type: "array",
+                        description: "Work items to bill for. Each item needs a description; quantity and rate are optional (omit for fixed-fee items).",
+                        items: {
+                            type: "object",
+                            properties: {
+                                description: { type: "string", description: "Description of the work or deliverable" },
+                                quantity: { type: "number", description: "Number of units, hours, or days (omit for fixed-fee)" },
+                                unit: { type: "string", description: "Unit label (e.g. 'hours', 'days', 'pages'). Omit for fixed-fee items." },
+                                rate: { type: "number", description: "Rate per unit (omit for fixed-fee items)" },
+                                amount: { type: "number", description: "Fixed total for this line (use instead of quantity+rate for fixed-fee items)" },
+                            },
+                            required: ["description"],
+                        },
+                    },
+                    tax_rate: {
+                        type: "number",
+                        description: "Tax percentage to apply (e.g. 10 for 10% GST/VAT). Omit to produce a tax-free invoice.",
+                    },
+                    payment_instructions: {
+                        type: "string",
+                        description: "Payment details — bank account, PayPal address, Stripe link, or 'see attached'. Omit to leave a placeholder.",
+                    },
+                },
+                required: ["client_name", "your_name", "line_items"],
             },
         },
     ],
@@ -8212,6 +8277,84 @@ Thanks again for the project.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "draft_invoice") {
+        const clientName = String(args.client_name);
+        const clientCompany = args.client_company ? String(args.client_company) : null;
+        const yourName = String(args.your_name);
+        const yourBusinessName = args.your_business_name ? String(args.your_business_name) : null;
+        const invoiceNumber = args.invoice_number ? String(args.invoice_number) : "INV-[NUMBER]";
+        const invoiceDate = args.invoice_date ? String(args.invoice_date) : "[Date]";
+        const dueDateRaw = args.due_date ? String(args.due_date) : "Net 14";
+        const currency = args.currency ? String(args.currency) : "$";
+        const taxRate = args.tax_rate != null ? Number(args.tax_rate) : null;
+        const paymentInstructions = args.payment_instructions
+            ? String(args.payment_instructions)
+            : "[Insert bank account, PayPal, or payment link]";
+        const lineItems = args.line_items;
+        const billerLine = yourBusinessName ? `${yourBusinessName} (${yourName})` : yourName;
+        const billToLine = clientCompany ? `${clientName}\n${clientCompany}` : clientName;
+        let subtotal = 0;
+        const rows = lineItems.map((item) => {
+            let amount;
+            if (item.amount != null) {
+                amount = item.amount;
+            }
+            else if (item.quantity != null && item.rate != null) {
+                amount = item.quantity * item.rate;
+            }
+            else {
+                amount = 0;
+            }
+            subtotal += amount;
+            const qtyLabel = item.quantity != null && item.rate != null
+                ? `${item.quantity}${item.unit ? " " + item.unit : ""} × ${currency}${item.rate.toFixed(2)}`
+                : "Fixed fee";
+            return `| ${item.description} | ${qtyLabel} | ${currency}${amount.toFixed(2)} |`;
+        });
+        const taxAmount = taxRate != null ? subtotal * (taxRate / 100) : 0;
+        const total = subtotal + taxAmount;
+        const taxLine = taxRate != null
+            ? `| **Tax (${taxRate}%)** | | **${currency}${taxAmount.toFixed(2)}** |\n`
+            : "";
+        const doc = `# INVOICE
+
+---
+
+**Invoice #:** ${invoiceNumber}
+**Date:** ${invoiceDate}
+**Due:** ${dueDateRaw}
+
+---
+
+**From:**
+${billerLine}
+
+**To:**
+${billToLine}
+
+---
+
+## Services
+
+| Description | Details | Amount |
+|---|---|---|
+${rows.join("\n")}
+| **Subtotal** | | **${currency}${subtotal.toFixed(2)}** |
+${taxLine}| **Total Due** | | **${currency}${total.toFixed(2)}** |
+
+---
+
+## Payment
+
+${paymentInstructions}
+
+Please reference **${invoiceNumber}** when making payment.
+
+---
+
+*Thank you for your business.*`;
+        return { content: [{ type: "text", text: doc }] };
     }
     throw new Error(`Unknown tool: ${name}`);
 });
