@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.60" },
+  { name: "proposalcraft", version: "1.4.61" },
   { capabilities: { tools: {} } }
 );
 
@@ -3769,6 +3769,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_description"],
+      },
+    },
+    {
+      name: "subcontractor_acceptance_email",
+      description:
+        "Write the professional email confirming you are accepting a subcontracting role offered by another contractor or agency. Covers: confirming your acceptance, stating the agreed role and start date, and flagging any standard conditions (invoicing process, point of contact, NDA if applicable). Distinct from subcontractor_brief (you briefing someone YOU hired), bid_lost_follow_up (you lost a direct bid), and cold_pitch (you reaching out speculatively). Does not count against your monthly draft limit. Required: prime_name (name of the main contractor or agency), project_description (what the project is, e.g. 'the Acme Corp website redesign'), your_role (your specific role or deliverable, e.g. 'front-end development', 'UX design for the mobile flows'). Optional: start_date, rate_confirmation (e.g. '$120/hr as agreed', '$4,500 fixed fee'), point_of_contact (who you report to), nda_flag (if true, notes you are happy to sign an NDA), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          prime_name: {
+            type: "string",
+            description: "Name of the main contractor, agency, or person who offered you the sub role",
+          },
+          project_description: {
+            type: "string",
+            description: "Brief description of the project (e.g. 'the Acme Corp website redesign', 'the Q3 brand campaign for TechStart')",
+          },
+          your_role: {
+            type: "string",
+            description: "Your specific role or deliverable on the project (e.g. 'front-end development', 'UX design for the mobile flows', 'copywriting for all campaign assets')",
+          },
+          start_date: {
+            type: "string",
+            description: "Agreed start date, if confirmed (e.g. 'Monday June 23', 'the week of July 7')",
+          },
+          rate_confirmation: {
+            type: "string",
+            description: "Rate or fee as agreed, to confirm in writing (e.g. '$120/hr', '$4,500 fixed fee for the full scope'). Omit if not yet confirmed.",
+          },
+          point_of_contact: {
+            type: "string",
+            description: "Name of the person you report to or coordinate with on the project, if known (e.g. 'Sarah', 'the PM on your side')",
+          },
+          nda_flag: {
+            type: "boolean",
+            description: "If true, adds a note that you are happy to sign an NDA or confidentiality agreement if required",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["prime_name", "project_description", "your_role"],
       },
     },
   ],
@@ -8548,6 +8591,50 @@ Hi ${clientName},
 Thanks for letting me know. I genuinely enjoyed learning about what you're building, and I hope ${projectDescription} goes well.${reasonLine}
 
 If ${futureWorkAngle} come up where I might be a good fit, I'd love to be considered. No pressure — just wanted to leave the door open.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "subcontractor_acceptance_email") {
+    const primeName = String(args!.prime_name);
+    const projectDescription = String(args!.project_description);
+    const yourRole = String(args!.your_role);
+    const startDate = args!.start_date ? String(args!.start_date) : null;
+    const rateConfirmation = args!.rate_confirmation ? String(args!.rate_confirmation) : null;
+    const pointOfContact = args!.point_of_contact ? String(args!.point_of_contact) : null;
+    const ndaFlag = args!.nda_flag ? Boolean(args!.nda_flag) : false;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const startLine = startDate
+      ? `\nI am available to start ${startDate} and will plan around that.`
+      : "";
+
+    const rateLine = rateConfirmation
+      ? `\nFor my records: I understand the agreed rate is ${rateConfirmation}.`
+      : "";
+
+    const contactLine = pointOfContact
+      ? `\nHappy to coordinate directly with ${pointOfContact} — let me know the best way to reach them.`
+      : "";
+
+    const ndaLine = ndaFlag
+      ? `\nIf you need me to sign a confidentiality agreement or NDA before we kick off, just send it over.`
+      : "";
+
+    const email = `Subject: Re: ${projectDescription} — Confirming
+
+Hi ${primeName},
+
+Happy to confirm I am on board for ${projectDescription}, taking care of ${yourRole}.${startLine}${rateLine}${contactLine}${ndaLine}
+
+A few quick housekeeping questions when you get a chance:
+- How should I submit invoices, and what is your typical payment timeline?
+- Who is my main point of contact for day-to-day questions?
+- Is there a brief, assets folder, or anything I should review before the kickoff?
+
+Looking forward to it.
 
 ${yourName}`;
 
