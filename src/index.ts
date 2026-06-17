@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.66" },
+  { name: "proposalcraft", version: "1.4.68" },
   { capabilities: { tools: {} } }
 );
 
@@ -4061,6 +4061,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["recipient_name"],
+      },
+    },
+    {
+      name: "client_brief_template",
+      description:
+        "Generate a structured client brief questionnaire to send to a new or prospective client before starting work. Prevents scope creep and 'bad brief' problems by collecting project goals, timeline, budget, stakeholders, and success criteria upfront. Use this at the very start of an engagement — before drafting a proposal or setting a price. Does not count against your monthly draft limit. Optional: project_type (e.g. 'website redesign', 'brand identity', 'copywriting project'), client_name, your_name, include_budget_question (defaults true), format ('email' to embed in a covering email, 'doc' for a standalone questionnaire to paste into a shared doc).",
+      inputSchema: {
+        type: "object",
+        properties: {
+          project_type: {
+            type: "string",
+            description:
+              "The type of project (e.g. 'website redesign', 'brand identity', 'copywriting', 'app development'). Helps tailor the questions to the engagement. Omit for a general-purpose brief.",
+          },
+          client_name: {
+            type: "string",
+            description: "Client's first name for the email greeting",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+          include_budget_question: {
+            type: "boolean",
+            description:
+              "Whether to include a direct budget question. Some freelancers prefer to handle budget in a call rather than upfront in writing. Defaults to true.",
+          },
+          format: {
+            type: "string",
+            description:
+              "'email' (wraps the questionnaire in a covering email — default) or 'doc' (returns a clean standalone questionnaire to paste into Google Docs, Notion, or a PDF).",
+          },
+        },
+        required: [],
       },
     },
   ],
@@ -9162,6 +9196,84 @@ Let me know if you have any questions before signing.
 ${yourName}`;
 
     return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "client_brief_template") {
+    const projectType = args!.project_type ? String(args!.project_type) : null;
+    const clientName = args!.client_name ? String(args!.client_name) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+    const includeBudget = args!.include_budget_question !== false;
+    const format = args!.format ? String(args!.format).toLowerCase() : "email";
+
+    const projectLabel = projectType ? `${projectType} project` : "project";
+
+    const questions = [
+      `**1. What does success look like?**
+What would make this ${projectLabel} a clear win for you — in specific, measurable terms if possible?`,
+
+      `**2. What problem are we solving?**
+What is the core problem this ${projectLabel} needs to fix? What happens if we don't solve it?`,
+
+      `**3. Who is the audience?**
+Who will use or see the end result? What do they care about most?`,
+
+      `**4. Scope and deliverables**
+What are the specific things you need delivered? Please list everything you expect to receive at the end.`,
+
+      `**5. Timeline**
+When do you need this completed? Are there any intermediate milestones or hard deadlines (launches, events, board dates)?`,
+
+      ...(includeBudget
+        ? [
+            `**6. Budget range**
+What is your budget range for this ${projectLabel}? Knowing this helps me scope the work correctly and avoid proposing something that doesn't fit your constraints.`,
+          ]
+        : []),
+
+      `**${includeBudget ? 7 : 6}. Decision makers and stakeholders**
+Who needs to approve the final deliverable? Is there anyone else whose input will shape the direction?`,
+
+      `**${includeBudget ? 8 : 7}. Existing materials**
+Do you have existing brand guidelines, previous work, competitor examples, or inspiration references? Please share anything that will help me understand your style and standards.`,
+
+      `**${includeBudget ? 9 : 8}. Biggest concern**
+What is the one thing that would make this ${projectLabel} go wrong? What are you most worried about?`,
+    ];
+
+    const questionsText = questions.join("\n\n");
+
+    if (format === "doc") {
+      const doc = `# Client Brief — ${projectType ? projectType.charAt(0).toUpperCase() + projectType.slice(1) : "Project"}
+
+Please fill in your answers below. The more detail you provide, the better I can scope and price the work accurately.
+
+---
+
+${questionsText}
+
+---
+
+*Send back to ${yourName} when complete.*`;
+      return { content: [{ type: "text", text: doc }] };
+    }
+
+    // Email format
+    const greeting = clientName ? `Hi ${clientName},` : "Hi,";
+    const projectRef = projectType ? ` on the ${projectType}` : "";
+
+    const emailText = `Subject: Quick brief — ${projectType ? projectType : "project"} details
+
+${greeting}
+
+Excited to explore working together${projectRef}. Before I put together a proposal, I need to understand the project properly — a few questions that will help me scope the work and make sure my proposal actually fits what you need.
+
+${questionsText}
+
+No need to write essays — bullet points are fine. Once I have your answers I'll come back with a clear proposal and timeline.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: emailText }] };
   }
 
   throw new Error(`Unknown tool: ${name}`);
