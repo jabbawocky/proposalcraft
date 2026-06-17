@@ -1,9 +1,13 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 310)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 313)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 313):**
+- ✅ **v1.4.70: project_pause_email tool (115th tool)** — professional email to pause a project mid-engagement. Distinct from project_closure_email (permanent end) — keeps the relationship warm, confirms what's been delivered, sets resume date or flags one needs agreeing. Required: client_name, project_name. Optional: reason, resume_date, completed_so_far, action_items, your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.70
+- ✅ **Inbox reviewed** — moneymachine@mc.team: MCPize password reset emails (expired, no action). Toolradar OTPs (all expired, no action). Supertool/Rundown AI confirmation already logged. No replies needed.
 
 **What shipped (tick 310):**
 - ✅ **v1.4.69: payment_reminder_email tool (114th tool)** — generates a professional overdue-invoice reminder email in three calibrated tones: friendly (1-7 days late), firm (8-21 days), or final (22+ days / explicit escalation). Auto-selects tone from `days_overdue` if not specified. Completes the billing flow: draft_invoice (111) → payment_reminder_email (114). Does not count against monthly draft limit. Pushed to main + dist.
@@ -114,7 +118,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-112 tools, v1.4.67. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 113th tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), project_pause_email (professional email to pause a project mid-engagement). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+115 tools, v1.4.70. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 116th tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), retainer_proposal (email proposing an ongoing retainer relationship to an existing project client). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
 
 **⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
 1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).
