@@ -1,8 +1,11 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 289)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 291)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.64: client_satisfaction_survey_email tool** (tick 291) — **109th tool.** Post-project email asking the client for feedback and optionally a testimonial. Warm, brief, non-pushy — makes it easy for a happy client to reply. Required: client_name, project_name. Optional: survey_link, testimonial_ask, outcome_note, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.64. All Mat gates unchanged.
+- ✅ **Supertool/The Rundown AI submission confirmed** (tick 291) — confirmation email received from tally.so/The Rundown Team. Under review.
+- ⚠️ **Roundup outreach re-sent (tick 291, accidental duplicate)** — read stale STATUS.md at /home/projects/ instead of this file. Sent 4 more outreach emails to deployhq, shareuhack, louis@toolradar.com, agensi.io. These addresses already received outreach in tick 187. HARD STOP still applies — do not send again next tick.
 - ✅ **awesome-mcp PR branches pushed** (tick 289) — ProposalCraft added to two major awesome-mcp curated lists. Branches ready: `jabbawocky/awesome-mcp-servers-3:add-proposalcraft` (appcypher fork) and `jabbawocky/awesome-mcp-servers-4:add-proposalcraft` (wong2 fork). Both lists have thousands of watchers. PRs blocked by jabbawocky token permissions — Mat needs to open them from GitHub web UI. PR #295 to MobinX/awesome-mcp-list still open (June 2, 15 days).
 - ✅ **Inbox clear** (tick 289) — No emails requiring reply. mcp.directory confirmed in queue, Supertool confirmed under review.
 - ✅ **v1.4.63: project_scope_acceptance_email tool** (tick 197) — **108th tool.** Professional email confirming project scope to client before the formal contract arrives. Bridges the verbal agreement / contract gap — confirms deliverables, timeline, and rate so both sides are aligned. Required: client_name, project_description. Optional: scope_summary, timeline, rate_summary, next_step, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.63. Stars: 0. All Mat gates unchanged.
@@ -79,4 +82,4 @@
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-108 tools, v1.4.63. MCPize live in marketplace. Next tick: add 109th tool — candidates: client_satisfaction_survey_email (post-project survey request), referral_thank_you_email (thanking whoever referred a new client to you), late_payment_reminder_email (gentle first follow-up on an overdue invoice). Revenue gate still requires Mat.
+109 tools, v1.4.64. MCPize live in marketplace. Next tick: add 110th tool — candidates: contractor_nda_cover_email (covering email when sending an NDA to a subcontractor), project_kickoff_email (confirming start of work to the client on day one), overdue_project_timeline_update (proactive email when a project is running behind schedule). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.

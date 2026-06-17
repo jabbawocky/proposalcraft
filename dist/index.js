@@ -3713,6 +3713,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_description"],
             },
         },
+        {
+            name: "client_satisfaction_survey_email",
+            description: "Write the professional email to send after completing a project — asks the client for feedback and, optionally, a short testimonial. Warm, brief, and non-pushy: makes it easy for a happy client to say yes, and easy for a less-satisfied client to share honest feedback without awkwardness. Distinct from bid_lost_follow_up (you didn't win the work), referral_thank_you (thanking someone who sent a referral), and cold_pitch_follow_up (no response to a pitch) — this is specifically the post-delivery check-in with a client you just delivered work to. Does not count against your monthly draft limit. Required: client_name, project_name. Optional: survey_link (URL to a feedback form — omit to ask directly in the reply), testimonial_ask (if true, adds a short sentence asking for a one or two line testimonial they're happy for you to quote), outcome_note (one sentence on the outcome you delivered, e.g. 'the site went live on schedule' — personalises the email), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the completed project (e.g. 'the Acme brand refresh', 'your Q3 content campaign', 'the checkout redesign')",
+                    },
+                    survey_link: {
+                        type: "string",
+                        description: "URL of a feedback form (e.g. Typeform or Google Form). Omit to ask the client to reply directly.",
+                    },
+                    testimonial_ask: {
+                        type: "boolean",
+                        description: "If true, adds a sentence asking for a short testimonial they are comfortable with you quoting publicly.",
+                    },
+                    outcome_note: {
+                        type: "string",
+                        description: "One sentence describing a concrete outcome you delivered (e.g. 'the site launched on schedule', 'the campaign hit its target open rate'). Personalises the email — omit to keep it generic.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8081,6 +8115,35 @@ Hi ${clientName},
 Glad we are moving forward with ${projectDescription}. I wanted to drop a quick note to make sure we are aligned on scope before the contract comes through.${scopeLines}${timelineLine}${rateLine}
 
 Happy to ${nextStep}.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "client_satisfaction_survey_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const surveyLink = args.survey_link ? String(args.survey_link) : null;
+        const testimonialAsk = args.testimonial_ask === true;
+        const outcomeNote = args.outcome_note ? String(args.outcome_note) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const outcomeLine = outcomeNote
+            ? ` ${outcomeNote}, and`
+            : "";
+        const feedbackLine = surveyLink
+            ? `If you have two minutes, I'd love to hear how it went: ${surveyLink}`
+            : `If you have two minutes, I'd love to hear how it went — just hit reply with whatever's on your mind.`;
+        const testimonialLine = testimonialAsk
+            ? `\n\nIf you're happy with how things went, a short sentence or two I can quote on my site would mean a lot — but absolutely no pressure.`
+            : "";
+        const email = `Subject: How did ${projectName} land?
+
+Hi ${clientName},
+
+Now that ${projectName} is wrapped up, I wanted to check in.${outcomeLine} I hope the work landed well on your end.
+
+${feedbackLine} Your feedback genuinely helps me improve — and I read every reply.${testimonialLine}
+
+Thanks again for the project.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
