@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 192)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 193)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.59: invoice_correction_email tool** (tick 193) — **104th tool.** Professional email for sending a corrected invoice when you made an error in the original — wrong amount, wrong line items, wrong dates, or a missing item. Gets this right where most freelancers fumble: either they don't send anything (client pays the wrong amount) or they send a confusing email. Brief apology (one line — not grovelling), clear instruction to disregard the original invoice, corrected details with optional payment link. Fills the last gap in the invoice sequence: invoice_cover_email → correction if needed → invoice_reminder → late_payment_reminder → payment_plan_proposal → payment_overdue_final_notice_email. Distinct from invoice_dispute_response_email (client disputes the invoice — this is when YOU caught the error). Required: client_name, original_invoice_number, corrected_invoice_number, correction_description. Optional: correct_amount, project_name, payment_due_date, payment_link, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.59. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.58: payment_overdue_final_notice_email tool** (tick 192) — **103rd tool.** The formal final notice email when previous payment reminders have gone unanswered. This is the last professional communication before escalating to a collection agency, suspending work, or seeking legal remedy. Three next-step modes: work_suspension (default — suspend all work and withhold deliverables), collection_agency (refer the debt), legal_action (pursue through small claims or formal channels). Firm, factual, unambiguous — not hostile. Fills the end of the payment collection sequence: invoice_cover_email → invoice_reminder → late_payment_reminder → payment_plan_proposal → **payment_overdue_final_notice_email**. Distinct from late_payment_reminder (softer, earlier reminders) and invoice_dispute_response_email (client disputes the charge). Required: client_name, invoice_number, amount, days_overdue. Optional: original_due_date, payment_deadline (days before next step, default 7), next_step (work_suspension | collection_agency | legal_action), project_name, payment_link, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.58. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.57: equity_or_deferred_payment_response tool** (tick 191) — **102nd tool.** Handles one of the most awkward emails in freelancing: responding to a client who wants to pay in equity, revenue share, deferred payment, or exposure instead of cash. Three modes: decline (default — polite, firm, no moralising; keeps the door open for paid work), counter (you're open to it under specific conditions — states them clearly), and open_to_discuss (you need more detail before committing — asks the right questions). Distinct from discount_request_response (cash negotiation). Required: client_name, proposal_type (e.g. 'equity stake', 'revenue share', 'deferred payment after launch'). Optional: response_mode, project_description, your_conditions (counter mode), your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.57. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.56: project_inquiry_response_email tool** (tick 190) — **101st tool.** Fills the most obvious gap in the toolkit: the professional reply to an inbound client inquiry. Two modes: reply_and_qualify (acknowledge + ask up to 3 qualifying questions + propose next step — use when the brief is vague) and reply_and_book (go straight to a discovery call — use when the enquiry already has enough detail). Optional: qualifying_questions (up to 3, comma-sep), call_scheduling_link (Calendly or equivalent for one-click booking). Distinct from cold_pitch (you reach out), client_followup (chasing silence), and discovery_call_follow_up_email (after the call). Required: client_name, enquiry_summary. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.56. Stars: 0. All Mat gates unchanged.
@@ -15,13 +16,13 @@
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (103 tools, v1.4.58)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (104 tools, v1.4.59)
 
 **Metrics:**
 - 0 direct revenue; 0 stars
 - Distribution: mcpservers.org live, glama.ai live, mcpize.com live, mcp.so submitted
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
-- **103 tools** (tick 192)
+- **104 tools** (tick 193)
 
 **Blockers:**
 - MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)
