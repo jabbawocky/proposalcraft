@@ -3515,6 +3515,52 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "invoice_number", "amount", "days_overdue"],
             },
         },
+        {
+            name: "invoice_correction_email",
+            description: "Write the professional email to send a client when you need to correct an invoice you already sent — wrong amount, wrong line item, wrong date, or a missing item. Brief apology (one line — not grovelling), clear instruction to disregard the original, and the corrected details. Gets this right where most freelancers fumble: either they don't send anything (client pays the wrong amount) or they send a confusing email that makes the situation worse. Distinct from invoice_dispute_response_email (the client disputes your invoice — this is when YOU caught the error) and invoice_cover_email (first send of a new invoice). Does not count against your monthly draft limit. Required: client_name, original_invoice_number, corrected_invoice_number, correction_description (e.g. 'the total was listed as $1,200 instead of $1,450 due to a line item error'). Optional: correct_amount, project_name, payment_due_date, payment_link, your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or full name",
+                    },
+                    original_invoice_number: {
+                        type: "string",
+                        description: "The reference number of the incorrect invoice to disregard (e.g. 'INV-041')",
+                    },
+                    corrected_invoice_number: {
+                        type: "string",
+                        description: "The reference number of the corrected invoice (e.g. 'INV-041-R', 'INV-042')",
+                    },
+                    correction_description: {
+                        type: "string",
+                        description: "What was wrong and what it has been corrected to — be specific (e.g. 'the subtotal was listed as $1,200 instead of $1,450 — one line item was missing', 'the due date was listed as June 10 instead of June 20')",
+                    },
+                    correct_amount: {
+                        type: "string",
+                        description: "The correct final amount (e.g. '$1,450', '£2,800'). Including this removes ambiguity about what the client should pay.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Project name for context (e.g. 'the Brand Refresh project')",
+                    },
+                    payment_due_date: {
+                        type: "string",
+                        description: "When payment is due on the corrected invoice (e.g. 'June 25', '30 days from today')",
+                    },
+                    payment_link: {
+                        type: "string",
+                        description: "A direct payment link or portal URL for the corrected invoice",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "original_invoice_number", "corrected_invoice_number", "correction_description"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -7729,6 +7775,39 @@ This is a formal final notice.
 ${nextStepLine}
 ${paymentLine}
 If you have already sent payment or are experiencing a genuine difficulty, please reply to this email immediately so we can resolve it before that deadline.
+
+${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "invoice_correction_email") {
+        const clientName = String(args.client_name);
+        const originalInvoiceNumber = String(args.original_invoice_number);
+        const correctedInvoiceNumber = String(args.corrected_invoice_number);
+        const correctionDescription = String(args.correction_description);
+        const correctAmount = args.correct_amount ? String(args.correct_amount) : null;
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const paymentDueDate = args.payment_due_date ? String(args.payment_due_date) : null;
+        const paymentLink = args.payment_link ? String(args.payment_link) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const amountLine = correctAmount
+            ? `\nThe correct total is ${correctAmount}.`
+            : "";
+        const dueLine = paymentDueDate
+            ? ` Payment is due on ${paymentDueDate}.`
+            : "";
+        const paymentLine = paymentLink
+            ? `\nTo pay: ${paymentLink}`
+            : "";
+        const email = `Subject: Corrected invoice — ${correctedInvoiceNumber}${projectRef ? ` — ${projectName}` : ""}
+
+Hi ${clientName},
+
+I'm writing to let you know that invoice ${originalInvoiceNumber} contained an error: ${correctionDescription}.
+
+Please disregard ${originalInvoiceNumber}. I have attached the corrected invoice ${correctedInvoiceNumber} for your records.${amountLine}${dueLine}
+${paymentLine}
+I apologise for any confusion this causes. Please don't hesitate to reply if you have any questions.
 
 ${yourName}`;
         return { content: [{ type: "text", text: email }] };
