@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 296)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 302)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 302):**
+- ✅ **v1.4.66: draft_invoice tool (111th tool)** — generates a complete professional invoice document in Markdown. Line items support hourly/daily (quantity × rate) or fixed-fee amounts; optional tax line; payment instructions section. Closes the proposal → invoice workflow gap. Pushed to main + dist.
+- ✅ **Inbox clear** — moneymachine@mc.team reviewed. Toolradar OTPs (all expired/stale, low-priority directory). Supertool/Rundown AI review confirmed. mcpservers.org approval email confirmed (already live).
+- ✅ **punkpeye PR corrected** — PR #8192 (not #7404) is OPEN on punkpeye/awesome-mcp-servers with correct jabbawocky/proposalcraft URL. Updated PR table below.
 
 **What shipped (tick 296):**
 - ✅ **SEO blog post live** — "How to write a client proposal faster" published at `https://jabbawocky.github.io/proposalcraft/blog/write-proposals-faster/`. Targets high-intent query with time breakdown table, practical advice, and CTA to install ProposalCraft. First SEO content targeting freelancer search traffic.
@@ -69,7 +74,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 |---|---|
 | mctrinh/awesome-mcp-servers | #60 |
 | ever-works/awesome-mcp-servers | #118 |
-| punkpeye/awesome-mcp-servers | #7404 ❌ CLOSED (Glama not indexed — re-submit after Glama OAuth) |
+| punkpeye/awesome-mcp-servers | #8192 ✅ OPEN (has-glama label, Glama badge confirmed) |
 | TensorBlock/awesome-mcp-servers | #647 ✅ MERGED |
 | habitoai/awesome-mcp-servers | #83 |
 | tolkonepiu/best-of-mcp-servers | #227 |
@@ -98,7 +103,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-110 tools, v1.4.65. MCPize live in marketplace. Next tick: add 111th tool — candidates: contractor_nda_cover_email (covering email when sending an NDA to a subcontractor), client_offboarding_checklist_email (end-of-engagement email with handover checklist). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+111 tools, v1.4.66. MCPize live in marketplace. punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 112th tool — candidates: contractor_nda_cover_email (covering email when sending NDA to a subcontractor), client_offboarding_checklist_email (end-of-engagement handover). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
 
 **⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
 1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).
