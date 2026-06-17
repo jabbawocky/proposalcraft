@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Write a Client Proposal Faster (Without Losing Quality) — ProposalCraft</title>
+  <meta name="description" content="Stop spending 2 hours on every client proposal. Learn the system freelancers use to draft ready-to-send proposals in under 5 minutes — using AI and your own past wins." />
+  <meta property="og:title" content="How to Write a Client Proposal Faster — ProposalCraft" />
+  <meta property="og:description" content="Stop spending 2 hours on every client proposal. Learn the system freelancers use to draft ready-to-send proposals in under 5 minutes." />
+  <meta property="og:url" content="https://jabbawocky.github.io/proposalcraft/blog/write-proposals-faster/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://jabbawocky.github.io/proposalcraft/og-image.png" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://jabbawocky.github.io/proposalcraft/blog/write-proposals-faster/" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a35;
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --green: #22c55e;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; }
+    .logo span { color: var(--accent-light); }
+    nav a.cta-nav {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.45rem 1.1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    nav a.cta-nav:hover { text-decoration: none; background: var(--accent-light); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+
+    article {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .breadcrumb a { color: var(--muted); }
+    .breadcrumb a:hover { color: var(--accent-light); }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .byline {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.8rem 0 0.6rem;
+      color: var(--accent-light);
+    }
+
+    p { margin-bottom: 1.2rem; }
+
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.4rem;
+    }
+    li { margin-bottom: 0.5rem; }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+    }
+    .callout p { margin-bottom: 0; }
+
+    .cta-block {
+      background: linear-gradient(135deg, #1a1830 0%, #1e1a38 100%);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 3rem 0;
+      text-align: center;
+    }
+    .cta-block h3 {
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-top: 0;
+    }
+    .cta-block p { color: var(--muted); margin-bottom: 1.5rem; }
+    .cta-button {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.7rem 1.8rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .cta-button:hover { text-decoration: none; background: var(--accent-light); }
+
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .time-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    .time-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .time-table td {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+    }
+    .time-table tr:nth-child(even) td { background: var(--surface); }
+    .slow { color: #f87171; }
+    .fast { color: var(--green); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/proposalcraft/" class="logo">Proposal<span>Craft</span></a>
+  <div class="nav-links">
+    <a href="/proposalcraft/guide.html">Guide</a>
+    <a href="https://github.com/jabbawocky/proposalcraft" target="_blank">GitHub</a>
+    <a href="/proposalcraft/" class="cta-nav">Get started free</a>
+  </div>
+</nav>
+
+<article>
+  <div class="breadcrumb">
+    <a href="/proposalcraft/">ProposalCraft</a> &rsaquo; Blog &rsaquo; How to write a client proposal faster
+  </div>
+
+  <h1>How to Write a Client Proposal Faster (Without Losing Quality)</h1>
+  <div class="byline">7 min read &middot; Freelance proposals &middot; AI tools for freelancers</div>
+
+  <p>
+    If you spend 90 minutes to 2 hours writing each client proposal, you're not alone — and you're
+    not doing it wrong. Proposals are genuinely hard: you're selling yourself, scoping a project,
+    and anticipating objections, all in the same document.
+  </p>
+
+  <p>
+    But 2 hours per proposal is a serious tax on your business. At 5 proposals a week, that's
+    a full working day spent on writing that might not win you anything.
+  </p>
+
+  <p>
+    This post covers the system experienced freelancers use to cut proposal time to under 5 minutes —
+    without producing generic, copy-paste output that clients can spot immediately.
+  </p>
+
+  <div class="callout">
+    <p><strong>The core insight:</strong> You already know how to write a winning proposal. You've written
+    dozens of them. The problem is starting from a blank page every time — instead of from your
+    best past work.</p>
+  </div>
+
+  <h2>Why Proposals Take So Long (And Why Most Speed Fixes Don't Work)</h2>
+
+  <p>The obvious fix — templates — doesn't work well. Clients can tell when they're reading a template.
+  A boilerplate "Here's my approach to your project" opening kills trust immediately, because it
+  signals you didn't actually read their brief.</p>
+
+  <p>The real bottleneck isn't the writing itself. It's the <em>reconstruction</em>: figuring out
+  the right tone for this client, the right scope framing, the right level of confidence. You've
+  solved that problem before, in proposals that won you work. But those proposals are buried in
+  sent emails or old folders, and you never use them systematically.</p>
+
+  <h3>Where the time actually goes</h3>
+
+  <table class="time-table">
+    <thead>
+      <tr><th>Task</th><th>Traditional approach</th><th>With a system</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Reading and understanding the brief</td><td class="slow">10 min</td><td class="fast">10 min</td></tr>
+      <tr><td>Deciding on tone and angle</td><td class="slow">15 min</td><td class="fast">0 min</td></tr>
+      <tr><td>Writing the introduction</td><td class="slow">20 min</td><td class="fast">0 min</td></tr>
+      <tr><td>Scoping the deliverables</td><td class="slow">25 min</td><td class="fast">2 min</td></tr>
+      <tr><td>Writing the pricing section</td><td class="slow">15 min</td><td class="fast">2 min</td></tr>
+      <tr><td>Editing and polishing</td><td class="slow">25 min</td><td class="fast">5 min</td></tr>
+      <tr><td><strong>Total</strong></td><td class="slow"><strong>~110 min</strong></td><td class="fast"><strong>~19 min</strong></td></tr>
+    </tbody>
+  </table>
+
+  <p>The right column isn't hypothetical — it's what happens when you stop starting from scratch
+  and instead start from a base that already reflects your voice and your track record.</p>
+
+  <h2>The System: Build a Proposal Library, Then Use It</h2>
+
+  <h3>Step 1: Gather your 3–5 best past proposals</h3>
+
+  <p>Pull out proposals that won you work you're proud of. Not the easiest to write —
+  the ones that <em>worked</em>. These are the signal in your library. Aim for variety: a long-form
+  project, a quick retainer, a brand-new client, a returning one.</p>
+
+  <p>If you can't find them in sent email, write quick reconstructions from memory — even 200-word
+  summaries of what you said and why it worked are useful.</p>
+
+  <h3>Step 2: Draft from your past work, not from a blank page</h3>
+
+  <p>When a new brief arrives, find the past winning proposal most similar to this one. Start from
+  its structure, tone, and confidence level. Adapt for this specific client and scope.</p>
+
+  <p>This sounds obvious, but most freelancers don't do it consistently — because finding the right
+  past proposal is friction: open folders, search sent email, copy-paste, strip client-specific
+  details. The system only works if it's fast.</p>
+
+  <h3>Step 3: Cut editing time with a checklist</h3>
+
+  <p>Before sending, run through a fixed checklist — not "does this feel right?" but explicit questions:</p>
+
+  <ul>
+    <li>Does the opening show I read <em>this</em> brief specifically?</li>
+    <li>Is the scope precise enough that a cheaper interpretation isn't obvious?</li>
+    <li>Does the pricing section show a ratio of value to cost, not just cost?</li>
+    <li>Is the CTA a specific action ("reply with questions") not a vague one?</li>
+  </ul>
+
+  <p>Two minutes of checklist work catches 90% of the issues that lead to no-reply or price pushback.</p>
+
+  <h2>How AI Changes This (If Used Correctly)</h2>
+
+  <p>Most AI proposal tools produce generic output that sounds nothing like you — because they generate
+  from scratch, with no context about how you write or what's won you work before.</p>
+
+  <p>The AI tools that actually help do the opposite: they take your past winning proposals as input,
+  learn your voice and structure from them, and use that as the foundation for drafting new ones.</p>
+
+  <blockquote>
+    "I paste a client brief into Claude and get back a proposal that sounds exactly like me — because
+    it's built from my actual past work, not generic templates. It's the difference between a
+    ghostwriter who knows you versus autocomplete."
+  </blockquote>
+
+  <p>The AI's job isn't to write the proposal for you. It's to handle the reconstruction — matching
+  tone, structure, and framing to your track record — so you can focus on the 5% that's genuinely
+  specific to this client.</p>
+
+  <div class="cta-block">
+    <h3>Try this system with ProposalCraft</h3>
+    <p>ProposalCraft is a free MCP server for Claude Desktop. Save your 3 best past proposals.
+    Paste any new brief. Get a draft in your voice in 30 seconds.</p>
+    <a href="https://jabbawocky.github.io/proposalcraft/" class="cta-button">Install free &rarr;</a>
+  </div>
+
+  <h2>Common Mistakes That Slow Down Proposal Writing</h2>
+
+  <h3>Starting with the pricing section</h3>
+  <p>Pricing feels urgent because it's what clients ask about. But writing it first anchors the
+  whole document around cost instead of value. Write scope and deliverables first — that context
+  makes pricing feel earned rather than arbitrary.</p>
+
+  <h3>Over-explaining your process</h3>
+  <p>Clients care about outcomes, not methodology. A paragraph describing your "three-phase
+  discovery process" reads as throat-clearing. Lead with what they'll have at the end of the
+  engagement and why it matters to them specifically.</p>
+
+  <h3>Writing a new intro every time</h3>
+  <p>The introduction is the most time-consuming part to write and the part clients skim fastest.
+  Develop 2–3 opening structures that work for different brief types (new client, returning client,
+  project vs retainer) and reuse them. Customise the specifics, not the structure.</p>
+
+  <h3>A weak close</h3>
+  <p>Most proposals end with "let me know if you have questions." That's a passive close. End with
+  a specific next step: a proposed call time, a yes/no request, a question you need answered. Give
+  them something concrete to do instead of going quiet.</p>
+
+  <h2>How Long Should a Client Proposal Be?</h2>
+
+  <p>Shorter than you think. For project work under $10k: 1–2 pages. For larger engagements or
+  retainers: 3–4 pages maximum. Beyond that, you're either over-scoping in writing (that belongs
+  in a separate spec document) or padding to look thorough.</p>
+
+  <p>Clients read the first third of a proposal closely, skim the middle, and read pricing and the
+  CTA carefully. Structure accordingly: front-load the value case, compress the process description,
+  make the pricing section self-explanatory.</p>
+
+  <h2>The 30-Minute Proposal: A Practical Structure</h2>
+
+  <p>If you're starting without a library, here's a time-boxed approach:</p>
+
+  <ol>
+    <li><strong>5 min:</strong> Read the brief twice. Write one sentence capturing the client's real problem (not just the stated deliverable).</li>
+    <li><strong>5 min:</strong> Write the opening paragraph from that sentence. Show you understood what they actually need.</li>
+    <li><strong>10 min:</strong> Write the scope as a precise bullet list of deliverables.</li>
+    <li><strong>5 min:</strong> Write pricing. Lead with the outcome, then the number, then payment structure.</li>
+    <li><strong>5 min:</strong> Timeline and CTA. Give them a specific next step.</li>
+  </ol>
+
+  <p>That's 30 minutes. Once you have a library of 3+ winning proposals and a tool to draft from
+  them, the same structure takes under 5.</p>
+
+  <div class="callout">
+    <p><strong>The compounding effect:</strong> Every proposal you win improves your library.
+    After 10 solid proposals, your AI drafts get better, editing time shrinks further, and your
+    close rate climbs because you're always drafting from your best work.</p>
+  </div>
+
+  <h2>Summary</h2>
+
+  <ul>
+    <li>The bottleneck isn't writing — it's reconstructing tone, structure, and framing from scratch every time.</li>
+    <li>Build a library of 3–5 winning proposals and use them as starting points, not blank pages.</li>
+    <li>AI helps when it learns from your past work; it hurts when it generates from scratch.</li>
+    <li>Cut editing time with a fixed checklist, not gut checks.</li>
+    <li>End every proposal with a specific next step.</li>
+  </ul>
+
+  <p style="margin-top:2rem;">
+    <a href="https://jabbawocky.github.io/proposalcraft/">ProposalCraft</a> is a free, open-source
+    MCP server that implements this system inside Claude Desktop. It stores your past proposals
+    locally and drafts new ones from them — no subscription, no cloud storage, no API key required.
+    <a href="https://github.com/jabbawocky/proposalcraft">View on GitHub &rarr;</a>
+  </p>
+</article>
+
+<footer>
+  &copy; 2026 ProposalCraft &middot;
+  <a href="/proposalcraft/">Home</a> &middot;
+  <a href="/proposalcraft/guide.html">Guide</a> &middot;
+  <a href="https://github.com/jabbawocky/proposalcraft">GitHub</a>
+</footer>
+
+</body>
+</html>
