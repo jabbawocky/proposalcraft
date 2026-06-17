@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.57" },
+  { name: "proposalcraft", version: "1.4.60" },
   { capabilities: { tools: {} } }
 );
 
@@ -3734,6 +3734,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "original_invoice_number", "corrected_invoice_number", "correction_description"],
+      },
+    },
+    {
+      name: "bid_lost_follow_up",
+      description:
+        "Write the professional follow-up email to send after you didn't win a competitive bid or pitch. Keeps the relationship warm without sounding bitter, desperate, or entitled — the goal is one clear thing: staying on their radar for future work. Under 100 words body. Gracious, brief, no post-mortem. Distinct from cold_pitch_follow_up (no response to a cold pitch — this is when they actively told you they went with someone else), client_followup (chasing a proposal that hasn't been decided yet), and no_response_closure_email (closing a ghost). Does not count against your monthly draft limit. Required: client_name, project_description (e.g. 'the website redesign project', 'your Q3 social media campaign'). Optional: reason_if_known (what they told you — e.g. 'went with a larger agency', 'found someone with more industry experience'; used to tailor tone), future_work_angle (a specific type of work you'd like to be considered for — e.g. 'smaller copy projects', 'ongoing social content'), project_name, your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          project_description: {
+            type: "string",
+            description: "Brief description of the project you bid on (e.g. 'the website redesign', 'your Q3 campaign', 'the brand identity project')",
+          },
+          reason_if_known: {
+            type: "string",
+            description: "The reason they gave for choosing someone else, if they told you (e.g. 'went with a larger agency', 'found someone with more industry experience', 'went in a different direction'). Used to calibrate tone — omit if they didn't say.",
+          },
+          future_work_angle: {
+            type: "string",
+            description: "A specific type of future work you'd like to be considered for (e.g. 'smaller projects', 'overflow work', 'future campaigns'). If omitted, uses a general 'future projects' ask.",
+          },
+          project_name: {
+            type: "string",
+            description: "Project name if it had a formal name (e.g. 'Project Aurora', 'the 2026 rebrand')",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_description"],
       },
     },
   ],
@@ -8485,6 +8520,34 @@ I'm writing to let you know that invoice ${originalInvoiceNumber} contained an e
 Please disregard ${originalInvoiceNumber}. I have attached the corrected invoice ${correctedInvoiceNumber} for your records.${amountLine}${dueLine}
 ${paymentLine}
 I apologise for any confusion this causes. Please don't hesitate to reply if you have any questions.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "bid_lost_follow_up") {
+    const clientName = String(args!.client_name);
+    const projectDescription = String(args!.project_description);
+    const reasonIfKnown = args!.reason_if_known ? String(args!.reason_if_known) : null;
+    const futureWorkAngle = args!.future_work_angle ? String(args!.future_work_angle) : "future projects";
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? projectName : projectDescription;
+
+    let reasonLine = "";
+    if (reasonIfKnown) {
+      reasonLine = `\nI understand you went with ${reasonIfKnown} — sounds like the right fit for what you needed.`;
+    }
+
+    const email = `Subject: Re: ${projectRef}
+
+Hi ${clientName},
+
+Thanks for letting me know. I genuinely enjoyed learning about what you're building, and I hope ${projectDescription} goes well.${reasonLine}
+
+If ${futureWorkAngle} come up where I might be a good fit, I'd love to be considered. No pressure — just wanted to leave the door open.
 
 ${yourName}`;
 
