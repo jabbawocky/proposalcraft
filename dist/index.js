@@ -3394,6 +3394,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name"],
             },
         },
+        {
+            name: "project_inquiry_response_email",
+            description: "Write the professional reply to an inbound project inquiry from a potential client — the email you send when someone reaches out asking if you're available for work. This is the first email in the client relationship, so tone and structure matter: warm enough to keep them engaged, professional enough to signal expertise, and specific enough to move toward a conversation. Two modes: reply_and_qualify (default — acknowledges the enquiry, asks 1-3 targeted qualifying questions to understand scope/budget/timeline before agreeing to a call, and proposes a next step) and reply_and_book (skip the qualifying questions and go straight to proposing a discovery call — use when the enquiry already includes enough detail). Distinct from cold_pitch (you reach out first), client_followup (chasing a silent prospect), and discovery_call_follow_up_email (sent after the call). Required: client_name, enquiry_summary (a brief description of what they're asking for, e.g. 'website redesign for a law firm' or 'monthly content for their SaaS product'). Optional: qualifying_questions (up to 3 questions you want answered before the call — auto-formatted as a bulleted list), response_mode (reply_and_qualify | reply_and_book), call_scheduling_link (Calendly or equivalent URL for one-click booking), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or the name they used to sign off",
+                    },
+                    enquiry_summary: {
+                        type: "string",
+                        description: "Brief description of what they're asking for (e.g. 'website redesign for a law firm', 'monthly SEO content for their B2B SaaS product'). Used to make the reply feel specific, not templated.",
+                    },
+                    qualifying_questions: {
+                        type: "string",
+                        description: "Optional: up to 3 qualifying questions you want answered before agreeing to a call, comma-separated (e.g. 'What's your rough budget?, When do you need this live?, Do you have existing branding?'). Only used in reply_and_qualify mode.",
+                    },
+                    response_mode: {
+                        type: "string",
+                        enum: ["reply_and_qualify", "reply_and_book"],
+                        description: "reply_and_qualify (default): acknowledge + ask qualifying questions + propose next step. reply_and_book: skip questions, go straight to a discovery call — use when the enquiry already contains enough detail.",
+                    },
+                    call_scheduling_link: {
+                        type: "string",
+                        description: "Optional: Calendly or equivalent link for one-click call booking. Turns the next-step CTA into a direct link rather than a back-and-forth availability exchange.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "enquiry_summary"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -7452,6 +7487,61 @@ ${openingLine}${projectRef} — just wanted to make sure it didn't get buried.${
 If anything in it needs adjusting, or if circumstances have changed on your end, just let me know. Happy to sort it out.
 
 ${yourName}`;
+        return { content: [{ type: "text", text: email }] };
+    }
+    if (name === "project_inquiry_response_email") {
+        const clientName = String(args.client_name);
+        const enquirySummary = String(args.enquiry_summary);
+        const mode = args.response_mode ? String(args.response_mode) : "reply_and_qualify";
+        const rawQuestions = args.qualifying_questions ? String(args.qualifying_questions) : null;
+        const schedulingLink = args.call_scheduling_link ? String(args.call_scheduling_link) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const questions = rawQuestions
+            ? rawQuestions
+                .split(",")
+                .map((q) => q.trim())
+                .filter(Boolean)
+                .slice(0, 3)
+            : [
+                "What's your rough budget for this project?",
+                "Do you have a deadline or go-live date in mind?",
+                "Is there existing branding/design to work within, or is that in scope too?",
+            ];
+        const questionBlock = questions.map((q) => `- ${q}`).join("\n");
+        let body;
+        if (mode === "reply_and_book") {
+            const ctaLine = schedulingLink
+                ? `If that sounds useful, you can grab a time here: ${schedulingLink}`
+                : "If that sounds useful, happy to find 20–30 minutes that works — just let me know what days suit you.";
+            body = `Hi ${clientName},
+
+Thanks for reaching out. The ${enquirySummary} sounds like something I could help with.
+
+Before I put anything together, it'd be useful to hear a bit more about the brief — what you're trying to achieve, timeline, and any constraints. A short call is usually the quickest way to get aligned.
+
+${ctaLine}
+
+${yourName}`;
+        }
+        else {
+            const ctaLine = schedulingLink
+                ? `Once I have a clearer picture I'll suggest a time to talk — or you can book directly here if you'd prefer: ${schedulingLink}`
+                : "Once I have a clearer picture, I'll come back with thoughts on how I'd approach it and suggest a time to talk.";
+            body = `Hi ${clientName},
+
+Thanks for getting in touch. The ${enquirySummary} sounds interesting — happy to explore it.
+
+Before we jump on a call, a few quick questions to help me understand the scope:
+
+${questionBlock}
+
+${ctaLine}
+
+${yourName}`;
+        }
+        const email = `Subject: Re: [their subject line / your project reference]
+
+${body}`;
         return { content: [{ type: "text", text: email }] };
     }
     throw new Error(`Unknown tool: ${name}`);
