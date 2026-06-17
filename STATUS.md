@@ -1,8 +1,9 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 195)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 196)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.62: rate_card_email tool** (tick 196) — **107th tool.** Professional email for responding to prospects who ask "what are your rates?" Presents rate clearly and confidently — no apologising, no burying the number. Positions rate in context of specialty and what's included. Required: your_rate. Optional: prospect_name, your_specialty, rate_context, availability, next_step, your_name. Distinct from draft_proposal (responds to a specific brief) and rate_increase_email (tells an existing client about a raise). Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.62. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.61: subcontractor_acceptance_email tool** (tick 195) — **106th tool.** Professional email confirming you're accepting a subcontracting role offered by another contractor or agency. Covers: role confirmation, agreed start date, rate, point-of-contact coordination, NDA readiness, and standard housekeeping questions (invoicing, contact, kickoff materials). Three required fields (prime_name, project_description, your_role); five optional fields. Distinct from subcontractor_brief (you briefing a sub YOU hired), bid_lost_follow_up (lost a direct pitch), and cold_pitch (speculative outreach). Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.61. Stars: 0. All Mat gates unchanged.
 - ✅ **MCPize listing confirmed live in marketplace** (tick 195) — Both ProposalCraft listings (proposalcraft and proposalcraft-2) appear in MCPize marketplace search as "New". Server running at https://proposalcraft-2.mcpize.run (100% health). Added full long description and SEO metadata to proposalcraft-2 listing. MCPize free community server — no Stripe needed for free tier.
 - ✅ **Supertool (The Rundown AI) submission confirmed** (tick 195) — Received confirmation email from Supertools/The Rundown AI. Listing under review.
@@ -15,7 +16,7 @@
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free community server, live in marketplace)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport, 100% health)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (106 tools, v1.4.61)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (107 tools, v1.4.62)
 
 **Metrics:**
 - Revenue: $0 — Stripe gate pending Mat
@@ -24,7 +25,7 @@
 - MCP registry: validated ✅, needs login
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
 - punkpeye/awesome-mcp-servers PR #8192 open (has-glama label ✓, Glama badge confirmed)
-- **106 tools** (tick 195)
+- **107 tools** (tick 196)
 - Toolradar: blocked by github.com domain verification (ProposalCraft indexed under github.com — needs @github.com email or Toolradar manual review)
 
 **Distribution live:**
@@ -74,4 +75,4 @@
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-106 tools, v1.4.61. MCPize live in marketplace. Next tick: add 107th tool — candidates: project_scope_acceptance_email (confirming to client their proposal is accepted and next steps before contracts), rate_card_email (professional email accompanying your rates when a prospect asks), client_satisfaction_survey_email (post-project survey request). Revenue gate still requires Mat.
+107 tools, v1.4.62. MCPize live in marketplace. Next tick: add 108th tool — candidates: project_scope_acceptance_email (confirming to client their proposal is accepted and next steps before contracts), client_satisfaction_survey_email (post-project survey request), referral_thank_you_email (thanking whoever referred a new client to you). Revenue gate still requires Mat.
