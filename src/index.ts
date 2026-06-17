@@ -3814,6 +3814,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["prime_name", "project_description", "your_role"],
       },
     },
+    {
+      name: "rate_card_email",
+      description:
+        "Write the professional email to send when a prospect asks 'what are your rates?' or requests your pricing. Presents your rates clearly and confidently — no apologising, no burying the number. Positions the rate in context of your experience and what the client gets. Distinct from draft_proposal (which responds to a specific brief) and rate_increase_email (which tells an existing client you are raising prices). Does not count against your monthly draft limit. Required: your_rate (e.g. '$150/hr', '$3,500 for a 4-page website', 'from $2,000 per project'). Optional: prospect_name, your_specialty (e.g. 'B2B SaaS copywriting', 'React front-end development'), rate_context (one sentence on what is included, e.g. 'includes two revision rounds and source files'), availability (e.g. 'available from July 14'), next_step (e.g. 'happy to jump on a 20-minute call'), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          your_rate: {
+            type: "string",
+            description: "Your rate or pricing (e.g. '$150/hr', '$3,500 for a 4-page website', 'from $2,000 per project')",
+          },
+          prospect_name: {
+            type: "string",
+            description: "First name of the prospect, if known",
+          },
+          your_specialty: {
+            type: "string",
+            description: "One-line description of what you do, used to frame the rate (e.g. 'B2B SaaS copywriting', 'React front-end development', 'brand identity design')",
+          },
+          rate_context: {
+            type: "string",
+            description: "One sentence on what is included at that rate (e.g. 'includes two rounds of revisions and final source files', 'covers discovery, wireframes, and one round of design'). Omit if straightforward hourly.",
+          },
+          availability: {
+            type: "string",
+            description: "When you are next available (e.g. 'available from July 14', 'have capacity starting next week'). Omit to leave open.",
+          },
+          next_step: {
+            type: "string",
+            description: "A single soft next step (e.g. 'happy to jump on a 20-minute call to discuss your project', 'let me know if you have a brief and I can put together a more specific number'). Omit to use the default.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["your_rate"],
+      },
+    },
   ],
 }));
 
@@ -8635,6 +8674,44 @@ A few quick housekeeping questions when you get a chance:
 - Is there a brief, assets folder, or anything I should review before the kickoff?
 
 Looking forward to it.
+
+${yourName}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "rate_card_email") {
+    const yourRate = String(args!.your_rate);
+    const prospectName = args!.prospect_name ? String(args!.prospect_name) : null;
+    const yourSpecialty = args!.your_specialty ? String(args!.your_specialty) : null;
+    const rateContext = args!.rate_context ? String(args!.rate_context) : null;
+    const availability = args!.availability ? String(args!.availability) : null;
+    const nextStep = args!.next_step
+      ? String(args!.next_step)
+      : "happy to jump on a quick call to discuss your project — I can give you a more specific number once I know a bit more about the scope";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const greeting = prospectName ? `Hi ${prospectName},` : "Hi,";
+
+    const specialtyLine = yourSpecialty
+      ? `For ${yourSpecialty} work, `
+      : "";
+
+    const contextLine = rateContext
+      ? ` (${rateContext})`
+      : "";
+
+    const availabilityLine = availability
+      ? `\n\nI am ${availability}.`
+      : "";
+
+    const email = `Subject: Re: Rates
+
+${greeting}
+
+${specialtyLine}my rate is ${yourRate}${contextLine}.${availabilityLine}
+
+If you would like to move forward, I am ${nextStep}.
 
 ${yourName}`;
 
