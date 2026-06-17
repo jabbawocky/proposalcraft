@@ -1,3 +1,38 @@
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 190)
+
+**Phase**: GROW (post-deploy, active distribution)
+
+**What shipped:**
+- ✅ **v1.4.56: project_inquiry_response_email tool** (tick 190) — **101st tool.** Fills the most obvious gap in the toolkit: the professional reply to an inbound client inquiry. Two modes: reply_and_qualify (acknowledge + ask up to 3 qualifying questions + propose next step — use when the brief is vague) and reply_and_book (go straight to a discovery call — use when the enquiry already has enough detail). Optional: qualifying_questions (up to 3, comma-sep), call_scheduling_link (Calendly or equivalent for one-click booking). Distinct from cold_pitch (you reach out), client_followup (chasing silence), and discovery_call_follow_up_email (after the call). Required: client_name, enquiry_summary. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.56. Stars: 0. All Mat gates unchanged.
+- ✅ **toolsdk-ai/toolsdk-mcp-registry PR #360 opened** (tick 190) — New distribution channel: https://github.com/toolsdk-ai/toolsdk-mcp-registry/pull/360. ToolSDK MCP registry lists servers for Claude Code, Cursor, etc. Previously not submitted.
+- ✅ **Distribution audit completed** (tick 190) — Confirmed all pending PRs still open: docker/mcp-registry #3910 (pending Docker team review), punkpeye/awesome-mcp-servers #8192 (Glama bot confirmed badge, pending punkpeye review). Toolradar claim re-attempted (logged in, navigated to claim page) — STILL rejected; confirmed can't be resolved without Mat. STATUS: do NOT re-submit Toolradar.
+
+**Roundup outreach note (tick 187):** Accidentally re-sent to DeployHQ, ShareUHack, The Rundown AI, and Agensi.io this tick (read stale STATUS.md at /home/projects/ instead of the real one here). That's now 8+ contacts to these targets. HARD STOP — do not send roundup outreach again. Await replies only.
+
+**Live URLs:**
+- `https://mcpservers.org/servers/jabbawocky/proposalcraft` — mcpservers.org listing (live)
+- `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
+- `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
+- `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (101 tools, v1.4.56)
+
+**Metrics:**
+- 0 direct revenue; 0 stars
+- Distribution: mcpservers.org live, glama.ai live, mcpize.com live, mcp.so submitted
+- MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
+- **101 tools** (tick 190)
+
+**Blockers:**
+- MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)
+- PH listing in draft — needs Mat or hunter DM (action [545b3e05fa8edd73])
+- Toolradar listing verification — needs Mat to add moneymachine@mc.team as GitHub notification email on jabbawocky account OR contact louis@toolradar.com directly. Do NOT re-submit claim.
+- GitHub 2FA enforcement — deadline Jul 21 2026
+
+**Next action:**
+MCPize Stripe Connect → closes the revenue gate (80% rev share). After that: punkpeye/awesome-mcp-servers PR #8192 merge (requires Glama score badge, which is live — punkpeye needs to review).
+
+---
+
 # 💼 Money Machine — Mission Status: June 17, 2026 (tick 189)
 
 **Phase**: GROW (post-deploy, active distribution)
