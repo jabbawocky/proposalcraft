@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 308)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 310)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 310):**
+- ✅ **v1.4.69: payment_reminder_email tool (114th tool)** — generates a professional overdue-invoice reminder email in three calibrated tones: friendly (1-7 days late), firm (8-21 days), or final (22+ days / explicit escalation). Auto-selects tone from `days_overdue` if not specified. Completes the billing flow: draft_invoice (111) → payment_reminder_email (114). Does not count against monthly draft limit. Pushed to main + dist.
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Supertool/Rundown AI confirmation (no action). Toolradar OTPs (all expired, no action). No replies needed.
+- ✅ **npm publish action resolved** — updated to v1.4.69; still needs Mat npm login to publish.
 
 **What shipped (tick 308):**
 - ✅ **v1.4.67: contractor_nda_cover_email tool (112th tool)** — short covering email to send alongside an NDA to a client or subcontractor. Auto-adapts tone for client vs. subcontractor relationship; optional signing_method field. Closes the nda_template workflow gap (generate NDA → send it). Pushed to main + dist.
