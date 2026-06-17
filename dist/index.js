@@ -3881,6 +3881,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "payment_reminder_email",
+            description: "Write a professional payment reminder email for an overdue or upcoming invoice. Calibrated by tone: 'friendly' for a first nudge (1-7 days late), 'firm' for a second reminder (8-21 days late), or 'final' for a late-stage notice that signals escalation. Always polite but clear — avoids passive-aggression while leaving no ambiguity about what is owed and when. Does not count against your monthly draft limit. Required: client_name, amount_due. Optional: invoice_number, due_date, days_overdue (used to auto-select tone if tone not specified), tone ('friendly' | 'firm' | 'final'), payment_method (e.g. 'bank transfer', 'PayPal'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name or company name for the greeting",
+                    },
+                    amount_due: {
+                        type: "string",
+                        description: "The amount outstanding, including currency symbol (e.g. '$2,400', '£1,800', '€950')",
+                    },
+                    invoice_number: {
+                        type: "string",
+                        description: "Invoice reference number (e.g. 'INV-042'). Omit if you don't use invoice numbers.",
+                    },
+                    due_date: {
+                        type: "string",
+                        description: "The original payment due date (e.g. 'June 1', '1 June 2026'). Omit if unknown.",
+                    },
+                    days_overdue: {
+                        type: "number",
+                        description: "How many days past the due date the invoice is. Used to auto-select tone if tone is not provided: 0-7 → friendly, 8-21 → firm, 22+ → final.",
+                    },
+                    tone: {
+                        type: "string",
+                        description: "'friendly' (gentle first nudge, assumes oversight), 'firm' (clear expectation, no apology), or 'final' (signals escalation if not resolved). Overrides days_overdue if both provided.",
+                    },
+                    payment_method: {
+                        type: "string",
+                        description: "How you'd like to be paid (e.g. 'bank transfer', 'PayPal', 'Stripe invoice link'). Omit to leave the payment method open.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "amount_due"],
+            },
+        },
+        {
             name: "client_brief_template",
             description: "Generate a structured client brief questionnaire to send to a new or prospective client before starting work. Prevents scope creep and 'bad brief' problems by collecting project goals, timeline, budget, stakeholders, and success criteria upfront. Use this at the very start of an engagement — before drafting a proposal or setting a price. Does not count against your monthly draft limit. Optional: project_type (e.g. 'website redesign', 'brand identity', 'copywriting project'), client_name, your_name, include_budget_question (defaults true), format ('email' to embed in a covering email, 'doc' for a standalone questionnaire to paste into a shared doc).",
             inputSchema: {
@@ -8508,6 +8550,73 @@ No need to write essays — bullet points are fine. Once I have your answers I'l
 
 ${yourName}`;
         return { content: [{ type: "text", text: emailText }] };
+    }
+    if (name === "payment_reminder_email") {
+        const clientName = String(args.client_name);
+        const amountDue = String(args.amount_due);
+        const invoiceNumber = args.invoice_number ? String(args.invoice_number) : null;
+        const dueDate = args.due_date ? String(args.due_date) : null;
+        const daysOverdue = args.days_overdue ? Number(args.days_overdue) : null;
+        const paymentMethod = args.payment_method ? String(args.payment_method) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        let tone = args.tone ? String(args.tone).toLowerCase() : null;
+        if (!tone) {
+            if (daysOverdue === null || daysOverdue <= 7)
+                tone = "friendly";
+            else if (daysOverdue <= 21)
+                tone = "firm";
+            else
+                tone = "final";
+        }
+        const invoiceRef = invoiceNumber ? ` (${invoiceNumber})` : "";
+        const dueDateRef = dueDate ? ` due ${dueDate}` : "";
+        const paymentLine = paymentMethod
+            ? `\n\nPayment details: ${paymentMethod}. Please confirm once sent.`
+            : "\n\nPlease confirm once payment has been sent.";
+        let subject;
+        let body;
+        if (tone === "friendly") {
+            subject = `Quick follow-up — invoice${invoiceRef} for ${amountDue}`;
+            body = `Hi ${clientName},
+
+Just a quick note to follow up on invoice${invoiceRef} for ${amountDue}${dueDateRef}. I know things get busy — wanted to make sure it didn't slip through the cracks.
+
+If you have any questions about the invoice or the work it covers, I'm happy to help.${paymentLine}
+
+Thanks in advance,
+${yourName}`;
+        }
+        else if (tone === "firm") {
+            subject = `Payment overdue — invoice${invoiceRef} for ${amountDue}`;
+            body = `Hi ${clientName},
+
+I'm following up again on invoice${invoiceRef} for ${amountDue}${dueDateRef}, which is now overdue.
+
+I'd appreciate payment as soon as possible. If there's a hold-up on your end or anything I can clarify, please let me know and we can sort it out quickly.${paymentLine}
+
+${yourName}`;
+        }
+        else {
+            // final
+            subject = `Final notice — invoice${invoiceRef} for ${amountDue}`;
+            body = `Hi ${clientName},
+
+This is a final notice regarding invoice${invoiceRef} for ${amountDue}${dueDateRef}, which remains unpaid.
+
+I need to resolve this within the next 5 business days. If I don't hear back, I'll need to pursue other options to recover the outstanding amount.
+
+If there's a specific issue with the invoice or the work, please contact me immediately so we can resolve it directly.${paymentLine}
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
     }
     throw new Error(`Unknown tool: ${name}`);
 });
