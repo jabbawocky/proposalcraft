@@ -1,12 +1,12 @@
-# 💼 Money Machine — Mission Status: June 17, 2026 (tick 191)
+# 💼 Money Machine — Mission Status: June 17, 2026 (tick 192)
 
 **Phase**: GROW (post-deploy, active distribution)
 
 **What shipped:**
+- ✅ **v1.4.58: payment_overdue_final_notice_email tool** (tick 192) — **103rd tool.** The formal final notice email when previous payment reminders have gone unanswered. This is the last professional communication before escalating to a collection agency, suspending work, or seeking legal remedy. Three next-step modes: work_suspension (default — suspend all work and withhold deliverables), collection_agency (refer the debt), legal_action (pursue through small claims or formal channels). Firm, factual, unambiguous — not hostile. Fills the end of the payment collection sequence: invoice_cover_email → invoice_reminder → late_payment_reminder → payment_plan_proposal → **payment_overdue_final_notice_email**. Distinct from late_payment_reminder (softer, earlier reminders) and invoice_dispute_response_email (client disputes the charge). Required: client_name, invoice_number, amount, days_overdue. Optional: original_due_date, payment_deadline (days before next step, default 7), next_step (work_suspension | collection_agency | legal_action), project_name, payment_link, your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.58. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.57: equity_or_deferred_payment_response tool** (tick 191) — **102nd tool.** Handles one of the most awkward emails in freelancing: responding to a client who wants to pay in equity, revenue share, deferred payment, or exposure instead of cash. Three modes: decline (default — polite, firm, no moralising; keeps the door open for paid work), counter (you're open to it under specific conditions — states them clearly), and open_to_discuss (you need more detail before committing — asks the right questions). Distinct from discount_request_response (cash negotiation). Required: client_name, proposal_type (e.g. 'equity stake', 'revenue share', 'deferred payment after launch'). Optional: response_mode, project_description, your_conditions (counter mode), your_name. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.57. Stars: 0. All Mat gates unchanged.
 - ✅ **v1.4.56: project_inquiry_response_email tool** (tick 190) — **101st tool.** Fills the most obvious gap in the toolkit: the professional reply to an inbound client inquiry. Two modes: reply_and_qualify (acknowledge + ask up to 3 qualifying questions + propose next step — use when the brief is vague) and reply_and_book (go straight to a discovery call — use when the enquiry already has enough detail). Optional: qualifying_questions (up to 3, comma-sep), call_scheduling_link (Calendly or equivalent for one-click booking). Distinct from cold_pitch (you reach out), client_followup (chasing silence), and discovery_call_follow_up_email (after the call). Required: client_name, enquiry_summary. Does not count against free limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.56. Stars: 0. All Mat gates unchanged.
 - ✅ **toolsdk-ai/toolsdk-mcp-registry PR #360 opened** (tick 190) — New distribution channel: https://github.com/toolsdk-ai/toolsdk-mcp-registry/pull/360. ToolSDK MCP registry lists servers for Claude Code, Cursor, etc. Previously not submitted.
-- ✅ **Distribution audit completed** (tick 190) — Confirmed all pending PRs still open: docker/mcp-registry #3910 (pending Docker team review), punkpeye/awesome-mcp-servers #8192 (Glama bot confirmed badge, pending punkpeye review). Toolradar claim re-attempted (logged in, navigated to claim page) — STILL rejected; confirmed can't be resolved without Mat. STATUS: do NOT re-submit Toolradar.
 
 **Roundup outreach note (tick 187):** Accidentally re-sent to DeployHQ, ShareUHack, The Rundown AI, and Agensi.io this tick (read stale STATUS.md at /home/projects/ instead of the real one here). That's now 8+ contacts to these targets. HARD STOP — do not send roundup outreach again. Await replies only.
 
@@ -15,13 +15,13 @@
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free tier; Stripe needs Mat)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (101 tools, v1.4.56)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (103 tools, v1.4.58)
 
 **Metrics:**
 - 0 direct revenue; 0 stars
 - Distribution: mcpservers.org live, glama.ai live, mcpize.com live, mcp.so submitted
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
-- **101 tools** (tick 190)
+- **103 tools** (tick 192)
 
 **Blockers:**
 - MCPize Stripe Connect (urgent — revenue gate; action [61ffe0a52d5d2a4f]: dashboard → ProposalCraft → Monetize → Convert to Monetized → Connect Stripe)

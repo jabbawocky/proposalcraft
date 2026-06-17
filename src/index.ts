@@ -3637,6 +3637,58 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "enquiry_summary"],
       },
     },
+    {
+      name: "payment_overdue_final_notice_email",
+      description:
+        "Write the formal final notice email when a client has not responded to previous payment reminders and the invoice is significantly overdue. This is the last professional communication before escalating to a collection agency, pausing all work, or seeking legal remedy — so the tone is firm, factual, and unambiguous without being hostile. States the outstanding amount, the number of days overdue, and a clear deadline for payment before you take the next step. Named 'final notice' so the client understands this is the last communication in the sequence. Distinct from late_payment_reminder (earlier, softer reminders) and invoice_dispute_response_email (client disputes the charge — this is non-payment, not dispute). Does not count against your monthly draft limit. Required: client_name, invoice_number, amount, days_overdue. Optional: original_due_date, payment_deadline (days from this email before next step — defaults to 7), next_step (collection_agency | legal_action | work_suspension — defaults to work_suspension), project_name, payment_link, your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name or full name",
+          },
+          invoice_number: {
+            type: "string",
+            description: "Invoice reference number (e.g. 'INV-042', '#2024-07')",
+          },
+          amount: {
+            type: "string",
+            description: "The outstanding amount as a string (e.g. '$1,200', '£850')",
+          },
+          days_overdue: {
+            type: "number",
+            description: "How many days past the due date the invoice is (e.g. 30, 45, 60)",
+          },
+          original_due_date: {
+            type: "string",
+            description: "The original due date (e.g. 'June 5', '5 June 2026'). Stating it makes the timeline clear and removes ambiguity.",
+          },
+          payment_deadline: {
+            type: "number",
+            description: "Number of days from this email the client has to pay before you take the next step. Defaults to 7.",
+          },
+          next_step: {
+            type: "string",
+            enum: ["collection_agency", "legal_action", "work_suspension"],
+            description: "What you will do if payment is not received by the deadline. work_suspension (default): pause all work and withhold deliverables. collection_agency: refer the debt to a collection agency. legal_action: pursue through small claims or formal legal channels.",
+          },
+          project_name: {
+            type: "string",
+            description: "Project name for context (e.g. 'the Brand Refresh project', 'the Q2 content package')",
+          },
+          payment_link: {
+            type: "string",
+            description: "A direct payment link or portal URL if you have one — makes it frictionless for the client to pay immediately",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "invoice_number", "amount", "days_overdue"],
+      },
+    },
   ],
 }));
 
@@ -8304,6 +8356,53 @@ ${yourName}`;
     const email = `Subject: Re: [their subject line / your project reference]
 
 ${body}`;
+
+    return { content: [{ type: "text", text: email }] };
+  }
+
+  if (name === "payment_overdue_final_notice_email") {
+    const clientName = String(args!.client_name);
+    const invoiceNumber = String(args!.invoice_number);
+    const amount = String(args!.amount);
+    const daysOverdue = Number(args!.days_overdue);
+    const originalDueDate = args!.original_due_date ? String(args!.original_due_date) : null;
+    const paymentDeadlineDays = args!.payment_deadline ? Number(args!.payment_deadline) : 7;
+    const nextStep = args!.next_step ? String(args!.next_step) : "work_suspension";
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const paymentLink = args!.payment_link ? String(args!.payment_link) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` for ${projectName}` : "";
+    const dueDateLine = originalDueDate
+      ? `Invoice ${invoiceNumber} for ${amount}${projectRef} was due on ${originalDueDate} and is now ${daysOverdue} days overdue.`
+      : `Invoice ${invoiceNumber} for ${amount}${projectRef} is now ${daysOverdue} days overdue.`;
+
+    let nextStepLine: string;
+    if (nextStep === "collection_agency") {
+      nextStepLine = `If payment is not received within ${paymentDeadlineDays} days, I will refer this debt to a collection agency. At that point the matter will be out of my hands and additional fees may apply.`;
+    } else if (nextStep === "legal_action") {
+      nextStepLine = `If payment is not received within ${paymentDeadlineDays} days, I will pursue this through the appropriate legal channels without further notice.`;
+    } else {
+      nextStepLine = `If payment is not received within ${paymentDeadlineDays} days, I will suspend all current and future work and withhold any outstanding deliverables until the balance is settled.`;
+    }
+
+    const paymentLine = paymentLink
+      ? `\nTo pay now: ${paymentLink}`
+      : "";
+
+    const email = `Subject: Final notice — Invoice ${invoiceNumber} — ${amount} — ${daysOverdue} days overdue
+
+Hi ${clientName},
+
+${dueDateLine} Despite previous reminders, I have not received payment or any communication about when to expect it.
+
+This is a formal final notice.
+
+${nextStepLine}
+${paymentLine}
+If you have already sent payment or are experiencing a genuine difficulty, please reply to this email immediately so we can resolve it before that deadline.
+
+${yourName}`;
 
     return { content: [{ type: "text", text: email }] };
   }
