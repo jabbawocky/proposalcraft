@@ -4387,6 +4387,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "testimonial_request_email",
+      description:
+        "Write a warm, non-pushy email asking a past or current client for a testimonial, case study quote, or LinkedIn recommendation. Sent after a successful delivery or project milestone. Includes a specific angle or prompt to make it easy for the client to say yes without staring at a blank page. Distinct from client_offboarding_checklist_email (which only has a brief optional postscript ask) — this is a standalone, full-effort ask with a tailored hook. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The client's first name or company name",
+          },
+          project_name: {
+            type: "string",
+            description: "Name of the project or work completed (e.g. 'the Acme website redesign', 'our 6-month SEO retainer')",
+          },
+          result_achieved: {
+            type: "string",
+            description: "A specific positive outcome the client got from the work (e.g. '40% increase in organic traffic', 'launched on time and under budget', 'closed three new clients using the proposal templates we built'). Be concrete — the more specific, the easier the ask.",
+          },
+          testimonial_type: {
+            type: "string",
+            description: "Optional: what you're asking for — 'testimonial' (for your website), 'linkedin_recommendation', 'case_study', or 'google_review'. Defaults to 'testimonial'.",
+          },
+          angle_prompt: {
+            type: "string",
+            description: "Optional: a specific question or angle to guide the client (e.g. 'what problem you were trying to solve before we started', 'what surprised you about working together', 'how you'd describe the ROI to a peer'). Providing this makes the ask far easier to fulfil.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "result_achieved"],
+      },
+    },
+    {
       name: "client_offboarding_checklist_email",
       description:
         "Write a structured end-of-engagement email that doubles as a practical handover checklist. Sent at project close or retainer end — covers what was completed, assets being transferred, outstanding actions for both sides, and any system access being revoked. Protects both parties by ensuring nothing falls through the cracks. Distinct from client_offboarding_email (which ends a relationship you chose to leave) and project_closure_email (a natural project wrap-up email) — this is the operational handover document with explicit action items and a checklist format. Does not count against your monthly draft limit.",
@@ -10018,6 +10053,60 @@ ${deliverablesSummary}${transferSection}${clientActionsSection}${yourActionsSect
 Please review the items above and let me know if anything is missing or needs clarification. Once the checklist is clear on both sides, the engagement will be formally closed.${testimonialSection}
 
 Thank you for working with me on this.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "testimonial_request_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const resultAchieved = String(args!.result_achieved);
+    const testimonialType = args!.testimonial_type ? String(args!.testimonial_type) : "testimonial";
+    const anglePrompt = args!.angle_prompt ? String(args!.angle_prompt) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const typeLabel =
+      testimonialType === "linkedin_recommendation"
+        ? "a LinkedIn recommendation"
+        : testimonialType === "case_study"
+        ? "a short case study quote"
+        : testimonialType === "google_review"
+        ? "a Google review"
+        : "a short testimonial";
+
+    const typeDestination =
+      testimonialType === "linkedin_recommendation"
+        ? "on LinkedIn"
+        : testimonialType === "google_review"
+        ? "on Google"
+        : "on my website";
+
+    const promptSection = anglePrompt
+      ? `\n\nIf it helps to have a starting point, here's one angle that might be easy to write to:\n\n_"${anglePrompt}"_\n\nA sentence or two is plenty — honestly anything you're comfortable sharing is great.`
+      : "\n\nA sentence or two is plenty — even a quick 'here's the problem we were solving and what the outcome was' would be brilliant.";
+
+    const subject = `A quick favour — testimonial for ${projectName}?`;
+
+    const body = `Hi ${clientName},
+
+Now that we've wrapped up ${projectName}, I wanted to reach out about something.
+
+${resultAchieved} — I'm really glad the project landed that way, and I've genuinely enjoyed working with you on it.
+
+I'm trying to grow my practice through word of mouth and I'd love to add a ${typeLabel} from you${typeDestination !== "on my website" ? ` ${typeDestination}` : " to my website"}. It makes a big difference when prospective clients can hear directly from someone who's done the work with me.${promptSection}
+
+Completely no pressure — if timing is off or it's not something you're comfortable with, please don't give it a second thought. But if you are happy to help, I'd really appreciate it.
+
+Thank you again for the trust you placed in me during ${projectName}.
 
 ${yourName}`;
 
