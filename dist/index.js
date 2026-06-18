@@ -4104,6 +4104,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["podcast_name", "host_name", "episode_angle", "why_their_audience", "your_credential"],
             },
         },
+        {
+            name: "guest_post_pitch",
+            description: "Write a cold pitch email to a blog, newsletter, or publication asking to contribute a guest article. Guest posts build SEO authority, earn backlinks, and put your name in front of an established audience — but most pitches are rejected because they lead with the writer's ego, not the editor's interests. This generates a reader-first pitch that opens with a concrete article angle tailored to the publication's audience, briefly establishes your credibility, and ends with a frictionless ask. Distinct from podcast_pitch_email (audio appearances), conference_talk_pitch (in-person speaking), and cold_pitch (client sales). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    publication_name: {
+                        type: "string",
+                        description: "Name of the blog, newsletter, or publication you are pitching to (e.g. 'Smashing Magazine', 'Freelancer Union Blog', 'Indie Hackers')",
+                    },
+                    article_angle: {
+                        type: "string",
+                        description: "The specific article topic or angle you are proposing — frame it as value for the publication's readers, not a showcase for you (e.g. 'how freelancers can write proposals that close without discounting', 'the three scope conversations every new freelancer gets wrong')",
+                    },
+                    editor_name: {
+                        type: "string",
+                        description: "Optional: first name of the editor or content lead — personalises the opener. Omit if unknown.",
+                    },
+                    why_their_readers: {
+                        type: "string",
+                        description: "Optional: one sentence on why this topic is a specific fit for this publication's readership — concrete beats vague (e.g. 'your readers are mostly early-career freelancers navigating their first client contracts', 'Indie Hackers readers are shipping and selling — scope creep is their number-one frustration'). Omit to keep the pitch tight.",
+                    },
+                    your_credential: {
+                        type: "string",
+                        description: "Optional: your single most relevant credibility signal — specific beats vague (e.g. '9 years of freelance product design, 80+ client engagements', 'I built ProposalCraft, used by 600+ freelancers', 'my last piece on Toptal got 12k shares'). Omit if you have no strong signal yet.",
+                    },
+                    proposed_title: {
+                        type: "string",
+                        description: "Optional: a working headline for the article — hooks the editor immediately. Omit to keep the pitch angle open.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["publication_name", "article_angle"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8907,6 +8945,47 @@ Quick background on me: ${credential}.
 I'm happy to keep it conversational — no slides, no scripted points. If this sounds like a fit, I'd love to send a few more specific hooks or jump on a quick 15-minute call to see if the chemistry is there.
 
 No pressure either way — thanks for building a show worth pitching to.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "guest_post_pitch") {
+        const publicationName = String(args.publication_name);
+        const articleAngle = String(args.article_angle);
+        const editorName = args.editor_name ? String(args.editor_name) : null;
+        const whyReaders = args.why_their_readers ? String(args.why_their_readers) : null;
+        const credential = args.your_credential ? String(args.your_credential) : null;
+        const proposedTitle = args.proposed_title ? String(args.proposed_title) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const greeting = editorName ? `Hi ${editorName},` : `Hi,`;
+        const titleLine = proposedTitle
+            ? `Working title: **"${proposedTitle}"**\n\nAngle: ${articleAngle}`
+            : `Angle: ${articleAngle}`;
+        const readersLine = whyReaders
+            ? `\n\n${whyReaders}`
+            : "";
+        const credentialLine = credential
+            ? `\n\nA little background: ${credential}.`
+            : "";
+        const subject = proposedTitle
+            ? `Guest post pitch: "${proposedTitle}"`
+            : `Guest post pitch for ${publicationName}`;
+        const body = `${greeting}
+
+I'd love to contribute a guest article to ${publicationName}.
+
+${titleLine}${readersLine}${credentialLine}
+
+I can deliver a polished 800–1,200-word draft within a week of a green light, matched to your style guide and ready to publish with minimal editing.
+
+Would this be a fit? Happy to adjust the angle or send an outline first if that's more useful.
 
 ${yourName}`;
         return {
