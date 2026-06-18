@@ -1,9 +1,15 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 360)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 364)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 364):**
+- ✅ **v1.4.80: mid_project_cancellation_response_email tool (125th tool)** — professional response when a client cancels a project mid-engagement. Acknowledges the cancellation, summarises work completed to date, states kill fee (if applicable, per contract), confirms final invoice, and offers a clean asset handover. Required: client_name, project_name, work_completed. Optional: kill_fee_amount, kill_fee_clause, final_invoice_total, assets_to_handover, your_name. Distinct from project_pause_email (temporary), project_closure_email (natural end), client_offboarding_email (relationship wind-down). Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.80
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (new code 057166 used for browser login — Toolradar account confirmed active, ProposalCraft verified in system; claim still pending review). MCPize password resets (expired, no action). No new replies needed.
+- ✅ **Actions audited** — all remaining open actions are Mat-gated (npm publish, Stripe Connect, GitHub OAuth, PH launch, Dev.to, App Store Connect, GitHub 2FA, DMARC/domain). DMARC action [13d7aa54faac2b6b] resolved (monitoring, no immediate remediation). No new autonomous actions available.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. The stale file caused duplicate outreach in ticks 187, 291, 360 — 4th incident warning logged here.
 
 **What shipped (tick 360):**
 - ✅ **v1.4.79: client_material_chase_email tool (124th tool)** — professional email chasing a client for overdue materials, content, or approvals needed to continue the project. Three calibrated tones: friendly (1–5 days overdue), firm (6–14 days), escalation (15+ days). Required: client_name, project_name, what_is_needed. Optional: original_due_date, days_overdue, impact, new_deadline, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.79
