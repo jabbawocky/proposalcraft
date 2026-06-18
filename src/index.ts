@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.79" },
+  { name: "proposalcraft", version: "1.4.80" },
   { capabilities: { tools: {} } }
 );
 
@@ -4576,6 +4576,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name", "what_is_needed"],
+      },
+    },
+    {
+      name: "mid_project_cancellation_response_email",
+      description:
+        "Write a professional response when a client cancels a project mid-engagement. Acknowledges the cancellation without drama, summarises work completed to date, states the kill fee amount if your contract includes one, and confirms the final invoice. Protects you professionally and financially by putting the key facts in writing. Distinct from project_pause_email (temporary stop), project_closure_email (natural end at completion), client_offboarding_email (relationship wind-down), and end_client_relationship_email (you ending it). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or brief description of the project (e.g. 'the website redesign', 'your brand identity')",
+          },
+          work_completed: {
+            type: "string",
+            description: "Summary of what has been delivered or completed so far (e.g. 'wireframes, homepage design, and two interior page templates', 'discovery workshop, sitemap, and initial content strategy')",
+          },
+          kill_fee_amount: {
+            type: "string",
+            description: "Optional: the kill fee amount or percentage from your contract (e.g. '$1,500', '50% of the remaining balance', '25% of total project fee'). If omitted, the email notes that a final invoice for work completed will follow without referencing a kill fee.",
+          },
+          kill_fee_clause: {
+            type: "string",
+            description: "Optional: brief reference to the contract clause covering cancellation (e.g. 'per clause 7 of our contract', 'as per our agreed terms'). Keeps the tone professional rather than confrontational.",
+          },
+          final_invoice_total: {
+            type: "string",
+            description: "Optional: total amount of the final invoice you will send (e.g. '$2,800'). Including this prevents surprises and frames the email as a clean close.",
+          },
+          assets_to_handover: {
+            type: "string",
+            description: "Optional: files, documents, or access you will hand over so the client can continue with another provider (e.g. 'source files, brand guidelines PDF, and CMS login credentials'). Offering a clean handover protects your reputation.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "work_completed"],
       },
     },
   ],
@@ -10350,6 +10393,50 @@ Could you let me know when I can expect this, or flag if anything has changed on
 ${yourName}`;
 
     const subject = `${projectName} — materials needed to continue`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "mid_project_cancellation_response_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const workCompleted = String(args!.work_completed);
+    const killFeeAmount = args!.kill_fee_amount ? String(args!.kill_fee_amount) : null;
+    const killFeeClause = args!.kill_fee_clause ? String(args!.kill_fee_clause) : null;
+    const finalInvoiceTotal = args!.final_invoice_total ? String(args!.final_invoice_total) : null;
+    const assetsToHandover = args!.assets_to_handover ? String(args!.assets_to_handover) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "Thanks";
+
+    const killFeeLine = killFeeAmount
+      ? `\n\n${killFeeClause ? `${killFeeClause.charAt(0).toUpperCase() + killFeeClause.slice(1)}, a` : "A"} kill fee of ${killFeeAmount} applies to cover the work already invested and the schedule slot reserved for this project.`
+      : "";
+
+    const invoiceLine = finalInvoiceTotal
+      ? `\n\nI'll send a final invoice for ${finalInvoiceTotal} shortly — please let me know if you have any questions about the breakdown.`
+      : "\n\nI'll send a final invoice for work completed — please let me know if you have any questions.";
+
+    const handoverLine = assetsToHandover
+      ? `\n\nI'll package up ${assetsToHandover} and send everything across so you can continue with another provider if needed.`
+      : "";
+
+    const body = `Hi ${clientName},
+
+Thank you for letting me know. I'm sorry to hear ${projectName} won't be moving forward — I understand these decisions happen.
+
+To confirm, here's where we stand: I've completed ${workCompleted}.${killFeeLine}${invoiceLine}${handoverLine}
+
+It's been a pleasure working with you. I hope we get the chance to work together again in the future — feel free to reach out if anything changes.
+
+${yourName}`;
+
+    const subject = `Re: ${projectName} — project cancellation confirmed`;
 
     return {
       content: [
