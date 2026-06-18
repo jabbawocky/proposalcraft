@@ -1,9 +1,15 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 344)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 352)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 352):**
+- ✅ **v1.4.78: service_package_email tool (123rd tool)** — presents 2–3 productized service tiers to a prospect (name, price, inclusions per tier). Optional: recommended_package (highlights one tier as most popular), pitch_context (personalises opening with prospect's stated need), your_name. Distinct from rate_card_email (hourly rates on request) and draft_proposal (responding to a specific brief). Does not count against free draft limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.78
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (770095 freshest, browser SPA login-flow still failing between sessions — Toolradar remains lower priority). Supertool/The Rundown AI submission confirmed under review (email from The Rundown Team received). No new replies needed.
+- ✅ **Actions audited** — 25+ open actions reviewed. All Mat-gated (Stripe Connect, GitHub OAuth, npm publish, PH launch, Glama OAuth, Dev.to, App Store Connect, GitHub 2FA). No new autonomous actions available.
+- ✅ **Roundup outreach confirmed sent** — all 6 roundup targets (DeployHQ, Nimbalyst, Agensi, Toolradar, ShareUHack, The Rundown) have prior sends in the outbox. No duplicates sent this tick.
 
 **What shipped (tick 344):**
 - ✅ **v1.4.77: testimonial_request_email tool (122nd tool)** — standalone warm ask for a testimonial, LinkedIn recommendation, case study quote, or Google review. Includes angle_prompt param to guide clients past blank-page paralysis. Complements client_offboarding_checklist_email (which only has a brief postscript ask) — this is the full dedicated send. Required: client_name, project_name, result_achieved. Optional: testimonial_type, angle_prompt, your_name. Pushed to main + dist. Does not count against free draft limit.
