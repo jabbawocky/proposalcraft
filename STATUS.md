@@ -1,9 +1,15 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 364)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 368)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 368):**
+- ✅ **v1.4.81: working_agreement_email tool (126th tool)** — sets out how you and a client will work together day-to-day before a project begins: communication channel, response times, revision rounds, sign-off protocol, and meeting cadence. Prevents mid-project friction from unspoken expectations. Required: client_name, project_name. Optional: communication_channel, response_time, revision_rounds, sign_off_process, meeting_cadence, your_name. Distinct from contract_template (legal), client_onboarding_checklist (tasks), and project_kickoff_email (confirming start). Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.81
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action). Supertool/Rundown AI submission still under review (no update). No new emails requiring reply.
+- ✅ **Actions audited** — all remaining open actions are Mat-gated (npm publish, Stripe Connect, GitHub OAuth, PH launch, Dev.to, App Store Connect, GitHub 2FA, DMARC/domain). No new autonomous actions available.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
 
 **What shipped (tick 364):**
 - ✅ **v1.4.80: mid_project_cancellation_response_email tool (125th tool)** — professional response when a client cancels a project mid-engagement. Acknowledges the cancellation, summarises work completed to date, states kill fee (if applicable, per contract), confirms final invoice, and offers a clean asset handover. Required: client_name, project_name, work_completed. Optional: kill_fee_amount, kill_fee_clause, final_invoice_total, assets_to_handover, your_name. Distinct from project_pause_email (temporary), project_closure_email (natural end), client_offboarding_email (relationship wind-down). Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.80
