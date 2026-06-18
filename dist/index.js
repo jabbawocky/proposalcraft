@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.70" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.76" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -4186,6 +4186,52 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "amount_due"],
+            },
+        },
+        {
+            name: "client_offboarding_checklist_email",
+            description: "Write a structured end-of-engagement email that doubles as a practical handover checklist. Sent at project close or retainer end — covers what was completed, assets being transferred, outstanding actions for both sides, and any system access being revoked. Protects both parties by ensuring nothing falls through the cracks. Distinct from client_offboarding_email (which ends a relationship you chose to leave) and project_closure_email (a natural project wrap-up email) — this is the operational handover document with explicit action items and a checklist format. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name or company name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project or engagement being closed (e.g. 'the Acme website redesign', 'our monthly SEO retainer')",
+                    },
+                    deliverables_summary: {
+                        type: "string",
+                        description: "Brief summary of what was completed during the engagement (e.g. 'full website redesign, content migration, and 3 months of SEO support')",
+                    },
+                    assets_to_transfer: {
+                        type: "string",
+                        description: "Optional: comma-separated list of files, accounts, or assets being handed over (e.g. 'source files, Google Analytics access, Figma project, GitHub repo'). Omit if nothing to transfer.",
+                    },
+                    client_actions: {
+                        type: "string",
+                        description: "Optional: things the client needs to action after handover (e.g. 'change shared passwords, accept Google Analytics transfer, update billing details'). Omit if none.",
+                    },
+                    your_actions: {
+                        type: "string",
+                        description: "Optional: anything you are still completing before the handover is fully done (e.g. 'final invoice to follow', 'source file export in progress'). Omit if everything is already done.",
+                    },
+                    access_to_revoke: {
+                        type: "string",
+                        description: "Optional: systems or accounts you will lose access to or remove yourself from (e.g. 'Slack workspace, staging server, CMS admin'). Omit if none.",
+                    },
+                    testimonial_ask: {
+                        type: "boolean",
+                        description: "Optional: include a brief ask for a testimonial or LinkedIn recommendation at the end of the email. Default: true.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "deliverables_summary"],
             },
         },
     ],
@@ -9099,6 +9145,65 @@ If you believe there is a dispute or error, please contact me immediately to res
 
 ${yourName}`;
         }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "client_offboarding_checklist_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const deliverablesSummary = String(args.deliverables_summary);
+        const assetsToTransfer = args.assets_to_transfer ? String(args.assets_to_transfer) : null;
+        const clientActions = args.client_actions ? String(args.client_actions) : null;
+        const yourActions = args.your_actions ? String(args.your_actions) : null;
+        const accessToRevoke = args.access_to_revoke ? String(args.access_to_revoke) : null;
+        const testimonialAsk = args.testimonial_ask !== false;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const transferList = assetsToTransfer
+            ? assetsToTransfer.split(",").map((s) => s.trim()).filter(Boolean)
+            : [];
+        const clientActionList = clientActions
+            ? clientActions.split(",").map((s) => s.trim()).filter(Boolean)
+            : [];
+        const yourActionList = yourActions
+            ? yourActions.split(",").map((s) => s.trim()).filter(Boolean)
+            : [];
+        const revokeList = accessToRevoke
+            ? accessToRevoke.split(",").map((s) => s.trim()).filter(Boolean)
+            : [];
+        const transferSection = transferList.length > 0
+            ? `\n\n**Assets and files being transferred:**\n${transferList.map((a) => `☐  ${a}`).join("\n")}`
+            : "";
+        const clientActionsSection = clientActionList.length > 0
+            ? `\n\n**Action items for you:**\n${clientActionList.map((a) => `☐  ${a}`).join("\n")}`
+            : "";
+        const yourActionsSection = yourActionList.length > 0
+            ? `\n\n**Still to come from my side:**\n${yourActionList.map((a) => `☐  ${a}`).join("\n")}`
+            : "";
+        const revokeSection = revokeList.length > 0
+            ? `\n\n**Access I will be removing:**\n${revokeList.map((a) => `•  ${a}`).join("\n")}`
+            : "";
+        const testimonialSection = testimonialAsk
+            ? `\n\nIt has been a pleasure working on ${projectName} with you. If you have a moment, a short testimonial or LinkedIn recommendation would mean a great deal — it helps other clients find me and understand the kind of work I do.`
+            : "";
+        const subject = `Project close: ${projectName} — handover checklist`;
+        const body = `Hi ${clientName},
+
+As we wrap up ${projectName}, I wanted to send a clear handover summary so we both have everything in one place.
+
+**What was delivered:**
+${deliverablesSummary}${transferSection}${clientActionsSection}${yourActionsSection}${revokeSection}
+
+Please review the items above and let me know if anything is missing or needs clarification. Once the checklist is clear on both sides, the engagement will be formally closed.${testimonialSection}
+
+Thank you for working with me on this.
+
+${yourName}`;
         return {
             content: [
                 {
