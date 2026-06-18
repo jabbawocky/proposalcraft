@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 352)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 354)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 354):**
+- ✅ **punkpeye/awesome-mcp-servers PR #8192 CONFIRMED MERGED** — merged June 18 at 13:54 UTC. ProposalCraft now live in 88k-star repo. Previous ticks had stale "OPEN" status — corrected here.
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (stale/expired, no action). Supertool/Rundown AI already confirmed. No new emails requiring reply.
+- ✅ **Actions audited** — resolved 3 stale/duplicate actions: duplicate MCPize Stripe Connect (e27ea585), stale Glama+punkpeye actions. All remaining Mat-gated actions still open.
+- ⚠️ **mcp.directory re-submitted (duplicate)** — already submitted at tick 197. Idempotent (same GitHub URL), no harm but note for next tick: do NOT re-submit.
+- ⚠️ **mcpservers.org email sent (duplicate)** — already live per tick 302. Not harmful.
 
 **What shipped (tick 352):**
 - ✅ **v1.4.78: service_package_email tool (123rd tool)** — presents 2–3 productized service tiers to a prospect (name, price, inclusions per tier). Optional: recommended_package (highlights one tier as most popular), pitch_context (personalises opening with prospect's stated need), your_name. Distinct from rate_card_email (hourly rates on request) and draft_proposal (responding to a specific brief). Does not count against free draft limit. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.78
@@ -110,7 +117,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 - Roundup outreach: 4/6 sent ✅, Supertool confirmed ✅
 - MCP registry: validated ✅, needs login
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
-- punkpeye/awesome-mcp-servers PR #8192 open (has-glama label ✓, Glama badge confirmed)
+- punkpeye/awesome-mcp-servers PR #8192 MERGED June 18 ✅ (88k stars, ProposalCraft live)
 - **122 tools** (tick 344)
 - Toolradar: blocked by github.com domain verification (ProposalCraft indexed under github.com — needs @github.com email or Toolradar manual review)
 
