@@ -4024,6 +4024,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["referrer_name", "new_client_name"],
             },
         },
+        {
+            name: "retainer_proposal",
+            description: "Write a professional email proposing an ongoing retainer relationship to an existing project client. Converts a one-off engagement into a predictable monthly arrangement — gives the client clarity on reserved capacity and you stability of income. Covers: proposed scope, monthly hours, retainer fee, how unused hours roll over (or don't), notice period. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or company name of the client",
+                    },
+                    monthly_hours: {
+                        type: "number",
+                        description: "Number of hours per month you are proposing to reserve for them (e.g. 10, 20)",
+                    },
+                    monthly_fee: {
+                        type: "string",
+                        description: "The retainer fee per month, including currency symbol (e.g. '£2,000/month', '$3,500/month')",
+                    },
+                    scope_summary: {
+                        type: "string",
+                        description: "Optional: brief description of what the retainer covers (e.g. 'ongoing strategy and copywriting', 'design support and ad-hoc UX reviews'). If omitted, a generic description is used.",
+                    },
+                    rollover: {
+                        type: "boolean",
+                        description: "Optional: whether unused hours roll over to the following month. Default: false (hours expire at month end).",
+                    },
+                    notice_period: {
+                        type: "string",
+                        description: "Optional: notice period to cancel the retainer (e.g. '30 days', 'one calendar month'). Default: 30 days.",
+                    },
+                    start_date: {
+                        type: "string",
+                        description: "Optional: proposed start date (e.g. '1 July', 'next month'). If omitted, wording is left open.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "monthly_hours", "monthly_fee"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8749,6 +8791,50 @@ ${yourName}`;
 I just wanted to say thank you for introducing me to ${newClientName}${projectLine}. I really appreciate you thinking of me.${outcomeLine}
 
 Referrals from people I trust and respect mean a great deal — thank you for putting your name to it.${reciprocityLine}
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "retainer_proposal") {
+        const clientName = String(args.client_name);
+        const monthlyHours = Number(args.monthly_hours);
+        const monthlyFee = String(args.monthly_fee);
+        const scopeSummary = args.scope_summary ? String(args.scope_summary) : null;
+        const rollover = args.rollover === true;
+        const noticePeriod = args.notice_period ? String(args.notice_period) : "30 days";
+        const startDate = args.start_date ? String(args.start_date) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const scopeLine = scopeSummary
+            ? `covering ${scopeSummary}`
+            : "covering ongoing support across the areas we've been working on";
+        const rolloverLine = rollover
+            ? "Any unused hours carry over to the following month."
+            : "Hours are allocated monthly and don't carry over, so there's an incentive for both of us to use them well.";
+        const startLine = startDate
+            ? `If this works for you, I'd suggest starting from ${startDate}.`
+            : "If this works for you, let me know and we can agree a start date.";
+        const subject = `Retainer proposal — ${monthlyHours} hours/month`;
+        const body = `Hi ${clientName},
+
+I've really enjoyed the work we've done together, and I'd love to propose a way to make our collaboration more consistent.
+
+I'm suggesting a monthly retainer of ${monthlyFee}, ${scopeLine}. In practical terms, that means I reserve ${monthlyHours} hours a month exclusively for you — you get priority access and a predictable partner without having to re-brief me each time; I get the stability to plan my calendar around your needs.
+
+Here's how it would work:
+- ${monthlyHours} hours/month reserved for you at ${monthlyFee}
+- ${rolloverLine}
+- Either side can end the arrangement with ${noticePeriod}'s notice
+
+${startLine}
+
+Happy to jump on a call to talk through the details, or answer any questions by email if that's easier.
 
 ${yourName}`;
         return {
