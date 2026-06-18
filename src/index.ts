@@ -4339,6 +4339,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["publication_name", "article_angle"],
       },
     },
+    {
+      name: "late_payment_escalation_email",
+      description:
+        "Write a professional email escalating an unpaid invoice to a senior contact, the client's finance team, or as a pre-legal notice. Use this after a final payment reminder has gone unanswered — it signals that the matter is now being formally escalated. Calibrated by route: 'manager' addresses the client's manager or director by name; 'legal' is a pre-action letter signalling that formal recovery steps will follow; 'agency' notifies the client that the debt is being passed to a collection or credit-control agency. Tone is firm, factual, and free of emotion — no threats beyond the escalation itself. Distinct from payment_reminder_email (which is sent to the original contact before escalation). Does not count against your monthly draft limit. Required: client_name, amount_due. Optional: invoice_number, due_date, days_overdue, escalation_route ('manager' | 'legal' | 'agency' — defaults to 'legal'), senior_contact_name (first name of the escalation target — omit if unknown), senior_contact_role (e.g. 'Finance Director', 'Head of Operations'), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Name of the client or company the original invoice was issued to",
+          },
+          amount_due: {
+            type: "string",
+            description: "The outstanding amount, including currency symbol (e.g. '$2,400', '£1,800')",
+          },
+          invoice_number: {
+            type: "string",
+            description: "Invoice reference number (e.g. 'INV-042'). Omit if you don't use invoice numbers.",
+          },
+          due_date: {
+            type: "string",
+            description: "The original payment due date (e.g. 'May 15', '15 May 2026'). Omit if unknown.",
+          },
+          days_overdue: {
+            type: "number",
+            description: "How many days past the due date the invoice currently is.",
+          },
+          escalation_route: {
+            type: "string",
+            description: "'manager' (addressed to a named senior contact at the client company), 'legal' (pre-action letter to the original contact signalling formal recovery), or 'agency' (notifying the client that the debt is being passed to a collection agency). Defaults to 'legal'.",
+          },
+          senior_contact_name: {
+            type: "string",
+            description: "First name of the escalation target — required if escalation_route is 'manager'. Omit for 'legal' or 'agency' routes.",
+          },
+          senior_contact_role: {
+            type: "string",
+            description: "Role or title of the escalation target (e.g. 'Finance Director', 'Head of Operations'). Used in the 'manager' route to add context.",
+          },
+          your_name: {
+            type: "string",
+            description: "Your name for the sign-off",
+          },
+        },
+        required: ["client_name", "amount_due"],
+      },
+    },
   ],
 }));
 
@@ -9785,6 +9832,74 @@ I can deliver a polished 800–1,200-word draft within a week of a green light, 
 Would this be a fit? Happy to adjust the angle or send an outline first if that's more useful.
 
 ${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "late_payment_escalation_email") {
+    const clientName = String(args!.client_name);
+    const amountDue = String(args!.amount_due);
+    const invoiceNumber = args!.invoice_number ? String(args!.invoice_number) : null;
+    const dueDate = args!.due_date ? String(args!.due_date) : null;
+    const daysOverdue = args!.days_overdue ? Number(args!.days_overdue) : null;
+    const route = args!.escalation_route ? String(args!.escalation_route).toLowerCase() : "legal";
+    const seniorName = args!.senior_contact_name ? String(args!.senior_contact_name) : null;
+    const seniorRole = args!.senior_contact_role ? String(args!.senior_contact_role) : "senior team";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const invoiceRef = invoiceNumber ? ` (${invoiceNumber})` : "";
+    const dueDateRef = dueDate ? `, due ${dueDate}` : "";
+    const overdueRef = daysOverdue ? ` — now ${daysOverdue} days overdue` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "manager") {
+      const greeting = seniorName ? `Hi ${seniorName},` : `Hi,`;
+      const roleRef = seniorRole ? ` as ${seniorRole}` : "";
+      subject = `Escalation: unpaid invoice${invoiceRef} for ${amountDue} — ${clientName}`;
+      body = `${greeting}
+
+I'm writing to you${roleRef} regarding an unpaid invoice addressed to ${clientName}.
+
+Invoice${invoiceRef} for ${amountDue}${dueDateRef} remains outstanding${overdueRef}. I have sent multiple payment reminders without receiving a response or payment.
+
+I am escalating this to you in the hope of resolving the matter quickly and directly before taking further action. Please can you confirm the payment status and, if there is a dispute or delay, let me know so we can address it?
+
+If I do not hear back within 5 business days I will have no option but to pursue formal recovery.
+
+${yourName}`;
+    } else if (route === "agency") {
+      subject = `Notice: overdue invoice${invoiceRef} for ${amountDue} referred to collections`;
+      body = `Hi ${clientName},
+
+I am writing to inform you that invoice${invoiceRef} for ${amountDue}${dueDateRef}${overdueRef} has been referred to a debt collection agency.
+
+You will be contacted by them directly. Their fees and any interest accrued may be added to the outstanding balance.
+
+If you wish to resolve this directly before the agency makes contact, please reply to this email immediately.
+
+${yourName}`;
+    } else {
+      // legal (default)
+      subject = `Pre-action notice: unpaid invoice${invoiceRef} — ${amountDue}`;
+      body = `Hi ${clientName},
+
+This is a formal pre-action notice regarding invoice${invoiceRef} for ${amountDue}${dueDateRef}, which remains unpaid${overdueRef}.
+
+Previous reminders have received no response and no payment has been received. I am now giving formal notice that if payment is not received within 7 days of this email, I will commence proceedings to recover the outstanding amount through the appropriate legal channels, which may include a claim in the small claims court and recovery of associated costs.
+
+If you believe there is a dispute or error, please contact me immediately to resolve it. Otherwise, please arrange payment within the stated timeframe to avoid further action.
+
+${yourName}`;
+    }
 
     return {
       content: [
