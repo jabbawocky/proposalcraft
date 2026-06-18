@@ -4418,6 +4418,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_name", "work_completed"],
             },
         },
+        {
+            name: "working_agreement_email",
+            description: "Write a short, friendly email that sets out how you and a client will work together during a project — covering communication preferences, response times, revision process, sign-off protocol, and meeting cadence. Sent before or at project kick-off, this prevents misunderstandings that kill projects mid-flow. Distinct from contract_template (legal obligations), client_onboarding_checklist (tasks to complete before starting), and project_kickoff_email (confirming that work has begun) — this is the 'how we actually work day to day' email that experienced freelancers swear by. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or brief description of the project (e.g. 'the website redesign', 'your brand identity')",
+                    },
+                    communication_channel: {
+                        type: "string",
+                        description: "Optional: your preferred channel for day-to-day communication (e.g. 'email', 'Slack', 'Notion comments'). Defaults to email if omitted.",
+                    },
+                    response_time: {
+                        type: "string",
+                        description: "Optional: your typical response time during business hours (e.g. 'within 24 hours', 'same day before 3pm', 'within one business day'). Defaults to 'within one business day' if omitted.",
+                    },
+                    revision_rounds: {
+                        type: "string",
+                        description: "Optional: the number of included revision rounds and what counts as a revision (e.g. 'two rounds of consolidated feedback per deliverable', 'one major and one minor revision pass'). If omitted, no revision detail is included.",
+                    },
+                    sign_off_process: {
+                        type: "string",
+                        description: "Optional: how you need sign-off to be given before moving to the next phase (e.g. 'a reply email confirming approval', 'a comment in Figma marked Approved', 'written confirmation by end of day'). If omitted, a simple 'written confirmation by email' is used.",
+                    },
+                    meeting_cadence: {
+                        type: "string",
+                        description: "Optional: the agreed meeting rhythm during the project (e.g. 'a weekly 30-minute check-in every Monday', 'a fortnightly review call', 'ad hoc as needed'). If omitted, meetings are described as 'as needed by mutual agreement'.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -9576,6 +9618,45 @@ It's been a pleasure working with you. I hope we get the chance to work together
 
 ${yourName}`;
         const subject = `Re: ${projectName} — project cancellation confirmed`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "working_agreement_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const channel = args.communication_channel ? String(args.communication_channel) : "email";
+        const responseTime = args.response_time ? String(args.response_time) : "within one business day";
+        const revisionRounds = args.revision_rounds ? String(args.revision_rounds) : null;
+        const signOff = args.sign_off_process ? String(args.sign_off_process) : "a reply email confirming approval";
+        const meetings = args.meeting_cadence ? String(args.meeting_cadence) : "as needed by mutual agreement";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const revisionsLine = revisionRounds
+            ? `\n- **Revisions:** ${revisionRounds.charAt(0).toUpperCase() + revisionRounds.slice(1)}.`
+            : "";
+        const subject = `How we'll work together — ${projectName}`;
+        const body = `Hi ${clientName},
+
+Now that we're getting started on ${projectName}, I wanted to share a quick note on how I prefer to work — just so we're on the same page from day one.
+
+**Communication:** I'll keep all project updates and questions to ${channel}. Please do the same where possible — it keeps everything in one place and means nothing gets missed.
+
+**Response times:** During business hours, I aim to reply ${responseTime}. I'm not always reachable outside those hours, but I'll flag if anything urgent is coming up on my end.
+
+**Sign-off:** Before I move to the next phase, I'll need ${signOff}. This keeps us both protected and means there are no surprises later.${revisionsLine}
+
+**Meetings:** ${meetings.charAt(0).toUpperCase() + meetings.slice(1)}.
+
+None of this is meant to be rigid — if something comes up and you need to reach me urgently, just say so. I wanted to put this in writing so we both have a clear baseline.
+
+Looking forward to the project.
+
+${yourName}`;
         return {
             content: [
                 {
