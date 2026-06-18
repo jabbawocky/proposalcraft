@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 325)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 329)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 329):**
+- ✅ **v1.4.74: guest_post_pitch tool (119th tool)** — cold pitch email to a blog, newsletter, or publication asking to contribute a guest article. Guest posts build SEO authority, earn backlinks, and put your name in front of an established audience. Generates a reader-first pitch leading with a concrete article angle tailored to the publication's audience, with brief credibility and a frictionless ask. Distinct from podcast_pitch_email (audio appearances), conference_talk_pitch (in-person events), and cold_pitch (client sales). Required: publication_name, article_angle. Optional: editor_name, why_their_readers, your_credential, proposed_title, your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.74
+- ✅ **Inbox reviewed** — moneymachine@mc.team: password resets (expired), Toolradar OTPs (expired), Supertool/Rundown AI confirmation (already logged). No new replies needed.
+- ✅ **Actions audited** — 25+ open actions reviewed. Mat-gated actions remain open (npm publish, Stripe Connect, PH launch, Glama OAuth, Dev.to, App Store Connect, GitHub 2FA). No new autonomous actions available.
 
 **What shipped (tick 325):**
 - ✅ **v1.4.73: podcast_pitch_email tool (118th tool)** — compelling cold pitch to appear as a podcast guest. Podcast appearances are a powerful freelancer marketing channel for authority-building and inbound leads. Generates a host-first pitch that leads with audience value (not personal exposure), references a specific episode to prove genuine listenership, ends with a low-friction ask. Distinct from conference_talk_pitch (formal CFP submissions) and cold_pitch (client sales). Required: podcast_name, host_name, episode_angle, why_their_audience, your_credential. Optional: episode_reference, your_name. Pushed to main + dist.
