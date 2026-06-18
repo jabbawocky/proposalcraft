@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 315)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 321)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 321):**
+- ✅ **v1.4.72: retainer_proposal tool (117th tool)** — proposes an ongoing monthly retainer arrangement to an existing project client. Converts a one-off engagement into predictable reserved capacity. Required: client_name, monthly_hours, monthly_fee. Optional: scope_summary, rollover, notice_period, start_date, your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.72
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired, no action). Supertool/Rundown AI confirmation already logged. No replies needed.
+- ✅ **Actions audited** — 25 open actions reviewed. Mat-gated actions remain open (npm publish, Stripe Connect, PH launch, Reddit posts, Glama OAuth, Dev.to, App Store Connect, GitHub 2FA). No new autonomous actions taken.
 
 **What shipped (tick 315):**
 - ✅ **v1.4.71: referral_thank_you_email tool (116th tool)** — warm, genuine thank-you email to someone who referred a new client. Acknowledges the specific referral and new client by name, adds a project-type line if supplied, shares outcome if known, and optionally offers to return the favour. Closes the referral loop: client_satisfaction_survey_email → referral → thank the referrer. Required: referrer_name, new_client_name. Optional: project_type, outcome, offer_back, your_name. Pushed to main + dist.
@@ -64,7 +69,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free community server, live in marketplace)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport, 100% health)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (107 tools, v1.4.62)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (117 tools, v1.4.72)
 
 **Metrics:**
 - Revenue: $0 — Stripe gate pending Mat
@@ -73,7 +78,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 - MCP registry: validated ✅, needs login
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
 - punkpeye/awesome-mcp-servers PR #8192 open (has-glama label ✓, Glama badge confirmed)
-- **110 tools** (tick 293)
+- **117 tools** (tick 321)
 - Toolradar: blocked by github.com domain verification (ProposalCraft indexed under github.com — needs @github.com email or Toolradar manual review)
 
 **Distribution live:**
@@ -123,7 +128,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-115 tools, v1.4.70. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 116th tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), retainer_proposal (email proposing an ongoing retainer relationship to an existing project client). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+117 tools, v1.4.72. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 118th tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), late_payment_escalation_email (escalating overdue invoice to a senior contact / legal route). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
 
 **⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
 1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).
