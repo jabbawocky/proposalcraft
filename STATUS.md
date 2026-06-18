@@ -1,9 +1,14 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 341)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 344)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 344):**
+- ✅ **v1.4.77: testimonial_request_email tool (122nd tool)** — standalone warm ask for a testimonial, LinkedIn recommendation, case study quote, or Google review. Includes angle_prompt param to guide clients past blank-page paralysis. Complements client_offboarding_checklist_email (which only has a brief postscript ask) — this is the full dedicated send. Required: client_name, project_name, result_achieved. Optional: testimonial_type, angle_prompt, your_name. Pushed to main + dist. Does not count against free draft limit.
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (779100 is most recent — still within 24h window, Toolradar browser renders blank, likely JS SPA issue), Supertool/The Rundown AI submission confirmed under review. No new replies needed.
+- ✅ **Actions audited** — 25 open actions reviewed. All Mat-gated (Stripe Connect, GitHub OAuth, npm publish, PH, Dev.to). No new autonomous actions available.
 
 **What shipped (tick 341):**
 - ✅ **v1.4.76: client_offboarding_checklist_email tool (121st tool)** — structured end-of-engagement email that doubles as a practical handover checklist. Covers deliverables summary, assets to transfer (checkbox format), client action items, outstanding work from freelancer side, access being revoked, and optional testimonial ask. Distinct from client_offboarding_email (ending a relationship) and project_closure_email (natural wrap-up). Protects both parties by ensuring nothing falls through the cracks at engagement close. Required: client_name, project_name, deliverables_summary. Optional: assets_to_transfer, client_actions, your_actions, access_to_revoke, testimonial_ask (default true), your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.76
@@ -91,7 +96,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 - `https://glama.ai/mcp/servers/jabbawocky/proposalcraft` — Glama listing (live, score badge active)
 - `https://mcpize.com/mcp/proposalcraft-2` — MCPize listing (free community server, live in marketplace)
 - `https://proposalcraft-2.mcpize.run` — MCPize gateway endpoint (HTTP transport, 100% health)
-- `https://github.com/jabbawocky/proposalcraft` — main repo (120 tools, v1.4.75)
+- `https://github.com/jabbawocky/proposalcraft` — main repo (122 tools, v1.4.77)
 
 **Metrics:**
 - Revenue: $0 — Stripe gate pending Mat
@@ -100,7 +105,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 - MCP registry: validated ✅, needs login
 - MCPize endpoint: `claude mcp add --transport http ProposalCraft https://proposalcraft-2.mcpize.run`
 - punkpeye/awesome-mcp-servers PR #8192 open (has-glama label ✓, Glama badge confirmed)
-- **120 tools** (tick 337)
+- **122 tools** (tick 344)
 - Toolradar: blocked by github.com domain verification (ProposalCraft indexed under github.com — needs @github.com email or Toolradar manual review)
 
 **Distribution live:**
@@ -150,7 +155,7 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 
 11. 🚧 **Pro checkout URL** — Gumroad OR Stripe Payment Link ($19/mo). Guide: `docs/gumroad-setup.md`.
 
 **Next autonomous action:**
-120 tools, v1.4.75. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 121st tool — candidates: client_offboarding_checklist_email (end-of-engagement handover with checklist), conference_talk_pitch (CFP submission email). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
+122 tools, v1.4.77. MCPize live in marketplace (proposalcraft-2, $19/mo Pro). punkpeye PR #8192 open — will merge once Glama score badge live (needs npm publish first). Next tick: add 123rd tool — candidate: scope_creep_pushback_email (politely decline or reprice out-of-scope requests). Revenue gate still requires Mat. DO NOT re-send roundup outreach — hard stop, already sent 8+ times.
 
 **⚠️ CRITICAL MAT ACTIONS (unblocked, high value, in priority order):**
 1. 🚨 **npm publish** — `cd /home/orbitosw/worker/proposalcraft && npm publish` — unlocks Glama quality test, Smithery indexing, clean install. Need: npm login (npmjs.com, jabbawocky account).
