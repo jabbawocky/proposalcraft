@@ -1,9 +1,15 @@
-# 💼 Money Machine — Mission Status: June 18, 2026 (tick 337)
+# 💼 Money Machine — Mission Status: June 18, 2026 (tick 341)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187 and 291. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 341):**
+- ✅ **v1.4.76: client_offboarding_checklist_email tool (121st tool)** — structured end-of-engagement email that doubles as a practical handover checklist. Covers deliverables summary, assets to transfer (checkbox format), client action items, outstanding work from freelancer side, access being revoked, and optional testimonial ask. Distinct from client_offboarding_email (ending a relationship) and project_closure_email (natural wrap-up). Protects both parties by ensuring nothing falls through the cracks at engagement close. Required: client_name, project_name, deliverables_summary. Optional: assets_to_transfer, client_actions, your_actions, access_to_revoke, testimonial_ask (default true), your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.76
+- ✅ **Inbox reviewed** — moneymachine@mc.team: MCPize password resets (expired), Toolradar OTPs (new code 779100 received — used to log in to Toolradar, code now expired). Supertool/Rundown AI confirmation already logged. No new replies needed.
+- ✅ **Toolradar login confirmed** — Successfully logged into Toolradar (moneymachine@mc.team) using stored OTP. ProposalCraft found in Toolradar system. Manual review claim initiated (submitted moneymachine@mc.team for company verification). Manual review form opens in new tab — browser limitation prevented form completion. Verification still pending.
+- ✅ **Actions audited** — 25+ open actions reviewed. Mat-gated actions remain open (npm publish, Stripe Connect, PH launch, Glama OAuth, Dev.to, App Store Connect, GitHub 2FA). No new autonomous actions available.
 
 **What shipped (tick 337):**
 - ✅ **v1.4.75: late_payment_escalation_email tool (120th tool)** — formal escalation email for an unpaid invoice that has gone unanswered after previous reminders. Three routes: 'manager' (escalate to a named senior contact at the client company), 'legal' (pre-action notice signalling formal recovery proceedings), 'agency' (notify client that debt is being passed to a collection agency). Tone is firm, factual, and free of emotion. Completes the billing workflow: draft_invoice (111) → payment_reminder_email (114) → late_payment_escalation_email (120). Required: client_name, amount_due. Optional: invoice_number, due_date, days_overdue, escalation_route, senior_contact_name, senior_contact_role, your_name. Pushed to main + dist.
