@@ -4066,6 +4066,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "monthly_hours", "monthly_fee"],
             },
         },
+        {
+            name: "podcast_pitch_email",
+            description: "Write a compelling cold pitch to appear as a guest on a podcast. Podcast appearances are a powerful freelancer marketing channel — authority-building, warm inbound leads, and backlinks — but most pitches are generic and get deleted within seconds. This generates a host-first pitch that leads with why their audience wins (not why you want exposure), references a specific episode to prove you're a genuine listener, and ends with a concrete, low-friction ask. Distinct from conference_talk_pitch (formal CFP submission for in-person events) and cold_pitch (client sales outreach). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    podcast_name: {
+                        type: "string",
+                        description: "Name of the podcast you are pitching to appear on (e.g. 'Freelance to Founder', 'The Futur')",
+                    },
+                    host_name: {
+                        type: "string",
+                        description: "First name of the podcast host (e.g. 'Chris', 'Paul')",
+                    },
+                    episode_angle: {
+                        type: "string",
+                        description: "The specific topic or angle you are pitching — frame it as a benefit for listeners, not a feature about you (e.g. 'why most freelancers lose deals before the proposal even lands', 'the one-page scope framework that ends scope creep arguments')",
+                    },
+                    why_their_audience: {
+                        type: "string",
+                        description: "Why this topic is specifically valuable for this podcast's listeners — be concrete (e.g. 'your audience of creative freelancers deals with scope creep weekly; I've spoken to 200+ of them', 'your listeners are trying to move from project to retainer work — I made that shift and can walk through it step by step')",
+                    },
+                    your_credential: {
+                        type: "string",
+                        description: "Your single most relevant credibility signal — specific beats vague (e.g. '8 years of freelance UX, 120+ client contracts', 'built ProposalCraft, an open-source MCP tool with 500+ installs', 'went from $0 to $180k/yr freelancing in 3 years')",
+                    },
+                    episode_reference: {
+                        type: "string",
+                        description: "Optional: a specific recent episode you listened to — title or guest name — and one sentence on what resonated. Proves you're a genuine listener, not a spray-and-pray pitcher. Omit if you haven't listened to a recent episode.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["podcast_name", "host_name", "episode_angle", "why_their_audience", "your_credential"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -8835,6 +8873,40 @@ Here's how it would work:
 ${startLine}
 
 Happy to jump on a call to talk through the details, or answer any questions by email if that's easier.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "podcast_pitch_email") {
+        const podcastName = String(args.podcast_name);
+        const hostName = String(args.host_name);
+        const episodeAngle = String(args.episode_angle);
+        const whyAudience = String(args.why_their_audience);
+        const credential = String(args.your_credential);
+        const episodeRef = args.episode_reference ? String(args.episode_reference) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const episodeLine = episodeRef
+            ? `\n\nI've been following ${podcastName} for a while — ${episodeRef} particularly resonated with me.`
+            : "";
+        const subject = `Guest pitch: ${episodeAngle}`;
+        const body = `Hi ${hostName},${episodeLine}
+
+I wanted to pitch an episode angle I think would land well with your audience: **${episodeAngle}**.
+
+${whyAudience}
+
+Quick background on me: ${credential}.
+
+I'm happy to keep it conversational — no slides, no scripted points. If this sounds like a fit, I'd love to send a few more specific hooks or jump on a quick 15-minute call to see if the chemistry is there.
+
+No pressure either way — thanks for building a show worth pitching to.
 
 ${yourName}`;
         return {
