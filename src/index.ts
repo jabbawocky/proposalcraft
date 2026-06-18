@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.76" },
+  { name: "proposalcraft", version: "1.4.78" },
   { capabilities: { tools: {} } }
 );
 
@@ -4466,6 +4466,73 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name", "deliverables_summary"],
+      },
+    },
+    {
+      name: "service_package_email",
+      description:
+        "Write a professional email presenting 2–3 productized service packages to a prospect. Used when you offer fixed-price, structured tiers rather than quoting per project — e.g. Starter / Growth / Scale, or Essential / Pro / Premium. Presents each tier with a clear name, what's included, and price. Distinct from rate_card_email (hourly/day rates sent when asked) and draft_proposal (responding to a specific brief). Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          prospect_name: {
+            type: "string",
+            description: "First name of the prospect",
+          },
+          service_type: {
+            type: "string",
+            description: "What the packages are for (e.g. 'website design', 'monthly SEO', 'brand identity', 'content strategy')",
+          },
+          package_1_name: {
+            type: "string",
+            description: "Name of the entry-level package (e.g. 'Starter', 'Essential', 'Foundation')",
+          },
+          package_1_price: {
+            type: "string",
+            description: "Price of the entry package (e.g. '$800', '$500/month', 'from $1,200')",
+          },
+          package_1_includes: {
+            type: "string",
+            description: "What is included in the entry package — comma-separated or short description (e.g. '3 pages, 1 revision round, delivered in 2 weeks')",
+          },
+          package_2_name: {
+            type: "string",
+            description: "Optional: name of the mid-tier package (e.g. 'Growth', 'Professional', 'Standard')",
+          },
+          package_2_price: {
+            type: "string",
+            description: "Optional: price of the mid-tier package",
+          },
+          package_2_includes: {
+            type: "string",
+            description: "Optional: what is included in the mid-tier package",
+          },
+          package_3_name: {
+            type: "string",
+            description: "Optional: name of the premium package (e.g. 'Scale', 'Premium', 'Enterprise')",
+          },
+          package_3_price: {
+            type: "string",
+            description: "Optional: price of the premium package",
+          },
+          package_3_includes: {
+            type: "string",
+            description: "Optional: what is included in the premium package",
+          },
+          recommended_package: {
+            type: "string",
+            description: "Optional: which package to highlight as the recommended choice — use the package name (e.g. 'Growth'). Omit to present all tiers neutrally.",
+          },
+          pitch_context: {
+            type: "string",
+            description: "Optional: one sentence connecting to the prospect's stated need or context (e.g. 'you mentioned you want to launch before Q3', 'based on our call, you need something that scales with your team'). Used to personalise the opening.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["prospect_name", "service_type", "package_1_name", "package_1_price", "package_1_includes"],
       },
     },
   ],
@@ -10107,6 +10174,77 @@ I'm trying to grow my practice through word of mouth and I'd love to add a ${typ
 Completely no pressure — if timing is off or it's not something you're comfortable with, please don't give it a second thought. But if you are happy to help, I'd really appreciate it.
 
 Thank you again for the trust you placed in me during ${projectName}.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "service_package_email") {
+    const prospectName = String(args!.prospect_name);
+    const serviceType = String(args!.service_type);
+    const pkg1Name = String(args!.package_1_name);
+    const pkg1Price = String(args!.package_1_price);
+    const pkg1Includes = String(args!.package_1_includes);
+    const pkg2Name = args!.package_2_name ? String(args!.package_2_name) : null;
+    const pkg2Price = args!.package_2_price ? String(args!.package_2_price) : null;
+    const pkg2Includes = args!.package_2_includes ? String(args!.package_2_includes) : null;
+    const pkg3Name = args!.package_3_name ? String(args!.package_3_name) : null;
+    const pkg3Price = args!.package_3_price ? String(args!.package_3_price) : null;
+    const pkg3Includes = args!.package_3_includes ? String(args!.package_3_includes) : null;
+    const recommendedPackage = args!.recommended_package ? String(args!.recommended_package) : null;
+    const pitchContext = args!.pitch_context ? String(args!.pitch_context) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const packages: string[] = [];
+
+    const recommendedNote = (pkgName: string) =>
+      recommendedPackage && pkgName.toLowerCase() === recommendedPackage.toLowerCase()
+        ? " *(most popular)*"
+        : "";
+
+    packages.push(
+      `**${pkg1Name} — ${pkg1Price}**${recommendedNote(pkg1Name)}\n${pkg1Includes}`
+    );
+
+    if (pkg2Name && pkg2Price && pkg2Includes) {
+      packages.push(
+        `**${pkg2Name} — ${pkg2Price}**${recommendedNote(pkg2Name)}\n${pkg2Includes}`
+      );
+    }
+
+    if (pkg3Name && pkg3Price && pkg3Includes) {
+      packages.push(
+        `**${pkg3Name} — ${pkg3Price}**${recommendedNote(pkg3Name)}\n${pkg3Includes}`
+      );
+    }
+
+    const contextLine = pitchContext
+      ? `${pitchContext} — so I wanted to share how I typically structure my ${serviceType} work.`
+      : `I wanted to give you a clear picture of how I structure my ${serviceType} work.`;
+
+    const recommendLine = recommendedPackage
+      ? `\nFor most clients in your position, the ${recommendedPackage} tends to be the right fit — but I'm happy to tailor any of these if your scope is slightly different.\n`
+      : "";
+
+    const subject = `${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)} packages — options for you`;
+
+    const body = `Hi ${prospectName},
+
+${contextLine}
+
+Here are the three options I offer:
+
+${packages.join("\n\n")}
+${recommendLine}
+Happy to jump on a quick call to talk through which makes the most sense for where you are — or if you have questions just reply here.
 
 ${yourName}`;
 
