@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.78" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.79" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -4332,6 +4332,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["prospect_name", "service_type", "package_1_name", "package_1_price", "package_1_includes"],
+            },
+        },
+        {
+            name: "client_material_chase_email",
+            description: "Write a professional email chasing a client for overdue materials, content, or approvals needed to continue the project. Used when the client hasn't delivered what they committed to — content, feedback, access, sign-off — and the delay is blocking your work. Calibrates tone based on how overdue they are: friendly (1–5 days), firm (6–14 days), or escalation (15+ days). Makes the impact clear without blame. Distinct from project_delay_warning (when YOU are delayed), payment_reminder_email (financial), and third_party_delay_email (external vendor delay). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or brief description of the project (e.g. 'the website redesign', 'your brand identity project')",
+                    },
+                    what_is_needed: {
+                        type: "string",
+                        description: "Exactly what you're waiting for — be specific (e.g. 'the copy for the About and Services pages', 'approval on the logo concepts', 'admin access to the WordPress dashboard', 'sign-off on the revised scope document')",
+                    },
+                    original_due_date: {
+                        type: "string",
+                        description: "Optional: when you were expecting these materials (e.g. 'last Tuesday', 'June 12th', 'two weeks ago'). Including this makes the email more concrete.",
+                    },
+                    days_overdue: {
+                        type: "number",
+                        description: "Optional: how many days overdue. Used to calibrate tone — 1–5 = friendly, 6–14 = firm, 15+ = escalation. If omitted, defaults to friendly.",
+                    },
+                    impact: {
+                        type: "string",
+                        description: "Optional: what delay this is causing (e.g. 'I can't start the build phase without it', 'the launch date will slip if we don't receive this this week', 'your slot in my schedule is at risk'). Keeps the email factual rather than a complaint.",
+                    },
+                    new_deadline: {
+                        type: "string",
+                        description: "Optional: the new date you need the materials by to stay on track (e.g. 'by end of day Friday', 'by June 20th'). Giving a clear target makes it easier for the client to act.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "what_is_needed"],
             },
         },
     ],
@@ -9402,6 +9444,59 @@ ${recommendLine}
 Happy to jump on a quick call to talk through which makes the most sense for where you are — or if you have questions just reply here.
 
 ${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "client_material_chase_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const whatIsNeeded = String(args.what_is_needed);
+        const originalDueDate = args.original_due_date ? String(args.original_due_date) : null;
+        const daysOverdue = typeof args.days_overdue === "number" ? args.days_overdue : 0;
+        const impact = args.impact ? String(args.impact) : null;
+        const newDeadline = args.new_deadline ? String(args.new_deadline) : null;
+        const yourName = args.your_name ? String(args.your_name) : "Thanks";
+        const dueDateLine = originalDueDate
+            ? ` I was expecting to receive this by ${originalDueDate}.`
+            : "";
+        const impactLine = impact
+            ? `\n\nTo give you the full picture: ${impact}.`
+            : "";
+        const deadlineLine = newDeadline
+            ? `\n\nIf I could receive everything by ${newDeadline}, we can stay on track.`
+            : "";
+        let opening;
+        let tone;
+        if (daysOverdue >= 15) {
+            opening = `I need to flag that ${projectName} is now significantly delayed while I wait for materials from your side.`;
+            tone = `This is now causing a real impact on the timeline and my schedule. I'd like to resolve this quickly so we can move forward — but I'll need to hear from you by end of this week, or we'll need to have a conversation about rescheduling.`;
+        }
+        else if (daysOverdue >= 6) {
+            opening = `I'm following up on the materials I need to continue ${projectName}.`;
+            tone = `I want to make sure we stay on track — the longer this waits, the harder it is to meet our agreed deadline.`;
+        }
+        else {
+            opening = `Just a quick nudge on the materials I need to move forward with ${projectName}.`;
+            tone = `No pressure — I know things get busy. Just wanted to make sure this hadn't slipped through.`;
+        }
+        const body = `Hi ${clientName},
+
+${opening}
+
+I'm still waiting on: **${whatIsNeeded}**.${dueDateLine}${impactLine}${deadlineLine}
+
+${tone}
+
+Could you let me know when I can expect this, or flag if anything has changed on your end?
+
+${yourName}`;
+        const subject = `${projectName} — materials needed to continue`;
         return {
             content: [
                 {
