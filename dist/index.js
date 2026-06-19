@@ -4781,6 +4781,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "new_rate", "effective_date"],
             },
         },
+        {
+            name: "retainer_downgrade_response_email",
+            description: "Write a professional response when a retainer client asks to reduce their commitment — fewer hours, a lower tier, or a scaled-back scope. One of the awkward conversations freelancers avoid, but handling it well keeps the relationship intact and sometimes reverses the decision. Three routes: 'accommodate' (accept the reduction professionally, confirm the new terms cleanly — use when the client's situation is clear and fighting it would cost more than the hours lost), 'retain' (make a measured case for keeping the current commitment — summarise the value delivered, flag transition costs, offer a short-term adjustment before a permanent change), 'pause' (propose a temporary pause instead of a permanent downgrade — protects the relationship and keeps the door open for a return to full scope). Required: client_name, reduction_request (what they asked for, e.g. 'halve the monthly hours', 'drop from 20 to 10 hours/month', 'pause for 60 days'). Optional: current_terms (e.g. '20 hours/month at $3,000'), proposed_terms (the reduced version they're asking for), retainer_name (project or retainer label), route (accommodate/retain/pause — defaults to accommodate), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name",
+                    },
+                    reduction_request: {
+                        type: "string",
+                        description: "What the client asked for (e.g. 'halve the monthly hours', 'drop from 20 to 10 hours/month', 'step back to the basic tier', 'pause for 60 days')",
+                    },
+                    current_terms: {
+                        type: "string",
+                        description: "Optional: your current retainer terms (e.g. '20 hours/month at $3,000', '$2,500/month for ongoing support')",
+                    },
+                    proposed_terms: {
+                        type: "string",
+                        description: "Optional: the reduced terms they're proposing (e.g. '10 hours/month', '$1,500/month', 'ad-hoc only')",
+                    },
+                    retainer_name: {
+                        type: "string",
+                        description: "Optional: name of the retainer or ongoing engagement (e.g. 'the marketing retainer', 'our monthly support agreement')",
+                    },
+                    route: {
+                        type: "string",
+                        description: "Optional: 'accommodate' (accept the change professionally — default), 'retain' (make a case for keeping the current scope), or 'pause' (propose a temporary pause instead of a permanent reduction)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "reduction_request"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -10350,6 +10388,71 @@ If you have something coming up, or know someone who does, I'd love to hear abou
 Thanks for thinking of me.
 
 ${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "retainer_downgrade_response_email") {
+        const clientName = String(args.client_name);
+        const reductionRequest = String(args.reduction_request);
+        const currentTerms = args.current_terms ? String(args.current_terms) : null;
+        const proposedTerms = args.proposed_terms ? String(args.proposed_terms) : null;
+        const retainerName = args.retainer_name ? String(args.retainer_name) : null;
+        const route = args.route ? String(args.route) : "accommodate";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const retainerLabel = retainerName ? `the ${retainerName}` : "our retainer";
+        const currentTermsLine = currentTerms ? ` (currently ${currentTerms})` : "";
+        const proposedTermsLine = proposedTerms ? ` — ${proposedTerms}` : "";
+        let subject;
+        let body;
+        if (route === "retain") {
+            subject = `Re: ${retainerName ? `${retainerName} — ` : ""}scope change`;
+            body = `Hi ${clientName},
+
+Thanks for being upfront with me — I appreciate it.
+
+Before we make any changes to ${retainerLabel}${currentTermsLine}, I wanted to share a bit of context, in case it's useful.
+
+Over the past period, we've covered: [summary of key wins or deliverables]. Moving to ${reductionRequest}${proposedTermsLine} would mean [what gets deprioritised or slowed — be specific and honest, not dramatic]. That's fine if the business need has genuinely changed — I just want you to have the full picture before the decision is final.
+
+If it's a cash-flow issue rather than a scope one, I'm open to a short-term adjustment — say, one or two months at a reduced level — before settling on a permanent change. That way we're not locked into something that may not fit in six weeks.
+
+If you'd like to talk it through before deciding, I'm happy to set up a quick call.
+
+${yourName}`;
+        }
+        else if (route === "pause") {
+            subject = `Re: ${retainerName ? `${retainerName} — ` : ""}pausing instead of reducing`;
+            body = `Hi ${clientName},
+
+Thanks for the heads-up. I hear you on ${reductionRequest} — before we formalise a permanent change, I wanted to suggest an alternative: a temporary pause.
+
+Rather than restructuring ${retainerLabel}${currentTermsLine} to ${proposedTerms ?? "a reduced scope"}, we could pause it for [X weeks/months] and pick back up when the timing is better. The advantage: no renegotiating terms, no ramp-up cost when things settle, and the work stays continuous rather than restarting from scratch.
+
+If a pause works for you, just let me know the window and I'll hold your slot open. If you'd genuinely prefer the scaled-back arrangement on an ongoing basis, I can work with that too — I just wanted to give you both options.
+
+Let me know what makes more sense.
+
+${yourName}`;
+        }
+        else {
+            // accommodate (default)
+            subject = `Re: ${retainerName ? `${retainerName} — ` : ""}updated scope`;
+            body = `Hi ${clientName},
+
+Thanks for letting me know. Happy to adjust ${retainerLabel} to ${reductionRequest}${proposedTermsLine} — I appreciate you giving me notice rather than just going quiet.
+
+To confirm the updated arrangement: [restate the new terms clearly — hours, scope, rate, start date]. I'll update the agreement and send a revised version for your records.
+
+If things pick up and you'd like to expand again, just say the word.
+
+${yourName}`;
+        }
         return {
             content: [
                 {
