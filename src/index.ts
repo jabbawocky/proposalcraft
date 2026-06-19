@@ -4664,6 +4664,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "project_name"],
       },
     },
+    {
+      name: "scope_creep_email",
+      description:
+        "Write a professional, non-confrontational email addressing a client request that falls outside the agreed project scope. The email acknowledges the request positively, clarifies the scope boundary, and offers a change order or quote for the additional work — without apologising for sticking to the agreement. Handles one of the most common and professionally charged situations for freelancers: when a client treats 'out of scope' as optional. Required: client_name, project_name, scope_change_description. Optional: original_scope_note (what was agreed), quoted_fee (if you already have a price), timeline_impact (if extra work affects delivery), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or brief description of the project",
+          },
+          scope_change_description: {
+            type: "string",
+            description: "What the client is asking for that falls outside the original scope (e.g. 'adding a third language to the website', 'redesigning the mobile app in addition to the desktop version', 'writing product descriptions for 50 additional SKUs')",
+          },
+          original_scope_note: {
+            type: "string",
+            description: "Optional: brief reminder of what the original scope covered, for context (e.g. 'the agreed scope covers the five-page website in English only', 'the project covers the desktop web app only as outlined in the proposal'). If omitted, a generic scope boundary reference is used.",
+          },
+          quoted_fee: {
+            type: "string",
+            description: "Optional: the additional fee for the out-of-scope work if you already know it (e.g. '$450', '£800', '6 hours at my standard day rate'). If provided, the email includes the quote directly. If omitted, the email offers to send a change order.",
+          },
+          timeline_impact: {
+            type: "string",
+            description: "Optional: how the additional work would affect the current delivery timeline (e.g. 'push the delivery date by 3 days', 'require an extended deadline to the end of the month'). If omitted, no timeline impact is mentioned.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "scope_change_description"],
+      },
+    },
   ],
 }));
 
@@ -10522,6 +10561,45 @@ Now that we're getting started on ${projectName}, I wanted to share a quick note
 None of this is meant to be rigid — if something comes up and you need to reach me urgently, just say so. I wanted to put this in writing so we both have a clear baseline.
 
 Looking forward to the project.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "scope_creep_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const scopeChange = String(args!.scope_change_description);
+    const originalScope = args!.original_scope_note ? String(args!.original_scope_note) : null;
+    const quotedFee = args!.quoted_fee ? String(args!.quoted_fee) : null;
+    const timelineImpact = args!.timeline_impact ? String(args!.timeline_impact) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const scopeLine = originalScope
+      ? `Just to clarify: ${originalScope}. ${scopeChange.charAt(0).toUpperCase() + scopeChange.slice(1)} sits outside that boundary.`
+      : `${scopeChange.charAt(0).toUpperCase() + scopeChange.slice(1)} falls outside the scope we agreed for ${projectName}, so it would be treated as additional work.`;
+
+    const feeSection = quotedFee
+      ? `I'd be happy to take this on as a change order. The additional work would be ${quotedFee}.${timelineImpact ? ` It would also ${timelineImpact}.` : ""} Let me know if you'd like to proceed and I'll get it added formally.`
+      : `I'd be happy to take this on as a change order. Let me put together a quick quote for you — I'll have that across shortly.${timelineImpact ? ` Note that adding this work will ${timelineImpact}, so it may be worth factoring that into your planning.` : ""}`;
+
+    const subject = `Re: ${projectName} — scope change`;
+
+    const body = `Hi ${clientName},
+
+Thanks for flagging this. ${scopeLine}
+
+${feeSection}
+
+If you'd prefer to keep the current project on track and revisit this separately afterwards, that works too — just let me know which direction suits you best.
 
 ${yourName}`;
 
