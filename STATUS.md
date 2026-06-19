@@ -188,7 +188,8 @@ That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187,
 | rohitg00/awesome-devops-mcp-servers | #249 |
 | agenticdevops/awesome-devops-mcp | #32 |
 | win4r/Awesome-Claude-MCP-Servers | #63 |
-| DhanushNehru/awesome-mcp-servers | #29 |
+| DhanushNehru/awesome-mcp-servers | #29 ✅ MERGED |
+| eudk/awesome-ai-tools | #327 OPEN |
 | WagnerAgent/awesome-mcp-servers-devops | #48 ✅ NEW |
 
 **Blockers / needs Mat:**
