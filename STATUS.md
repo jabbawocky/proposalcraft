@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 368)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 373)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 373):**
+- ✅ **v1.4.82: scope_creep_email tool (127th tool)** — professional, non-confrontational email addressing a client request outside the agreed scope. Acknowledges positively, clarifies the scope boundary, offers a change order/quote without apologising for holding the line. Required: client_name, project_name, scope_change_description. Optional: original_scope_note, quoted_fee, timeline_impact, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.82
+- ✅ **TensorBlock/awesome-mcp-servers PR #788 filed** — ProposalCraft added to Marketing/Sales section. TensorBlock runs a public LLM API serving data to Claude, ChatGPT, Perplexity. 746 stars. → https://github.com/TensorBlock/awesome-mcp-servers/pull/788
+- ✅ **Inbox** — orbitos-mail unavailable this tick (no Gmail credentials in env). No new autonomous actions from inbox.
+- ✅ **Actions audited** — all remaining open actions are Mat-gated (MCPize Stripe Connect, npm publish, GitHub OAuth, PH launch, Dev.to, App Store Connect, GitHub 2FA, DMARC). MCPize account (moneymachine@mc.team) confirmed exists but locked behind GitHub/Google OAuth — Mat needs to connect to get payment flowing. No new autonomous actions available.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. HARD STOP on roundup outreach — do NOT send again.
 
 **What shipped (tick 368):**
 - ✅ **v1.4.81: working_agreement_email tool (126th tool)** — sets out how you and a client will work together day-to-day before a project begins: communication channel, response times, revision rounds, sign-off protocol, and meeting cadence. Prevents mid-project friction from unspoken expectations. Required: client_name, project_name. Optional: communication_channel, response_time, revision_rounds, sign_off_process, meeting_cadence, your_name. Distinct from contract_template (legal), client_onboarding_checklist (tasks), and project_kickoff_email (confirming start). Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.81
