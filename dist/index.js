@@ -4498,6 +4498,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_name", "scope_change_description"],
             },
         },
+        {
+            name: "project_status_update_email",
+            description: "Write a clear, scannable project status update email to send to a client on a regular cadence (weekly, bi-weekly, or at a milestone). Covers what was completed, what is in progress, and what is coming next — with optional sections for blockers and items needed from the client. Keeps clients informed without requiring a call. Does not count against your monthly draft limit. Required: client_name, project_name, completed. Optional: in_progress, coming_next, blockers, items_needed (what you need from the client), timeline_status (on_track / ahead / at_risk / delayed), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name or brief description of the project",
+                    },
+                    completed: {
+                        type: "string",
+                        description: "What was completed since the last update (e.g. 'Homepage design finalised and approved, About page copy written, CMS set up and configured'). Use bullet points or comma-separated items.",
+                    },
+                    in_progress: {
+                        type: "string",
+                        description: "Optional: what is currently being worked on right now (e.g. 'Services page design, setting up contact form', 'Writing the case study section'). If omitted, this section is skipped.",
+                    },
+                    coming_next: {
+                        type: "string",
+                        description: "Optional: what is planned for the next period (e.g. 'Blog template, mobile QA', 'Final round of revisions, staging deployment'). If omitted, this section is skipped.",
+                    },
+                    blockers: {
+                        type: "string",
+                        description: "Optional: anything that is blocking progress or creating risk (e.g. 'Waiting on brand guidelines from your designer', 'Server access credentials not yet received'). If omitted, this section is skipped.",
+                    },
+                    items_needed: {
+                        type: "string",
+                        description: "Optional: specific things you need from the client to keep the project moving (e.g. 'Approved copy for the Services page', 'Decision on primary CTA colour', 'Confirmation of go-live date'). If omitted, this section is skipped.",
+                    },
+                    timeline_status: {
+                        type: "string",
+                        enum: ["on_track", "ahead", "at_risk", "delayed"],
+                        description: "Optional: overall timeline status. on_track (default, status line omitted), ahead (note positive progress), at_risk (flag early without alarming), delayed (inform clearly with reason if provided in blockers). If omitted, no timeline status line is included.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "completed"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -9726,6 +9773,62 @@ Thanks for flagging this. ${scopeLine}
 ${feeSection}
 
 If you'd prefer to keep the current project on track and revisit this separately afterwards, that works too — just let me know which direction suits you best.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_status_update_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const completed = String(args.completed);
+        const inProgress = args.in_progress ? String(args.in_progress) : null;
+        const comingNext = args.coming_next ? String(args.coming_next) : null;
+        const blockers = args.blockers ? String(args.blockers) : null;
+        const itemsNeeded = args.items_needed ? String(args.items_needed) : null;
+        const timelineStatus = args.timeline_status ? String(args.timeline_status) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const timelineLines = {
+            ahead: `Timeline: Ahead of schedule — we're making good progress.`,
+            at_risk: `Timeline: At risk — flagging early so we can course-correct. See blockers below.`,
+            delayed: `Timeline: Behind schedule. ${blockers ? "See blockers below for detail." : "I'll have a revised timeline across to you shortly."}`,
+        };
+        const completedFormatted = completed
+            .split(/[,\n]/)
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .map((s) => `• ${s}`)
+            .join("\n");
+        const inProgressSection = inProgress
+            ? `\nIn progress:\n${inProgress.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).map((s) => `• ${s}`).join("\n")}`
+            : "";
+        const comingNextSection = comingNext
+            ? `\nComing next:\n${comingNext.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).map((s) => `• ${s}`).join("\n")}`
+            : "";
+        const blockersSection = blockers
+            ? `\nBlockers:\n${blockers.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).map((s) => `• ${s}`).join("\n")}`
+            : "";
+        const itemsNeededSection = itemsNeeded
+            ? `\nNeeded from you:\n${itemsNeeded.split(/[,\n]/).map((s) => s.trim()).filter(Boolean).map((s) => `• ${s}`).join("\n")}`
+            : "";
+        const timelineLine = timelineStatus && timelineLines[timelineStatus]
+            ? `\n${timelineLines[timelineStatus]}`
+            : "";
+        const subject = `${projectName} — project update`;
+        const body = `Hi ${clientName},
+
+Quick update on ${projectName}.
+
+Completed:
+${completedFormatted}${inProgressSection}${comingNextSection}${blockersSection}${itemsNeededSection}${timelineLine}
+
+Let me know if you have any questions.
 
 ${yourName}`;
         return {
