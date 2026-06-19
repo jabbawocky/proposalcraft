@@ -4907,6 +4907,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name"],
       },
     },
+    {
+      name: "availability_announcement_email",
+      description:
+        "Write a short, warm email to past clients or contacts announcing that you have upcoming availability for new project work. One of the highest-ROI freelancer marketing moves: a brief, personal note to people who already know your work often surfaces a project within days. Gets the tone right: confident, not desperate — you're sharing news, not asking for a favour. Required: availability_window (e.g. 'from July 1', 'starting mid-August', 'a couple of slots opening next month'). Optional: recipient_name (personalises the opening), services_offered (what you're available for — defaults to your usual work), project_type (narrow the ask: 'short-term projects', 'ongoing retainers', 'one-off design work'), max_projects (e.g. '1 or 2 projects' — signals scarcity without pressure), cta (what you want them to do: 'reply if you have something in mind', 'forward this to someone who might need help' — defaults to reply), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          availability_window: {
+            type: "string",
+            description: "When you'll be available (e.g. 'from July 1', 'starting mid-August', 'a couple of slots opening next month')",
+          },
+          recipient_name: {
+            type: "string",
+            description: "Optional: first name of the recipient — personalises the greeting. Omit for a generic version.",
+          },
+          services_offered: {
+            type: "string",
+            description: "Optional: what you do (e.g. 'copywriting and content strategy', 'UX design', 'backend development'). Defaults to your usual work.",
+          },
+          project_type: {
+            type: "string",
+            description: "Optional: narrow the ask (e.g. 'short-term projects', 'ongoing retainers', 'brand identity work', 'one-off builds')",
+          },
+          max_projects: {
+            type: "string",
+            description: "Optional: signals scarcity (e.g. '1 or 2 projects', 'a couple of spots', 'one retainer slot')",
+          },
+          cta: {
+            type: "string",
+            description: "Optional: what you want them to do (e.g. 'reply if you have something in mind', 'forward to anyone who might need help', 'book a quick call'). Defaults to reply.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["availability_window"],
+      },
+    },
   ],
 }));
 
@@ -11073,6 +11112,52 @@ Looking forward to speaking when the timing works.
 
 ${yourName}`;
     }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "availability_announcement_email") {
+    const availabilityWindow = String(args!.availability_window);
+    const recipientName = args!.recipient_name ? String(args!.recipient_name) : null;
+    const servicesOffered = args!.services_offered ? String(args!.services_offered) : null;
+    const projectType = args!.project_type ? String(args!.project_type) : null;
+    const maxProjects = args!.max_projects ? String(args!.max_projects) : null;
+    const cta = args!.cta ? String(args!.cta) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const greeting = recipientName ? `Hi ${recipientName},` : "Hi,";
+    const workDescription = servicesOffered
+      ? `${servicesOffered}${projectType ? ` — specifically ${projectType}` : ""}`
+      : projectType
+      ? projectType
+      : "new project work";
+    const slotsNote = maxProjects
+      ? `I have ${maxProjects} opening ${availabilityWindow}`
+      : `I have some availability opening ${availabilityWindow}`;
+    const ctaLine = cta
+      ? cta
+      : "reply if you have something in mind, or if you know someone who might — I'd appreciate the introduction";
+
+    const subject = `Available for new projects ${availabilityWindow}`;
+
+    const body = `${greeting}
+
+${slotsNote} and I'm looking to take on ${workDescription}.
+
+I wanted to reach out to you first before opening it up more broadly — you already know how I work, and I'd rather build on that than start from scratch with someone new.
+
+If you have something coming up, or know someone who does, I'd love to hear about it. Feel free to ${ctaLine}.
+
+Thanks for thinking of me.
+
+${yourName}`;
 
     return {
       content: [
