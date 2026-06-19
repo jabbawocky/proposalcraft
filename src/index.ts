@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.86" },
+  { name: "proposalcraft", version: "1.4.87" },
   { capabilities: { tools: {} } }
 );
 
@@ -4874,6 +4874,37 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name", "what_was_delivered"],
+      },
+    },
+    {
+      name: "discovery_call_no_show_email",
+      description:
+        "Write the email to a prospect who booked a discovery call and didn't show up. One of the most common and awkward freelancer situations — you cleared the time, they ghosted, and now you have to decide how to handle it. Gets the tone right: not passive-aggressive, not a pushover, not grovelling. First no-show: assumes good faith (tech issues, genuine emergency) and offers a single, low-friction reschedule. Second no-show: politely closes the door while leaving it ajar if they ever do want to proceed. Distinct from meeting_cancellation_email (you cancel), meeting_postponement_email (you postpone), and cold_pitch_follow_up (prospecting). Does not count against your monthly draft limit. Required: client_name. Optional: call_time (e.g. 'today at 2pm', 'Monday at 10am') — adds specificity, no_show_count (1 or 2 — defaults to 1 for first no-show, 2 gives the close-out version), reschedule_link (e.g. 'my Calendly link', 'cal.com/yourname' — defaults to replying to the email), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the prospect",
+          },
+          call_time: {
+            type: "string",
+            description: "Optional: when the call was scheduled (e.g. 'today at 2pm', 'Monday at 10am', 'this morning at 9')",
+          },
+          no_show_count: {
+            type: "number",
+            description: "Optional: 1 for first no-show (give benefit of the doubt, offer reschedule — default), 2 for second no-show (polite close-out)",
+          },
+          reschedule_link: {
+            type: "string",
+            description: "Optional: how to rebook (e.g. 'my Calendly link: cal.com/yourname', 'this link: calendly.com/you'). Defaults to replying to the email.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
       },
     },
   ],
@@ -10990,6 +11021,58 @@ Please review and ${approvalMethod} ${reviewDeadline}. Once I have your written 
 If anything needs adjusting before you sign off, let me know — I'd rather fix it now than have it sitting in the background after the project is officially closed.
 
 ${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "discovery_call_no_show_email") {
+    const clientName = String(args!.client_name);
+    const callTime = args!.call_time ? String(args!.call_time) : null;
+    const noShowCount = args!.no_show_count ? Number(args!.no_show_count) : 1;
+    const rescheduleLink = args!.reschedule_link ? String(args!.reschedule_link) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const callTimeRef = callTime ? ` for ${callTime}` : "";
+    const rescheduleMethod = rescheduleLink
+      ? `If you'd like to rebook, you can grab a time here: ${rescheduleLink}.`
+      : "If you'd still like to chat, just reply and we can find a new time.";
+
+    let subject: string;
+    let body: string;
+
+    if (noShowCount >= 2) {
+      subject = `Re: our call`;
+
+      body = `Hi ${clientName},
+
+I had us booked in${callTimeRef} and didn't hear from you — this is the second time we've missed each other, so I'm going to close out the booking for now.
+
+If the timing wasn't right or something changed on your end, no problem at all. If you'd like to revisit things down the track, I'm happy to reconnect — just drop me a line when you're ready.
+
+Wishing you well in the meantime.
+
+${yourName}`;
+
+    } else {
+      subject = `Missed our call`;
+
+      body = `Hi ${clientName},
+
+We had a call booked${callTimeRef} — I waited a few minutes but didn't hear from you, so I'll assume something came up.
+
+No stress — these things happen. ${rescheduleMethod}
+
+Looking forward to speaking when the timing works.
+
+${yourName}`;
+    }
 
     return {
       content: [
