@@ -4751,6 +4751,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "project_name", "completed"],
       },
     },
+    {
+      name: "change_order_email",
+      description:
+        "Write a professional change order email that formally confirms additional work a client has requested — scope, cost, and timeline impact — and asks for written approval before you begin. Keeps the engagement clean: no ambiguity, no verbal agreements that get disputed later. Distinct from scope_creep_email (which pushes back on unwanted additions) — this is for AGREED extra work. Does not count against your monthly draft limit. Required: client_name, project_name, change_description, additional_cost. Optional: additional_timeline, impact_on_existing_work, approval_method, your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or brief description of the project",
+          },
+          change_description: {
+            type: "string",
+            description: "What the additional work involves (e.g. 'Add a third landing page variant', 'Integrate a third-party booking system', 'Extend the site to include a blog section with 3 post templates')",
+          },
+          additional_cost: {
+            type: "string",
+            description: "The cost for the additional work (e.g. '$800', '$1,200 + GST', '4 hours at $150/hr')",
+          },
+          additional_timeline: {
+            type: "string",
+            description: "Optional: how much extra time is needed (e.g. '3 additional business days', '1 week', 'no change to existing deadline'). If omitted, timeline section is skipped.",
+          },
+          impact_on_existing_work: {
+            type: "string",
+            description: "Optional: any knock-on effect on the existing project scope or timeline (e.g. 'The current go-live date will shift by 3 days', 'No impact on existing deliverables'). If omitted, this section is skipped.",
+          },
+          approval_method: {
+            type: "string",
+            description: "Optional: how the client should approve (e.g. 'Reply to this email with Approved', 'Sign the attached document', 'Reply with your approval'). Defaults to 'Reply to this email with your approval' if omitted.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "change_description", "additional_cost"],
+      },
+    },
   ],
 }));
 
@@ -10715,6 +10758,50 @@ Completed:
 ${completedFormatted}${inProgressSection}${comingNextSection}${blockersSection}${itemsNeededSection}${timelineLine}
 
 Let me know if you have any questions.
+
+${yourName}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "change_order_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const changeDescription = String(args!.change_description);
+    const additionalCost = String(args!.additional_cost);
+    const additionalTimeline = args!.additional_timeline ? String(args!.additional_timeline) : null;
+    const impactOnExistingWork = args!.impact_on_existing_work ? String(args!.impact_on_existing_work) : null;
+    const approvalMethod = args!.approval_method ? String(args!.approval_method) : "Reply to this email with your approval";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const timelineSection = additionalTimeline
+      ? `\nTimeline: ${additionalTimeline}`
+      : "";
+
+    const impactSection = impactOnExistingWork
+      ? `\nImpact on current project: ${impactOnExistingWork}`
+      : "";
+
+    const subject = `Change order — ${projectName}`;
+
+    const body = `Hi ${clientName},
+
+Following on from our conversation, I've put together a change order for the additional work on ${projectName}.
+
+Change: ${changeDescription}
+
+Cost: ${additionalCost}${timelineSection}${impactSection}
+
+To keep things clean and avoid any confusion, I'd like your written sign-off before I begin. ${approvalMethod} and I'll get started.
+
+Happy to answer any questions in the meantime.
 
 ${yourName}`;
 
