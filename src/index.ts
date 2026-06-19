@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.85" },
+  { name: "proposalcraft", version: "1.4.86" },
   { capabilities: { tools: {} } }
 );
 
@@ -4835,6 +4835,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "your_quoted_price", "client_budget", "response_route"],
+      },
+    },
+    {
+      name: "deliverables_sign_off_email",
+      description:
+        "Write the email asking a client to formally sign off on completed deliverables before you close the project or send the final invoice. The email most freelancers skip — and then spend weeks chasing verbal approvals that were never properly captured. Confirms exactly what was delivered, sets a clear review window, and requests explicit written approval. Keeps the tone collaborative, not administrative. Distinct from milestone_delivered_email (mid-project delivery update), project_closure_email (final wrap-up after sign-off is received), and project_completion_email (marks the end of work). This is the bridge between 'I'm done' and 'it's officially accepted'. Does not count against your monthly draft limit. Required: client_name, project_name, what_was_delivered. Optional: review_deadline (e.g. 'by Friday 20 June', 'within 3 business days' — defaults to a 5-business-day window), next_step (what happens after sign-off, e.g. 'I'll send the final invoice', 'I'll hand over the source files', 'the project is complete' — defaults to final invoice), approval_method (e.g. 'reply to this email', 'click Approve in the shared doc', 'sign the attached form' — defaults to replying to the email), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "Name or brief description of the project",
+          },
+          what_was_delivered: {
+            type: "string",
+            description: "What you're asking them to sign off on (e.g. 'the final website design mockups — all 5 pages', 'the completed brand identity package: logo, colour palette, and typography guide', 'Phase 2: the API integration and admin dashboard')",
+          },
+          review_deadline: {
+            type: "string",
+            description: "Optional: when you need sign-off by (e.g. 'by Friday 20 June', 'within 3 business days', 'by end of next week'). Defaults to a 5-business-day window.",
+          },
+          next_step: {
+            type: "string",
+            description: "Optional: what happens immediately after sign-off (e.g. 'I'll send the final invoice', 'I'll release the source files', 'the project will be complete and I'll hand over all assets'). Defaults to sending the final invoice.",
+          },
+          approval_method: {
+            type: "string",
+            description: "Optional: how the client should approve (e.g. 'reply to this email with your approval', 'click Approve in the shared Figma file', 'sign and return the attached form'). Defaults to replying to the email.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name", "what_was_delivered"],
       },
     },
   ],
@@ -10918,6 +10957,39 @@ That said, I want to make sure this works for both of us — not just get the pr
 
 ${yourName}`;
     }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "deliverables_sign_off_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const whatWasDelivered = String(args!.what_was_delivered);
+    const reviewDeadline = args!.review_deadline ? String(args!.review_deadline) : "within 5 business days";
+    const nextStep = args!.next_step ? String(args!.next_step) : "I'll send the final invoice";
+    const approvalMethod = args!.approval_method ? String(args!.approval_method) : "reply to this email with your approval";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const subject = `${projectName} — sign-off`;
+
+    const body = `Hi ${clientName},
+
+${projectName} is complete. Here's what I'm asking you to formally sign off on:
+
+${whatWasDelivered}
+
+Please review and ${approvalMethod} ${reviewDeadline}. Once I have your written approval, ${nextStep}.
+
+If anything needs adjusting before you sign off, let me know — I'd rather fix it now than have it sitting in the background after the project is officially closed.
+
+${yourName}`;
 
     return {
       content: [
