@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 386)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 393)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 393):**
+- ✅ **v1.4.85: budget_negotiation_email tool (130th tool)** — professional email responding when a client's budget falls short of your quoted price. Three strategic routes: 'scope_reduction' (offer trimmed scope at full rate), 'hold_rate' (decline to move on price while keeping relationship warm), or 'middle_ground' (propose phased delivery, flexible payment terms, or adjusted arrangement). Required: client_name, your_quoted_price, client_budget, response_route. Optional: project_name, what_can_be_cut, middle_ground_offer, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.85
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action required). No new emails requiring reply.
+- ✅ **Actions audited** — all remaining open actions are Mat-gated (MCPize Stripe Connect, npm publish, GitHub OAuth for Glama/MCP.so/StatusCraft/Toolradar, PH launch, Dev.to, App Store Connect, GitHub 2FA). No new autonomous actions available this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 8+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative.
 
 **What shipped (tick 386):**
 - ✅ **v1.4.84: change_order_email tool (129th tool)** — professional email formally confirming additional work a client has requested — scope, cost, and timeline impact — with a written approval request before starting. Distinct from scope_creep_email (which pushes back on unwanted additions) — this handles agreed extra work cleanly. Required: client_name, project_name, change_description, additional_cost. Optional: additional_timeline, impact_on_existing_work, approval_method, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.84

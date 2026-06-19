@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.80" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.85" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -4585,6 +4585,48 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name", "change_description", "additional_cost"],
+            },
+        },
+        {
+            name: "budget_negotiation_email",
+            description: "Write a professional email responding when a client's budget falls short of your quoted price. Three strategic routes: 'scope_reduction' (offer a trimmed version of the project at your full rate), 'hold_rate' (explain why the rate stands and decline to move on price), or 'middle_ground' (propose an adjusted arrangement — phased delivery, reduced scope with option to expand, or flexible payment terms). Keeps the relationship warm regardless of outcome. Distinct from discount_request_response (flat refusal), competitor_response_email (price comparison objection), and change_order_email (agreed additions). Does not count against your monthly draft limit. Required: client_name, your_quoted_price, client_budget, response_route. Optional: project_name, what_can_be_cut, middle_ground_offer, your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    your_quoted_price: {
+                        type: "string",
+                        description: "Your original quoted price (e.g. '$5,000', '$4,800 + GST', '$3,500')",
+                    },
+                    client_budget: {
+                        type: "string",
+                        description: "The budget the client stated (e.g. '$3,000', 'around $2,500', 'under $4,000')",
+                    },
+                    response_route: {
+                        type: "string",
+                        description: "How you want to respond: 'scope_reduction' (offer reduced scope at full rate), 'hold_rate' (politely decline to move on price), or 'middle_ground' (propose a creative arrangement)",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name or brief description of the project",
+                    },
+                    what_can_be_cut: {
+                        type: "string",
+                        description: "Optional (for scope_reduction): what elements could be removed or deferred to bring the project within their budget (e.g. 'Remove the blog section and delay the email integration to phase 2', 'Reduce from 5 pages to 3 core pages')",
+                    },
+                    middle_ground_offer: {
+                        type: "string",
+                        description: "Optional (for middle_ground): the specific arrangement you're proposing (e.g. 'Phase the project over two invoices', 'Start with the homepage and booking page now, add the remaining pages next quarter', '50% upfront and 50% at 60 days')",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "your_quoted_price", "client_budget", "response_route"],
             },
         },
     ],
@@ -9911,6 +9953,70 @@ To keep things clean and avoid any confusion, I'd like your written sign-off bef
 Happy to answer any questions in the meantime.
 
 ${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "budget_negotiation_email") {
+        const clientName = String(args.client_name);
+        const quotedPrice = String(args.your_quoted_price);
+        const clientBudget = String(args.client_budget);
+        const responseRoute = String(args.response_route);
+        const projectName = args.project_name ? String(args.project_name) : "the project";
+        const whatCanBeCut = args.what_can_be_cut ? String(args.what_can_be_cut) : null;
+        const middleGroundOffer = args.middle_ground_offer ? String(args.middle_ground_offer) : null;
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const subject = `Re: ${projectName} — budget`;
+        let body;
+        if (responseRoute === "scope_reduction") {
+            const cutSection = whatCanBeCut
+                ? `\nTo bring ${projectName} within your budget, here's what I could adjust:\n\n${whatCanBeCut}\n\nThat gets us to a scope I can deliver at ${clientBudget}. The items removed can be picked up in a follow-on phase when budget allows.`
+                : `\nTo bring things within your budget, I could trim the scope — reducing the deliverables to the core essentials and deferring the rest to a phase 2. That would let you move forward now without compromising on quality for what matters most. I can put together a revised brief if you'd like to see exactly what that looks like.`;
+            body = `Hi ${clientName},
+
+Thanks for being upfront about the budget — I appreciate it.
+
+My quote for ${projectName} came to ${quotedPrice}. I understand that's above where you are at ${clientBudget}.
+
+I don't reduce my rate, but I can reduce scope.${cutSection}
+
+Let me know if you'd like me to put together a revised proposal based on a tighter scope, or if you'd prefer to revisit when the budget is available. Either way, no pressure.
+
+${yourName}`;
+        }
+        else if (responseRoute === "hold_rate") {
+            body = `Hi ${clientName},
+
+Thanks for coming back to me on this.
+
+I hear you on the budget — ${clientBudget} is a fair way from my quote of ${quotedPrice} for ${projectName}, and I want to be straight with you rather than dance around it.
+
+My rate reflects the level of work and the results I deliver. I'm not in a position to move on price, and I'd rather be honest about that now than start a project where one of us isn't fully comfortable with the arrangement.
+
+If your budget opens up down the track, I'd genuinely love to work on this with you — it's the kind of project I enjoy. In the meantime, happy to point you toward someone who might be a better fit for your current budget if that would help.
+
+No hard feelings either way.
+
+${yourName}`;
+        }
+        else {
+            // middle_ground
+            const offerSection = middleGroundOffer
+                ? `\nHere's what I'm thinking: ${middleGroundOffer}.`
+                : `\nOne option worth considering: we phase the project so you're not carrying the full cost upfront. We'd start with the highest-priority elements now, then continue once budget allows. You get momentum, I get a fair rate — and neither of us is stretched.`;
+            body = `Hi ${clientName},
+
+Thanks for being open about where you're at. ${quotedPrice} vs ${clientBudget} is a real gap, and I'd rather find a path forward than just say no.${offerSection}
+
+That said, I want to make sure this works for both of us — not just get the project started. Let me know if the above sounds workable, or if you'd like to talk through it. I'm open to a quick call if it's easier.
+
+${yourName}`;
+        }
         return {
             content: [
                 {
