@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 416)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 427)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, 360, and 415. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 427):**
+- ✅ **v1.4.90: retainer_downgrade_response_email tool (135th tool)** — professional response when a retainer client asks to reduce their commitment (hours, tier, scope). Three routes: accommodate (accept cleanly, confirm new terms), retain (make a case for keeping current scope — value summary, transition costs, short-term adjustment offer), pause (propose temporary pause instead of permanent cut — protects relationship, keeps door open). Required: client_name, reduction_request. Optional: current_terms, proposed_terms, retainer_name, route, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.90
+- ✅ **Inbox reviewed** — TEAM_MAILBOX not set, orbits-mail not in PATH. No inbox action possible.
+- ✅ **Actions audited** — all open actions remain Mat-gated (MCPize Stripe Connect ×2, npm publish StandupCraft, MCP.so GitHub OAuth, Official MCP Registry npm/GitHub). No new autonomous actions available.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 8+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
 
 **What shipped (tick 416):**
 - ✅ **v1.4.89: price_increase_email tool (134th tool)** — professional rate-increase notification for existing clients. Three scenarios: advance_notice (default heads-up, most common), retainer_renewal (updating retainer at renewal), mid_project (rate change on in-flight work — use sparingly). Required: client_name, new_rate, effective_date. Optional: current_rate (transparency), rate_type, scenario, project_name, reason, your_name. Confident, non-apologetic tone. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.89
