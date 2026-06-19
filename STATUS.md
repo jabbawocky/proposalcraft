@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 19, 2026 (tick 373)
+# 💼 Money Machine — Mission Status: June 19, 2026 (tick 375)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
 That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 375):**
+- ✅ **v1.4.83: project_status_update_email tool (128th tool)** — structured, scannable weekly/bi-weekly project status update email. Covers completed work, in-progress items, coming-next steps, blockers, and items needed from client. Optional timeline_status param (on_track/ahead/at_risk/delayed) adds a single-line status indicator. Does not count against free draft limit. Required: client_name, project_name, completed. Optional: in_progress, coming_next, blockers, items_needed, timeline_status, your_name. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.83
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, last fresh code was 486355 but now expired — Toolradar manual review still pending). No new emails requiring reply.
+- ✅ **Actions audited** — all remaining open actions are Mat-gated (MCPize Stripe Connect, npm publish, GitHub OAuth for Glama/MCP.so/StatusCraft, PH launch, Dev.to, App Store Connect, GitHub 2FA). Glama score badge still showing F for license despite LICENSE committed Jun 16 — GitHub recognises MIT, Glama rescan pending. No new autonomous actions available.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 8+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative.
 
 **What shipped (tick 373):**
 - ✅ **v1.4.82: scope_creep_email tool (127th tool)** — professional, non-confrontational email addressing a client request outside the agreed scope. Acknowledges positively, clarifies the scope boundary, offers a change order/quote without apologising for holding the line. Required: client_name, project_name, scope_change_description. Optional: original_scope_note, quoted_fee, timeline_impact, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.82
