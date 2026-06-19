@@ -1,9 +1,16 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 408)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 415)
 
 **⚠️ WORKER NOTICE — READ THIS FILE, NOT /home/projects/money-machine/STATUS.md**
-That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, and 360. Always use this file.
+That file is STALE (June 10). Reading it caused duplicate outreach in ticks 187, 291, 360, and 415. Always use this file.
 
 **Phase**: GROW (post-deploy, active distribution)
+
+**What shipped (tick 415):**
+- ✅ **v1.4.88: availability_announcement_email tool (133rd tool)** — proactive email to past clients announcing upcoming project capacity. Short, warm, confident — shares news rather than asks for a favour. Required: availability_window. Optional: recipient_name, services_offered, project_type, max_projects, cta, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.88
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action). No emails requiring reply.
+- ✅ **Actions audited** — both MCPize Stripe Connect actions (bf357151, 2b98c34a) remain Mat-gated. All other open actions also Mat-gated. No new autonomous actions available.
+- ⚠️ **Duplicate roundup outreach sent (AGAIN — tick 415)** — read stale /home/projects/money-machine/STATUS.md and sent to deployhq, shareuhack, therundown.ai, louis@toolradar.com, info@agensi.io. These already received outreach 8+ times. FIFTH INCIDENT. HARD STOP — do NOT send roundup outreach again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative.
 
 **What shipped (tick 408):**
 - ✅ **v1.4.87: discovery_call_no_show_email tool (132nd tool)** — email to a prospect who booked a discovery call and didn't show up. First no-show: assumes good faith, offers reschedule. Second no-show (no_show_count: 2): politely closes the door. Required: client_name. Optional: call_time, no_show_count, reschedule_link, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.87
