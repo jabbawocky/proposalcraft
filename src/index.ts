@@ -4946,6 +4946,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["availability_window"],
       },
     },
+    {
+      name: "price_increase_email",
+      description:
+        "Write a confident, non-apologetic email notifying existing clients of a rate increase. One of the hardest emails freelancers avoid writing — and one of the most important. Gets the tone right: you're growing, not gouging. Three scenarios: 'advance_notice' (standard heads-up before the new rate kicks in — most common), 'retainer_renewal' (updating a retainer rate at renewal), 'mid_project' (rare: rate increase affecting an in-flight project — requires explicit justification). Required: client_name, new_rate, effective_date. Optional: current_rate (including it shows transparency), rate_type (hourly/daily/project — defaults to 'rate'), scenario (advance_notice/retainer_renewal/mid_project — defaults to advance_notice), project_name (for mid_project or retainer context), reason (brief, honest note on why: 'increased demand', 'cost of living', 'expanded service offering' — keep it to one line; omit if you'd rather not justify), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client's first name",
+          },
+          new_rate: {
+            type: "string",
+            description: "Your new rate (e.g. '$150/hr', '$1,200/day', '$5,500 project')",
+          },
+          effective_date: {
+            type: "string",
+            description: "When the new rate takes effect (e.g. 'July 1', 'from our next project', 'at your next renewal')",
+          },
+          current_rate: {
+            type: "string",
+            description: "Optional: your current rate — showing the before/after adds transparency (e.g. '$120/hr', '$950/day')",
+          },
+          rate_type: {
+            type: "string",
+            description: "Optional: 'hourly', 'daily', or 'project' — used to frame the language naturally. Defaults to a neutral 'rate'.",
+          },
+          scenario: {
+            type: "string",
+            description: "Optional: 'advance_notice' (default — standard heads-up), 'retainer_renewal' (updating a retainer at renewal), or 'mid_project' (rate change affecting an ongoing engagement — use only when unavoidable, and always include a reason)",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: project or retainer name — useful for retainer_renewal or mid_project scenarios",
+          },
+          reason: {
+            type: "string",
+            description: "Optional: one-line reason (e.g. 'increased demand for my services', 'cost of living increases', 'I've expanded what I offer'). Keep it brief. Omit if you'd prefer not to justify the increase.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "new_rate", "effective_date"],
+      },
+    },
   ],
 }));
 
@@ -11109,6 +11156,80 @@ We had a call booked${callTimeRef} — I waited a few minutes but didn't hear fr
 No stress — these things happen. ${rescheduleMethod}
 
 Looking forward to speaking when the timing works.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "price_increase_email") {
+    const clientName = String(args!.client_name);
+    const newRate = String(args!.new_rate);
+    const effectiveDate = String(args!.effective_date);
+    const currentRate = args!.current_rate ? String(args!.current_rate) : null;
+    const rateType = args!.rate_type ? String(args!.rate_type) : null;
+    const scenario = args!.scenario ? String(args!.scenario) : "advance_notice";
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const reason = args!.reason ? String(args!.reason) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const rateLabel = rateType === "hourly" ? "hourly rate" : rateType === "daily" ? "day rate" : rateType === "project" ? "project rate" : "rate";
+    const rateContext = currentRate
+      ? `from ${currentRate} to ${newRate}`
+      : `to ${newRate}`;
+    const reasonLine = reason ? `\n\nThis reflects ${reason}.` : "";
+    const projectRef = projectName ? ` for ${projectName}` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (scenario === "retainer_renewal") {
+      subject = `Updated ${rateLabel} — ${projectName ?? "retainer renewal"}`;
+
+      body = `Hi ${clientName},
+
+As we head into the next period${projectRef}, I wanted to give you advance notice that my ${rateLabel} will be moving ${rateContext} from ${effectiveDate}.${reasonLine}
+
+I've genuinely enjoyed working together and I'd like to continue — I just want to make sure we're on the same page before the next cycle starts. If you'd like to discuss what that looks like going forward, I'm happy to have a quick call.
+
+Let me know either way.
+
+${yourName}`;
+
+    } else if (scenario === "mid_project") {
+      subject = `Rate update — ${projectName ?? "our current project"}`;
+
+      body = `Hi ${clientName},
+
+I want to be upfront with you about something: I need to update my ${rateLabel} to ${newRate} effective ${effectiveDate}, including for the remaining work on ${projectName ?? "our current project"}.${reasonLine}
+
+I know this isn't ideal timing and I wouldn't raise it mid-project without good reason. Work completed to date stays billed at the existing rate — the new rate applies only from ${effectiveDate} forward.
+
+If you'd like to talk through it, I'm available for a call this week. I want to finish the project well and I'd rather have this conversation now than have it create friction later.
+
+${yourName}`;
+
+    } else {
+      // advance_notice (default)
+      subject = `Updated ${rateLabel} from ${effectiveDate}`;
+
+      body = `Hi ${clientName},
+
+I wanted to give you a heads-up that my ${rateLabel} is increasing ${rateContext}, effective ${effectiveDate}.${reasonLine}
+
+Any work booked and agreed before that date stays at the current rate. Going forward from ${effectiveDate}, new projects and engagements will be at ${newRate}.
+
+I've really valued working with you and hope we'll continue — just wanted to make sure you had plenty of notice to plan ahead.
+
+If you have anything in mind before the change kicks in, now's a good time to lock it in.
 
 ${yourName}`;
     }
