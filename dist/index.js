@@ -4956,6 +4956,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "scope_item"],
             },
         },
+        {
+            name: "contract_renewal_email",
+            description: "Write a professional contract or retainer renewal email to send before an engagement ends. Most freelancers either ignore the end date and get caught off-guard when the client doesn't re-book, or wait until it's over before asking — both lose business. This email opens the renewal conversation at the right moment: references the work done, proposes continuing on the same or updated terms, and makes it easy for the client to say yes. Two routes: same_terms (renew at the same rate and scope — the default) and revised (propose a rate increase or scope change). Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    contract_type: {
+                        type: "string",
+                        description: "The type of engagement being renewed (e.g. 'monthly retainer', 'quarterly contract', 'six-month engagement', 'annual support agreement')",
+                    },
+                    end_date: {
+                        type: "string",
+                        description: "Optional: when the current contract ends — makes the ask feel timely rather than random (e.g. 'end of June', 'July 31', 'in two weeks')",
+                    },
+                    work_summary: {
+                        type: "string",
+                        description: "Optional: one-line summary of what you've delivered — reminds the client of value before the ask (e.g. 'the rebrand and new website', 'four months of content strategy', 'the platform migration'). If omitted, the email references the engagement generically.",
+                    },
+                    current_rate: {
+                        type: "string",
+                        description: "Optional (used with route=revised): the current rate or scope, so the client understands what is changing (e.g. '$3,000/month', '10 hours/week', 'two blog posts per month')",
+                    },
+                    new_rate: {
+                        type: "string",
+                        description: "Optional (used with route=revised): the proposed new rate or scope (e.g. '$3,500/month', '15 hours/week'). If omitted with route=revised, the email proposes discussing updated terms rather than naming a number.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["same_terms", "revised"],
+                        description: "same_terms: propose renewing on the same rate and scope (default). revised: introduce a rate increase or scope change.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "contract_type"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -10768,6 +10811,59 @@ ${scopeItem} falls outside ${projectLabel} — the agreed scope covers ${scopeLa
 That said, I'm happy to take it on as an addition. ${costLine}
 
 Let me know if you'd like to proceed and I'll get it confirmed.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "contract_renewal_email") {
+        const clientName = String(args.client_name);
+        const contractType = String(args.contract_type);
+        const endDate = args.end_date ? String(args.end_date) : null;
+        const workSummary = args.work_summary ? String(args.work_summary) : null;
+        const currentRate = args.current_rate ? String(args.current_rate) : null;
+        const newRate = args.new_rate ? String(args.new_rate) : null;
+        const route = args.route ? String(args.route) : "same_terms";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const timingLine = endDate
+            ? `Our current ${contractType} wraps up ${endDate}, and I wanted to reach out before then rather than after.`
+            : `Our current ${contractType} is coming up to its end, and I wanted to reach out before then rather than after.`;
+        const workLine = workSummary
+            ? `It's been a good run — ${workSummary} — and I'd like to keep the momentum going.`
+            : `It's been a good run and I'd like to keep the momentum going.`;
+        let body;
+        const subject = `Renewing our ${contractType}`;
+        if (route === "revised") {
+            const rateChange = currentRate && newRate
+                ? `I'd propose moving to ${newRate} (up from ${currentRate}) to reflect the scope of what we're doing.`
+                : newRate
+                    ? `I'd propose ${newRate} for the next term.`
+                    : `I'd like to discuss updated terms for the next period — happy to jump on a quick call to work through the details.`;
+            body = `Hi ${clientName},
+
+${timingLine} ${workLine}
+
+I'd love to renew if you're happy with how things have been going. ${rateChange}
+
+Let me know if you'd like to continue — I can put together the paperwork as soon as you give the nod.
+
+${yourName}`;
+        }
+        else {
+            body = `Hi ${clientName},
+
+${timingLine} ${workLine}
+
+I'd love to renew on the same terms if you're happy with how things have been going. Happy to keep the arrangement exactly as it is.
+
+Just let me know and I'll get the paperwork sorted.
 
 ${yourName}`;
         }
