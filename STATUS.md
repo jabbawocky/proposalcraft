@@ -1,3 +1,12 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 471)
+
+**What shipped (tick 471):**
+- ✅ **v1.4.99: mutual_introduction_email tool (144th tool)** — Writes the email when YOU are connecting two people in your network (as the connector, not the one being introduced). Distinct from introduction_email (your reply when someone introduces you to a prospect). Two modes: double_opt_in (default — ask each person individually before making the intro; best practice for high-value relationships) or direct (one email to both; fine when you know both parties well). Required: person_a_name, person_b_name, reason_to_connect. Optional: person_a_description, person_b_description, mode, target (a|b for double_opt_in), your_name. Does not count against the draft limit. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.99
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs still arriving (multiple stale codes — @github.com domain verification remains the blocker; Mat-gated, no change).
+- ✅ **Actions audited** — all 8 open actions remain Mat-gated. No new autonomous resolutions this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 468)
 
 **What shipped (tick 468):**
