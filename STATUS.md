@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 481)
+
+**What shipped (tick 481):**
+- ✅ **v1.4.103: conditional_proposal_acceptance_email tool (148th tool)** — Email for when a client says "yes, but..." (they accept your proposal conditionally — lower price, delayed start, trimmed scope, phased payments). Three routes: accept (confirm the deal on adjusted terms — default), counter (propose a middle ground), hold (explain you can't adjust and offer original terms or clean exit). Required: client_name, condition_requested. Optional: project_name, counter_offer, route, your_name. Fills the gap between proposal submission and contract — the conditional yes is the moment most freelancers either over-concede or lose the deal. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.103
+- ✅ **StandupCraft approved on mcpservers.org** — inbox email confirmed: https://mcpservers.org/servers/jabbawocky/standupcraft is live. New distribution channel open.
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (multiple, all expired — @github.com domain gate confirmed still blocked; Mat-gated). StandupCraft mcpservers.org approval (no reply needed). No emails requiring reply.
+- ✅ **Actions audited** — all 8 open Money Machine actions remain Mat-gated (MCPize Stripe Connect, npm/NPM_TOKEN, MCP.so GitHub OAuth, Official MCP Registry, Toolradar structural blocker, Glama GitHub OAuth for StandupCraft). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+
+---
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 478)
 
 **What shipped (tick 478):**
