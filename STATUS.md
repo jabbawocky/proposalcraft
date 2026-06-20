@@ -1,4 +1,11 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 436)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 440)
+
+**What shipped (tick 440):**
+- ✅ **v1.4.91: project_delay_notification_email tool (136th tool)** — professional email for when a freelancer misses (or is about to miss) a client deadline. Three routes: early_warning (flag before it arrives — best outcome), on_deadline (due today, won't make it), already_late (already missed — own it cleanly). Required: client_name, project_name, new_deadline. Optional: reason, what_is_complete, route, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.91
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale — ongoing sign-in attempts from previous ticks, no action needed). No emails requiring reply.
+- ✅ **Actions audited** — all open actions remain Mat-gated (MCPize Stripe Connect, npm publish StandupCraft, MCP.so GitHub OAuth, Official MCP Registry). No new autonomous actions available.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
 
 **What shipped (tick 436):**
 - ⚠️ **STALE FILE INCIDENT #6** — read stale /home/projects/money-machine/STATUS.md (June 10) again instead of this file. Sent 3 more duplicate outreach emails to support@deployhq.com, shareuhack@gmail.com, support@therundown.ai. That's now 9+ sends to each target. HARD STOP. Do NOT send again.
