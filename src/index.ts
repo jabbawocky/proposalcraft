@@ -5386,6 +5386,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["person_a_name", "person_b_name", "reason_to_connect"],
       },
     },
+    {
+      name: "re_engagement_email",
+      description:
+        "Write the email you send to a past client you haven't worked with in a while — to reopen the relationship, explore new work, or simply stay on their radar. Distinct from cold_pitch (these people already know and trust you — the tone is warm, not selling), referral_request (you're not asking for a name, you're reopening your own relationship), and testimonial_request (you're not asking for a review). Three routes: check_in (low-pressure — catch up, mention what you've been up to, no explicit ask; best for high-value relationships you don't want to pressure), new_service (flag a specific new offering that's relevant to what you did together; works when you have something concrete to offer), availability (you're available and thought of them first; works when you ended on a strong note and timing is the only variable). Required: client_name, last_project (a brief description of what you worked on together — keeps the email from feeling generic). Optional: time_since (how long it's been — e.g. '6 months', 'last year', 'a while'; omit and the copy stays vague), what_you_did (a specific outcome or result from the last project — adds credibility), new_service_name (for new_service route — the specific offering to highlight), new_service_relevance (for new_service route — why it's relevant to this client), route ('check_in' | 'new_service' | 'availability' — default check_in), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name of the past client",
+          },
+          last_project: {
+            type: "string",
+            description: "Brief description of what you worked on together — e.g. 'the brand refresh', 'your Q3 campaign', 'the e-commerce migration'. Keeps the email specific and personal.",
+          },
+          time_since: {
+            type: "string",
+            description: "Optional: how long it's been since you last worked together — e.g. '6 months', 'about a year', 'a while'. Omit to keep it vague.",
+          },
+          what_you_did: {
+            type: "string",
+            description: "Optional: a specific outcome or result from the last project — e.g. 'the site we built is still converting well', 'the campaign hit 140% of target'. Adds credibility without bragging.",
+          },
+          new_service_name: {
+            type: "string",
+            description: "For new_service route only: the specific new offering you want to flag — e.g. 'a new SEO audit package', 'a monthly retainer model', 'video content production'.",
+          },
+          new_service_relevance: {
+            type: "string",
+            description: "For new_service route only: why this new service is relevant to this particular client — e.g. 'given the growth you were seeing with organic', 'now that you've launched the new product line'.",
+          },
+          route: {
+            type: "string",
+            enum: ["check_in", "new_service", "availability"],
+            description: "check_in (default): warm catch-up, no explicit ask — best for high-value relationships. new_service: flag a specific new offering that's relevant to what you did together. availability: you're available and they're your first call — works when you ended on a strong note and timing is the variable.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "last_project"],
+      },
+    },
   ],
 }));
 
@@ -12311,6 +12355,78 @@ Quick one — I've been meaning to connect you with ${otherName}${otherDescLine}
 ${reasonToConnect}.
 
 Would you be open to an introduction? I'll only make it if you're keen — happy to share a bit more context first if that helps.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "re_engagement_email") {
+    const clientName = String(args!.client_name);
+    const lastProject = String(args!.last_project);
+    const timeSince = args!.time_since ? String(args!.time_since) : null;
+    const whatYouDid = args!.what_you_did ? String(args!.what_you_did) : null;
+    const newServiceName = args!.new_service_name ? String(args!.new_service_name) : null;
+    const newServiceRelevance = args!.new_service_relevance ? String(args!.new_service_relevance) : null;
+    const route = args!.route ? String(args!.route) : "check_in";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const timeLine = timeSince ? `It's been ${timeSince} since we wrapped up ${lastProject}` : `It's been a while since we finished ${lastProject}`;
+    const resultLine = whatYouDid ? ` — ${whatYouDid}` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "new_service") {
+      const serviceName = newServiceName || "something new";
+      const relevanceLine = newServiceRelevance
+        ? `I thought of you specifically — ${newServiceRelevance}.`
+        : `Given what we worked on together, I thought it might be relevant for you.`;
+
+      subject = `Checking in — and something that might be useful`;
+
+      body = `Hi ${clientName},
+
+${timeLine}${resultLine}, and I've been meaning to reach out.
+
+I've recently added ${serviceName} to what I offer. ${relevanceLine}
+
+Worth a quick conversation? I'd love to catch up and see if there's a fit.
+
+${yourName}`;
+
+    } else if (route === "availability") {
+      subject = `Available again — thought of you first`;
+
+      body = `Hi ${clientName},
+
+${timeLine}${resultLine}, and I wanted to reach out before I fill up my schedule.
+
+I have availability opening up and you were my first call — the work we did together on ${lastProject} is exactly the kind of thing I'd like to do more of.
+
+If the timing's right, I'd love to reconnect. Even a quick call to catch up would be great.
+
+${yourName}`;
+
+    } else {
+      // check_in
+      subject = `Checking in`;
+
+      body = `Hi ${clientName},
+
+${timeLine}${resultLine} — time flies.
+
+I've been heads-down on some interesting projects and wanted to reach out to people I've genuinely enjoyed working with. No agenda — just wanted to say hello and see how things are going on your end.
+
+If there's ever anything I can help with, I'd love to reconnect.
 
 ${yourName}`;
     }
