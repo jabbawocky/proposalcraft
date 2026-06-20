@@ -1,4 +1,11 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 443)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 447)
+
+**What shipped (tick 447):**
+- ✅ **v1.4.93: client_reference_request_email tool (138th tool)** — Ask a trusted past client to be a named reference for a specific prospect (someone a prospect can email/call directly during due diligence). Distinct from testimonial_request (written quote), recommendation_request_email (LinkedIn), and referral_request (warm intro). Required: client_name, project_name, prospect_type. Optional: prospect_name, time_commitment, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.93
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action needed).
+- ✅ **Actions audited** — all open actions remain Mat-gated. StandupCraft PR #8368 on punkpeye still OPEN. MCPize Stripe Connect still needed for payouts.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
 
 **What shipped (tick 443):**
 - ✅ **v1.4.92: linkedin_connection_request tool (137th tool)** — LinkedIn connection request message generator (max 300 chars). Hook-first, no pitch — names a specific reason to connect. Fills a gap none of the email tools cover; LinkedIn is a primary prospecting channel for the ICP. Required: reason_to_connect. Optional: recipient_name, your_service, your_name. Does not count against free draft limit. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.92
