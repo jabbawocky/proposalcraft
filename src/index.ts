@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.91" },
+  { name: "proposalcraft", version: "1.4.92" },
   { capabilities: { tools: {} } }
 );
 
@@ -5069,6 +5069,33 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "project_name", "new_deadline"],
+      },
+    },
+    {
+      name: "linkedin_connection_request",
+      description:
+        "Write a LinkedIn connection request message (max 300 characters) to a potential client or collaborator. The best connection requests are specific, low-pressure, and name a real reason to connect — not a pitch. Bad ones read like a cold email jammed into 280 characters. This tool keeps it human: one genuine hook, no fluff. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          recipient_name: {
+            type: "string",
+            description: "Optional: their first name. Personalises the opening line.",
+          },
+          reason_to_connect: {
+            type: "string",
+            description: "The specific, genuine reason you're connecting — e.g. 'I saw your post about pricing for freelance designers', 'we're both in the Freelance Finance community', 'I noticed you're hiring for a UX role and I specialise in that area', 'I read your case study on rebranding [Company]'. The more specific, the better.",
+          },
+          your_service: {
+            type: "string",
+            description: "Optional: what you do, in 5 words or fewer — e.g. 'UX designer for SaaS', 'copywriter for B2B tech', 'brand strategist'. Only include if directly relevant to the reason you're connecting.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name, if you want it in the message.",
+          },
+        },
+        required: ["reason_to_connect"],
       },
     },
   ],
@@ -11502,6 +11529,42 @@ ${yourName}`;
         {
           type: "text",
           text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "linkedin_connection_request") {
+    const recipientName = args!.recipient_name ? String(args!.recipient_name) : null;
+    const reasonToConnect = String(args!.reason_to_connect);
+    const yourService = args!.your_service ? String(args!.your_service) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : null;
+
+    const openingLine = recipientName ? `Opening: address them by first name — "Hi ${recipientName},"` : "Opening: no name — start with a direct hook.";
+    const serviceLine = yourService ? `Your service: ${yourService} — include this only if it's directly relevant to the reason. If it feels salesy, leave it out.` : "Your service: not provided — do not mention what you do unless the hook makes it unavoidable.";
+    const nameLine = yourName ? `Sign your name: ${yourName}.` : "No name — just the message.";
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Write a LinkedIn connection request message. Hard limit: 300 characters including spaces.
+
+Context:
+- ${openingLine}
+- Reason to connect: ${reasonToConnect}
+- ${serviceLine}
+- ${nameLine}
+
+Rules:
+- One specific, genuine hook — name what caught your attention.
+- No pitch. The goal is the connection, not the sale.
+- No "I came across your profile" — too generic. Use the actual reason.
+- No "I'd love to connect" — weak closer. End with something that makes them curious or nods to a shared thing.
+- Under 300 characters total. If it's running long, cut the service line first, then trim the hook.
+- Friendly but not sycophantic. Like a message from a real person, not a template.
+
+Write the message only — no explanation, no word count, no alternatives.`,
         },
       ],
     };
