@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.87" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.91" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -4817,6 +4817,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "reduction_request"],
+            },
+        },
+        {
+            name: "project_delay_notification_email",
+            description: "Write a professional email notifying a client that a project deadline will be missed. The hardest email most freelancers avoid sending — but sending it early, clearly, and without over-apologising is exactly what separates pros from amateurs. Three routes: 'early_warning' (you can see the deadline is at risk before it arrives — best time to raise it, gives the client maximum flexibility), 'on_deadline' (it's the due date and it won't be ready — lead with the new date, short explanation), 'already_late' (you've already missed it — own it, new date, no excuses). Required: client_name, project_name, new_deadline (the revised date you're committing to). Optional: reason (brief, factual — not a list of excuses), what_is_complete (how much is done, reassures the client progress is real), route (early_warning/on_deadline/already_late — defaults to on_deadline), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Name of the project or deliverable (e.g. 'the website redesign', 'the brand guidelines', 'your mobile app')",
+                    },
+                    new_deadline: {
+                        type: "string",
+                        description: "The revised delivery date you're committing to (e.g. 'Friday 27 June', 'end of next week', 'Monday 30 June')",
+                    },
+                    reason: {
+                        type: "string",
+                        description: "Optional: brief, factual reason for the delay (e.g. 'a technical issue took longer than expected to resolve', 'I underestimated the scope of the revisions'). Keep it one sentence — don't over-explain.",
+                    },
+                    what_is_complete: {
+                        type: "string",
+                        description: "Optional: what is already done, to reassure the client progress is real (e.g. 'The structure and copy are finished — I'm finalising the visual polish', '80% of the build is complete')",
+                    },
+                    route: {
+                        type: "string",
+                        description: "Optional: 'early_warning' (flagging a risk before the deadline arrives — best outcome), 'on_deadline' (the day it was due and it's not ready — default), or 'already_late' (you've already missed it — own it cleanly)",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "new_deadline"],
             },
         },
     ],
@@ -10450,6 +10488,64 @@ Thanks for letting me know. Happy to adjust ${retainerLabel} to ${reductionReque
 To confirm the updated arrangement: [restate the new terms clearly — hours, scope, rate, start date]. I'll update the agreement and send a revised version for your records.
 
 If things pick up and you'd like to expand again, just say the word.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_delay_notification_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const newDeadline = String(args.new_deadline);
+        const reason = args.reason ? String(args.reason) : null;
+        const whatIsComplete = args.what_is_complete ? String(args.what_is_complete) : null;
+        const route = args.route ? String(args.route) : "on_deadline";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const reasonLine = reason ? `\n\n${reason}.` : "";
+        const progressLine = whatIsComplete ? `\n\n${whatIsComplete}.` : "";
+        let subject;
+        let body;
+        if (route === "early_warning") {
+            subject = `${projectName} — heads up on the timeline`;
+            body = `Hi ${clientName},
+
+I want to flag something before it becomes a problem: I can see that ${projectName} isn't going to land on the original date.${reasonLine}${progressLine}
+
+My revised date is ${newDeadline}. I wanted to give you as much notice as possible so you can plan around it.
+
+If this creates a knock-on issue for you, let me know and we'll work out the best path forward.
+
+${yourName}`;
+        }
+        else if (route === "already_late") {
+            subject = `${projectName} — update and new delivery date`;
+            body = `Hi ${clientName},
+
+I owe you an update on ${projectName}. I've missed the deadline, and I want to be straight with you about it.${reasonLine}${progressLine}
+
+I'm committing to ${newDeadline} as the new delivery date. I'll send it the moment it's ready and won't let this slip again.
+
+I'm sorry for the delay.
+
+${yourName}`;
+        }
+        else {
+            // on_deadline (default)
+            subject = `${projectName} — revised delivery date`;
+            body = `Hi ${clientName},
+
+I need to let you know that ${projectName} won't be ready today as planned.${reasonLine}${progressLine}
+
+I'll have it to you by ${newDeadline}. I'll send it across as soon as it's done.
+
+Sorry for the disruption — I wanted to tell you straight away rather than leave you waiting.
 
 ${yourName}`;
         }
