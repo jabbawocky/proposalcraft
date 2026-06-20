@@ -1,4 +1,11 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 440)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 443)
+
+**What shipped (tick 443):**
+- ✅ **v1.4.92: linkedin_connection_request tool (137th tool)** — LinkedIn connection request message generator (max 300 chars). Hook-first, no pitch — names a specific reason to connect. Fills a gap none of the email tools cover; LinkedIn is a primary prospecting channel for the ICP. Required: reason_to_connect. Optional: recipient_name, your_service, your_name. Does not count against free draft limit. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.92
+- ✅ **MCPize listing confirmed live** — `https://mcpize.com/mcp/proposalcraft-2` shows Pro pricing ($19/mo), "Get ProposalCraft Pro →" CTA works (leads to MCPize signup → checkout). PRO_URL in source already points to this listing. Revenue flow is OPEN — subscribers can pay via MCPize. Payout to Mat still needs Stripe Connect in the MCPize publisher dashboard.
+- ✅ **ProposalCraft on punkpeye/awesome-mcp-servers confirmed MERGED** — PR #8192 merged June 18. StandupCraft PR #8368 OPEN there (has-glama, valid-name, has-emoji labels — likely to merge).
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action).
+- ✅ **Actions audited** — see open actions below.
 
 **What shipped (tick 440):**
 - ✅ **v1.4.91: project_delay_notification_email tool (136th tool)** — professional email for when a freelancer misses (or is about to miss) a client deadline. Three routes: early_warning (flag before it arrives — best outcome), on_deadline (due today, won't make it), already_late (already missed — own it cleanly). Required: client_name, project_name, new_deadline. Optional: reason, what_is_complete, route, your_name. Does not count against free draft limit. Pushed to main + dist. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.91
