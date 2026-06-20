@@ -5207,6 +5207,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "last_project"],
             },
         },
+        {
+            name: "price_objection_response_email",
+            description: "Write the email you send when a client pushes back on your price — 'can you do it cheaper?', 'we only have X budget', 'that's more than we expected'. Distinct from discount_request_response (which handles a specific ask for a discount — this covers any form of price objection, including vague pushback, sticker shock, and budget gaps) and budget_negotiation_email (which opens a negotiation — this responds to one already in progress). Three routes: hold_rate (defend your rate and the value behind it without apologising — default; works when you're confident in your price and the client is worth keeping on your terms), alternative (offer a reduced scope or phased approach that fits their budget — works when you want the work and can genuinely deliver something smaller), walk_away (decline clearly and warmly — works when the budget gap is too large or the engagement wouldn't be worthwhile at their number). Required: client_name, objection_summary (what they said — e.g. 'said the rate is too high', 'mentioned they only have $2k', 'asked if we can do it for less'). Optional: your_rate (your quoted rate or total — e.g. '$150/hr', '$4,500 fixed'; helps make the hold_rate response specific), their_budget (what they said they have — e.g. '$2,000', 'under $3k'), project_name, alternative_scope (for alternative route — the specific smaller version you'd offer, e.g. 'strategy and wireframes only, no build', 'phase 1 homepage only'), route ('hold_rate' | 'alternative' | 'walk_away' — default hold_rate), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    objection_summary: {
+                        type: "string",
+                        description: "What they said — e.g. 'said the rate is too high', 'mentioned they only have $2k', 'asked if we can do it for less'. Keeps the response specific and grounded.",
+                    },
+                    your_rate: {
+                        type: "string",
+                        description: "Optional: your quoted rate or total — e.g. '$150/hr', '$4,500 fixed'. Helps the hold_rate response name the number directly rather than referring to it vaguely.",
+                    },
+                    their_budget: {
+                        type: "string",
+                        description: "Optional: what they said they have — e.g. '$2,000', 'under $3k'. Used in alternative and walk_away routes to acknowledge the gap without making the client feel judged.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name or short description — e.g. 'the brand identity project', 'your website redesign'. Adds context to the email.",
+                    },
+                    alternative_scope: {
+                        type: "string",
+                        description: "For alternative route only: the specific smaller version you'd offer — e.g. 'strategy and wireframes only, no build', 'phase 1: homepage and contact page only', 'a 5-page site instead of 10'. Be concrete; vague alternatives feel evasive.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["hold_rate", "alternative", "walk_away"],
+                        description: "hold_rate (default): defend your price and the value behind it — no apology, no discount. alternative: offer a genuinely smaller scope at their budget — only use when you can actually deliver something worthwhile at that number. walk_away: decline graciously — use when the gap is too large or the engagement wouldn't be worth it at their number.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "objection_summary"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -11398,6 +11441,73 @@ ${timeLine}${resultLine} — time flies.
 I've been heads-down on some interesting projects and wanted to reach out to people I've genuinely enjoyed working with. No agenda — just wanted to say hello and see how things are going on your end.
 
 If there's ever anything I can help with, I'd love to reconnect.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "price_objection_response_email") {
+        const clientName = String(args.client_name);
+        const objectionSummary = String(args.objection_summary);
+        const yourRate = args.your_rate ? String(args.your_rate) : null;
+        const theirBudget = args.their_budget ? String(args.their_budget) : null;
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const alternativeScope = args.alternative_scope ? String(args.alternative_scope) : null;
+        const route = args.route ? String(args.route) : "hold_rate";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const rateLine = yourRate ? ` at ${yourRate}` : "";
+        const budgetLine = theirBudget ? ` at ${theirBudget}` : " at a lower number";
+        let subject;
+        let body;
+        if (route === "alternative") {
+            const altScope = alternativeScope || "a reduced scope that fits your budget";
+            subject = `Re: Budget — an alternative approach`;
+            body = `Hi ${clientName},
+
+Thanks for being upfront about the budget${theirBudget ? ` — ${theirBudget}` : ""}. I appreciate you saying so rather than just going quiet.
+
+Here's what I can put together${budgetLine}: ${altScope}.
+
+That gets you the core of what you need${projectRef ? ` on ${projectName}` : ""} without the full investment. We can always expand in a future phase once you've seen the results.
+
+If that sounds like a fit, I'm happy to put together a revised scope. Just let me know.
+
+${yourName}`;
+        }
+        else if (route === "walk_away") {
+            subject = `Re: Budget`;
+            body = `Hi ${clientName},
+
+Thanks for being straight with me. I've thought about it and${theirBudget ? ` at ${theirBudget}` : " at that number"} I wouldn't be able to give you the quality of work${projectRef} that I'd want to put my name on — and that wouldn't be fair to you.
+
+I'd rather be honest about that now than cut corners or resent the project halfway through.
+
+If your budget changes down the track, I'd genuinely like to work together — the project is a good fit. And if it's helpful, I'm happy to suggest someone who might be a better match for where you're at right now.
+
+Wishing you the best with it.
+
+${yourName}`;
+        }
+        else {
+            // hold_rate
+            subject = `Re: Pricing`;
+            body = `Hi ${clientName},
+
+Thanks for coming back to me${projectRef ? ` on ${projectName}` : ""}.
+
+I understand the rate${rateLine} is more than you were expecting. I've thought about it, and I'm not in a position to reduce it — not because I'm not flexible as a person, but because the rate reflects what it actually takes to do this work well. Cutting it would mean cutting somewhere in the delivery, and I don't want to do that to you.
+
+What I can tell you is that you'd be getting someone who's done this before, cares about the outcome, and won't disappear when things get complicated. That's what the investment covers.
+
+If it's a timing thing rather than a budget thing, I'm happy to discuss a payment schedule. Otherwise, I completely understand if it's not the right fit right now — no hard feelings at all.
 
 ${yourName}`;
         }
