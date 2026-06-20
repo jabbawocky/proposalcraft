@@ -5514,6 +5514,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "original_estimate", "overrun_reason"],
       },
     },
+    {
+      name: "conditional_proposal_acceptance_email",
+      description:
+        "Write the email responding when a client says 'yes, but...' — they want to proceed with your proposal but are asking for a change: a lower price, a trimmed scope, a later start, phased payments, or a shorter contract. This is a distinct, high-stakes moment in the sales cycle — the client has chosen you, so the relationship risk is low, but the commercial terms are still live. Three routes: accept (agree to their condition and confirm the modified deal — use when the adjustment is workable and the project is worth taking), counter (propose your own modified terms as a middle ground — use when their ask is too steep but a partial adjustment is acceptable), hold (explain you can't move on this and offer the original terms or a graceful exit — use when the condition would make the project unprofitable or set a bad precedent). Distinct from discount_request_response (where the client hasn't committed), budget_negotiation_email (where budget was the blocker before agreement), and price_objection_response_email (where the client is objecting to the price without accepting). Does not count against your monthly draft limit. Required: client_name, condition_requested (what they've asked to change — e.g. 'reduce the fee by 15%', 'delay the start by six weeks', 'remove the discovery phase and go straight to design'). Optional: project_name, counter_offer (for counter route — your proposed middle ground, e.g. '10% reduction if they pay in full upfront', 'start in three weeks rather than six'), route ('accept' | 'counter' | 'hold' — default accept), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          condition_requested: {
+            type: "string",
+            description: "What they've asked to change — be specific. E.g. 'reduce the fee by 15%', 'delay the start by six weeks until their budget resets', 'remove the discovery phase and go straight to design', 'split the fee across three months instead of two'. Used directly in the email so the client knows you heard them precisely.",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project name or short description — e.g. 'the website redesign', 'your brand identity project'. Adds clarity to the email.",
+          },
+          counter_offer: {
+            type: "string",
+            description: "Optional (required for counter route): your proposed middle ground. E.g. '10% reduction if payment is made in full upfront rather than split', 'start in three weeks rather than six — I can hold the slot', 'remove discovery but add a structured briefing call instead'. Be concrete.",
+          },
+          route: {
+            type: "string",
+            enum: ["accept", "counter", "hold"],
+            description: "accept (default): agree to their condition and confirm the deal on the adjusted terms. counter: propose your own modified terms as a middle ground. hold: explain you can't adjust and offer the original terms or a clean exit.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "condition_requested"],
+      },
+    },
   ],
 }));
 
@@ -12668,6 +12704,76 @@ A few options:
 - We pause while you consider
 
 Happy to jump on a call if that's easier. What would you like to do?
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "conditional_proposal_acceptance_email") {
+    const clientName = String(args!.client_name);
+    const conditionRequested = String(args!.condition_requested);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const counterOffer = args!.counter_offer ? String(args!.counter_offer) : null;
+    const route = args!.route ? String(args!.route) : "accept";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "counter") {
+      subject = `Re: ${projectName ? projectName + " — " : ""}revised terms`;
+
+      body = `Hi ${clientName},
+
+Thanks for coming back — I'm glad you want to move forward${projectRef}.
+
+I've thought about your request to ${conditionRequested}. I can't quite get there as asked, but here's what I can do: ${counterOffer ?? "[your counter-offer]"}.
+
+That works for me and I think it works for the project. If that makes sense to you, I'll update the agreement and send it over.
+
+Let me know.
+
+${yourName}`;
+
+    } else if (route === "hold") {
+      subject = `Re: ${projectName ? projectName + " — " : ""}proposal`;
+
+      body = `Hi ${clientName},
+
+Thanks for coming back — it means a lot that you want to work together${projectRef}.
+
+I've looked hard at the request to ${conditionRequested}, but I can't make it work on my end without it affecting the quality or scope in ways I don't think would serve you well.
+
+The original proposal stands as written. If you'd like to proceed on those terms, I'm ready to kick off as soon as the agreement is signed.
+
+If the constraints have changed and this isn't the right moment, I completely understand — no pressure, and the door stays open for next time.
+
+${yourName}`;
+
+    } else {
+      // accept (default)
+      subject = `Re: ${projectName ? projectName + " — " : ""}confirmed`;
+
+      body = `Hi ${clientName},
+
+Thanks for confirming — I'm glad we're moving forward${projectRef}.
+
+To be clear on what we've agreed: I'll proceed on the adjusted basis of ${conditionRequested}. I'll update the agreement to reflect that and send it over for signature.
+
+Once signed, I'll be in touch with next steps.
+
+Looking forward to it.
 
 ${yourName}`;
     }
