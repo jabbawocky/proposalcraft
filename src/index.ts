@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.99" },
+  { name: "proposalcraft", version: "1.4.104" },
   { capabilities: { tools: {} } }
 );
 
@@ -5548,6 +5548,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "condition_requested"],
+      },
+    },
+    {
+      name: "project_scope_reduction_email",
+      description:
+        "Write the email proposing a scope reduction when a project is running over budget or time — you're catching it proactively and offering a clean path rather than letting it overrun or blow up. This is a distinct moment: you're the one raising the issue before it becomes a crisis, and you're offering a concrete proposal (not a vague warning). Three routes: reduce_to_core (trim the scope to the minimum viable deliverable, explicitly stating what stays and what's cut — use when the cut is straightforward and the core is still valuable on its own), phase_it (deliver the agreed core now and scope the remainder as a future phase with a separate budget — use when the client will still want the rest and you want to preserve the relationship and future work), stop_here (deliver what exists now and close the project cleanly — use when continuing clearly doesn't serve the client, when the project has run its course, or when it's better to end well than drag on). Distinct from scope_creep_email (client adding uncosted work), budget_negotiation_email (negotiating budget before work starts), and mid_project_cancellation_response_email (client-initiated stop). Does not count against your monthly draft limit. Required: client_name, reason (what's driving the reduction — e.g. 'we're tracking 30% over budget due to unexpected API complexity', 'the timeline has compressed and the full scope no longer fits'), proposed_reduction (what you're proposing to cut or defer — be concrete). Optional: project_name, current_completion_percentage, phase_2_scope (for phase_it route — what goes into the next phase), route ('reduce_to_core' | 'phase_it' | 'stop_here' — default reduce_to_core), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          reason: {
+            type: "string",
+            description: "What's driving the scope reduction — be honest and specific. E.g. 'we're tracking 30% over the original budget due to unexpected complexity in the payment integration', 'the timeline has compressed from 8 weeks to 5 and the full scope no longer fits'. Used directly in the email so the client gets a clear picture.",
+          },
+          proposed_reduction: {
+            type: "string",
+            description: "What you're proposing to cut or defer — be concrete. E.g. 'remove the admin reporting dashboard (items 4–6 in the brief) and deliver the core user flow only', 'defer the mobile-responsive build to a second phase and ship the desktop version now', 'deliver the three core sections and treat the integrations as a follow-on project'.",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: the project name or short description — adds context to the email.",
+          },
+          current_completion_percentage: {
+            type: "number",
+            description: "Optional: how far through the project you are, as a percentage (0–100). Used to give the client a sense of where things stand.",
+          },
+          phase_2_scope: {
+            type: "string",
+            description: "Optional (recommended for phase_it route): what would go into the next phase. E.g. 'the admin dashboard, reporting exports, and mobile-responsive build — scoped as a separate engagement once phase 1 is live'.",
+          },
+          route: {
+            type: "string",
+            enum: ["reduce_to_core", "phase_it", "stop_here"],
+            description: "reduce_to_core (default): trim to the minimum viable deliverable, stating explicitly what stays and what's cut. phase_it: deliver core now, scope the remainder as a future phase. stop_here: deliver what exists and close cleanly.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "reason", "proposed_reduction"],
       },
     },
   ],
@@ -12774,6 +12818,87 @@ To be clear on what we've agreed: I'll proceed on the adjusted basis of ${condit
 Once signed, I'll be in touch with next steps.
 
 Looking forward to it.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_scope_reduction_email") {
+    const clientName = String(args!.client_name);
+    const reason = String(args!.reason);
+    const proposedReduction = String(args!.proposed_reduction);
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const completionPct = args!.current_completion_percentage != null ? Number(args!.current_completion_percentage) : null;
+    const phase2Scope = args!.phase_2_scope ? String(args!.phase_2_scope) : null;
+    const route = args!.route ? String(args!.route) : "reduce_to_core";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const progressLine = completionPct != null ? ` We're currently around ${completionPct}% through the work.` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "phase_it") {
+      subject = `${projectName ? projectName + " — " : ""}phased delivery proposal`;
+
+      body = `Hi ${clientName},
+
+I want to get ahead of something${projectRef} before it becomes a problem.${progressLine}
+
+${reason}. Rather than push through and deliver something rushed, I'd like to propose splitting the work into two phases.
+
+Phase 1 — what I'd deliver now: ${proposedReduction}.
+
+${phase2Scope ? `Phase 2 — to follow as a separate engagement: ${phase2Scope}.` : "Phase 2 would pick up the remaining scope as a separate engagement once Phase 1 is live."}
+
+This way you get solid, finished work in your hands sooner rather than a stretched delivery of everything. Phase 2 we can scope and price properly once Phase 1 is done.
+
+Does this approach work for you? Happy to walk through the details if useful.
+
+${yourName}`;
+
+    } else if (route === "stop_here") {
+      subject = `${projectName ? projectName + " — " : ""}project close`;
+
+      body = `Hi ${clientName},
+
+I want to be straight with you about where things stand${projectRef}.${progressLine}
+
+${reason}. Looking at this honestly, I think the right call is to close the project at its current state rather than continue and risk delivering something neither of us is happy with.
+
+Here's what I'll hand over: ${proposedReduction}.
+
+That represents real, usable work — and it's better to land here cleanly than stretch toward a finish line that's moved. I'll put together a final deliverables summary and send it over.
+
+I know this isn't the outcome either of us planned for, and I appreciate your trust throughout. If there's a way to build on this in a more contained future engagement, I'm open to that conversation.
+
+${yourName}`;
+
+    } else {
+      // reduce_to_core (default)
+      subject = `${projectName ? projectName + " — " : ""}revised scope proposal`;
+
+      body = `Hi ${clientName},
+
+I want to flag something${projectRef} while there's still time to handle it cleanly.${progressLine}
+
+${reason}. I've looked hard at the options, and the most honest path is to reduce the scope rather than push through and deliver something under-resourced.
+
+What I'm proposing: ${proposedReduction}.
+
+That keeps the core value of the project intact and gives us something we can both be proud of. Anything cut from this version isn't lost — it's just scoped out of this engagement and can be revisited separately if useful.
+
+I'd rather raise this now and give you a clear picture than let it drift. Let me know if you want to talk through the details.
 
 ${yourName}`;
     }
