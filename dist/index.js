@@ -4883,6 +4883,40 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["reason_to_connect"],
             },
         },
+        {
+            name: "client_reference_request_email",
+            description: "Ask a trusted past client to be a named reference for a specific prospect — someone the prospect can email or call directly. Different from testimonial_request (written quote for your website), recommendation_request_email (LinkedIn), and referral_request (active warm intro). A reference is a person on your reference list who speaks directly to a prospect doing due diligence. This email makes the ask easy: it gives context on the prospect, sets expectations on time commitment, and makes it simple to say yes or no. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project or engagement you worked on together — gives them context for what they'd be speaking to (e.g. 'the brand identity project', 'the six-month retainer', 'the website redesign')",
+                    },
+                    prospect_type: {
+                        type: "string",
+                        description: "A short description of the prospect — what kind of business or person they are and what they're looking to hire for. No need to name them. (e.g. 'a B2B SaaS startup looking for a content strategist', 'a boutique law firm that needs a website redesign', 'a founder evaluating fractional CFO services')",
+                    },
+                    prospect_name: {
+                        type: "string",
+                        description: "Optional: the prospect's name, if you're comfortable sharing it and want to personalise the ask",
+                    },
+                    time_commitment: {
+                        type: "string",
+                        description: "Optional: expected time commitment if they're contacted — sets expectations and removes anxiety (e.g. 'a 10-minute call', 'a few email questions', 'a quick 15-minute chat'). Defaults to 'a short call or a few email questions' if omitted.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name", "prospect_type"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -10613,6 +10647,35 @@ Rules:
 - Friendly but not sycophantic. Like a message from a real person, not a template.
 
 Write the message only — no explanation, no word count, no alternatives.`,
+                },
+            ],
+        };
+    }
+    if (name === "client_reference_request_email") {
+        const clientName = String(args.client_name);
+        const projectName = String(args.project_name);
+        const prospectType = String(args.prospect_type);
+        const prospectName = args.prospect_name ? String(args.prospect_name) : null;
+        const timeCommitment = args.time_commitment ? String(args.time_commitment) : "a short call or a few email questions";
+        const yourName = args.your_name ? String(args.your_name) : "Thanks";
+        const prospectLine = prospectName
+            ? `I'm in conversation with ${prospectName} — ${prospectType}.`
+            : `I'm currently in conversation with ${prospectType}.`;
+        const subject = `Quick favour — would you be a reference?`;
+        const body = `Hi ${clientName},
+
+${prospectLine} They're doing their due diligence and I'd love to put your name forward as someone they could reach out to directly.
+
+It would likely mean ${timeCommitment} if they follow up — nothing more than that. You'd be speaking to ${projectName} and what it was like to work together.
+
+No pressure at all — just wanted to ask before sharing your details. Let me know if you're happy for me to pass on your contact.
+
+${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
                 },
             ],
         };
