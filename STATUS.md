@@ -1,6 +1,16 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 450)
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 466)
+
+**What shipped (tick 466):**
+- ✅ **v1.4.97: post_discovery_follow_up_email tool (142nd tool)** — Follow-up email after a productive discovery/intro call. Fills the gap between discovery_call_prep and the proposal — a step most freelancers skip or fumble. Three routes: warm (engaged, moving forward — default), interested_but_not_ready (play the long game), send_proposal (confirm proposal is on its way and when). Required: contact_name, what_discussed. Optional: next_steps, your_service, timeline, route, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.97
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action needed). No emails requiring reply.
+- ✅ **Actions audited** — all open actions remain Mat-gated (MCPize Stripe Connect, npm publish StandupCraft, MCP.so GitHub OAuth, Official MCP Registry). No new autonomous actions available.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
+- 📝 **Note**: v1.4.95 (contract_renewal_email, 140th) and v1.4.96 (client_complaint_response_email, 141st) shipped in tick 450 after STATUS.md was written — now captured.
 
 **What shipped (tick 450):**
+- ✅ **v1.4.96: client_complaint_response_email tool (141st tool)** — Professional response to client complaints and serious dissatisfaction. Three routes: acknowledge (own what's warranted, propose fix — default), dispute (push back professionally), resolve (follow-up once resolved). Required: client_name, complaint_summary. Pushed to main + dist + tag.
+- ✅ **v1.4.95: contract_renewal_email tool (140th tool)** — Email for renewing an expiring contract or retainer before it lapses. Routes: same_terms (default — renew as-is), revised (propose updated terms/rate). Required: client_name, contract_type. Pushed to main + dist + tag.
 - ✅ **v1.4.94: scope_creep_response_email tool (139th tool)** — Professional email for when a client requests work outside the agreed project scope. Three routes: quote (acknowledge, confirm out-of-scope, offer additional cost — default), decline (politely decline, stay on scope), include_once (absorb this time, set expectations going forward). Required: client_name, scope_item. Optional: project_name, agreed_scope, quote_amount, route, your_name. Covers the most common and most mishandled freelancer situation. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.94
 - ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action needed).
 - ✅ **Actions audited** — all open actions remain Mat-gated. StandupCraft PR #8368 on punkpeye still OPEN. MCPize Stripe Connect still needed for payouts.
