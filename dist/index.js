@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.92" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.94" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -4915,6 +4915,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "project_name", "prospect_type"],
+            },
+        },
+        {
+            name: "scope_creep_response_email",
+            description: "Write a professional email responding to a client who has requested work that falls outside the agreed project scope. The most common and most mishandled situation in freelancing — most people either give the work away for free (damages business) or say a flat no (damages relationship). Three routes: quote (acknowledge the request, confirm it's outside scope, offer to do it at additional cost — the default), decline (politely decline and redirect to the agreed deliverables), include_once (absorb this one time but set clear expectations going forward). Keeps the relationship intact while protecting your scope. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    scope_item: {
+                        type: "string",
+                        description: "The specific thing the client asked for that is outside scope — be concrete (e.g. 'a social media graphics pack', 'SEO copywriting for the blog', 'a third round of revisions', 'a mobile version of the site')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name or description — helps situate the response (e.g. 'the brand identity project', 'the website build', 'the Q2 content retainer')",
+                    },
+                    agreed_scope: {
+                        type: "string",
+                        description: "Optional: what IS included in the agreed scope — helps frame what's outside it (e.g. 'three page designs', 'the logo and brand guidelines', 'four blog posts per month'). If omitted, the email references 'the agreed scope' generically.",
+                    },
+                    quote_amount: {
+                        type: "string",
+                        description: "Optional (used with route=quote): the additional cost to include the out-of-scope item (e.g. '$400', '$200–$350', 'an additional day's rate'). If omitted, the email offers to send a separate quote.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["quote", "decline", "include_once"],
+                        description: "How to handle the request: quote (offer to do it at additional cost — default), decline (politely decline and stay on scope), include_once (absorb it this time but set expectations it's out of scope going forward).",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "scope_item"],
             },
         },
     ],
@@ -10671,6 +10710,67 @@ It would likely mean ${timeCommitment} if they follow up — nothing more than t
 No pressure at all — just wanted to ask before sharing your details. Let me know if you're happy for me to pass on your contact.
 
 ${yourName}`;
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "scope_creep_response_email") {
+        const clientName = String(args.client_name);
+        const scopeItem = String(args.scope_item);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const agreedScope = args.agreed_scope ? String(args.agreed_scope) : null;
+        const quoteAmount = args.quote_amount ? String(args.quote_amount) : null;
+        const route = args.route ? String(args.route) : "quote";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectLabel = projectName ? `the ${projectName}` : "the project";
+        const scopeLabel = agreedScope ? `${agreedScope}` : "the agreed scope";
+        let subject;
+        let body;
+        if (route === "decline") {
+            subject = `Re: ${scopeItem}`;
+            body = `Hi ${clientName},
+
+Thanks for flagging — ${scopeItem} is outside the scope of ${projectLabel}, which covers ${scopeLabel}.
+
+I want to make sure I deliver ${projectLabel} well, and taking on additional work mid-project tends to create timeline and quality pressure I'd rather avoid. For that reason I'm going to keep the focus on what we've agreed.
+
+If you'd like to revisit this as a separate piece of work after the current project wraps, I'm happy to scope it out properly then.
+
+${yourName}`;
+        }
+        else if (route === "include_once") {
+            subject = `Re: ${scopeItem}`;
+            body = `Hi ${clientName},
+
+Happy to include ${scopeItem} — I'll fold it in.
+
+I did want to flag that it sits outside ${scopeLabel}, so this is a one-off rather than part of the standard arrangement. If you'd like this kind of work included going forward, we can revisit the scope and adjust accordingly.
+
+Just letting you know so there's no ambiguity if something similar comes up again.
+
+${yourName}`;
+        }
+        else {
+            // quote (default)
+            const costLine = quoteAmount
+                ? `I can add it for ${quoteAmount}.`
+                : `I can put together a separate quote for it if you'd like to go ahead.`;
+            subject = `Re: ${scopeItem}`;
+            body = `Hi ${clientName},
+
+${scopeItem} falls outside ${projectLabel} — the agreed scope covers ${scopeLabel}.
+
+That said, I'm happy to take it on as an addition. ${costLine}
+
+Let me know if you'd like to proceed and I'll get it confirmed.
+
+${yourName}`;
+        }
         return {
             content: [
                 {
