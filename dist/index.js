@@ -5250,6 +5250,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "objection_summary"],
             },
         },
+        {
+            name: "estimate_revision_email",
+            description: "Write the email you send when you discover mid-project that the work is going to cost more or take longer than your original estimate — through no fault of the client (you under-estimated, the work turned out to be more complex, or hidden dependencies emerged). Distinct from change_order_email (which covers client-requested additions), scope_creep_email (which calls out the client adding work), and project_delay_notification_email (which covers timeline slippage without a cost impact). Three routes: revised_estimate (default — disclose the gap, explain why, present the new number, ask for a go-ahead before continuing; best when the overage is significant and you need client approval to proceed), propose_split (offer to complete the current agreed scope at the original price and quote the additional complexity as a separate phase 2; best when the new work is genuinely separable and you can deliver something useful at the original budget), absorb (you'll eat the extra cost this time — be transparent that you're doing so and why, and set expectations for future estimates; best for small overages on long-term client relationships). Required: client_name, original_estimate (what you originally quoted — e.g. '$3,000', '2 weeks', '$3,000 / 2 weeks'), overrun_reason (what you discovered that changed the picture — be specific). Optional: revised_estimate (the new number or timeline — e.g. '$4,500', '3.5 weeks'), project_name, route ('revised_estimate' | 'propose_split' | 'absorb' — default revised_estimate), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    original_estimate: {
+                        type: "string",
+                        description: "What you originally quoted — e.g. '$3,000', '2 weeks', '$3,000 and 2 weeks'. Referenced in the email so the client has the context.",
+                    },
+                    overrun_reason: {
+                        type: "string",
+                        description: "What you discovered that changed the picture — be specific. E.g. 'the existing database schema is much more complex than the brief suggested', 'the third-party API has no sandbox and every test call costs time', 'the legacy codebase has no test coverage and refactoring safely is taking 3× as long'. Vague reasons ('it was harder than expected') lose trust; specific ones build it.",
+                    },
+                    revised_estimate: {
+                        type: "string",
+                        description: "Optional: the new number or timeline — e.g. '$4,500', '3.5 weeks', '$4,500 and 3.5 weeks'. Include for revised_estimate and propose_split routes. Omit for absorb route.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name or short description — e.g. 'the dashboard rebuild', 'your brand identity project'. Adds clarity to the email.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["revised_estimate", "propose_split", "absorb"],
+                        description: "revised_estimate (default): disclose the gap, explain why, present the new number, ask for approval before continuing. propose_split: deliver the agreed scope at the original price and quote the new complexity as a separate phase 2. absorb: you're eating the extra cost this time — say so transparently and set expectations.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "original_estimate", "overrun_reason"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -11508,6 +11547,79 @@ I understand the rate${rateLine} is more than you were expecting. I've thought a
 What I can tell you is that you'd be getting someone who's done this before, cares about the outcome, and won't disappear when things get complicated. That's what the investment covers.
 
 If it's a timing thing rather than a budget thing, I'm happy to discuss a payment schedule. Otherwise, I completely understand if it's not the right fit right now — no hard feelings at all.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "estimate_revision_email") {
+        const clientName = String(args.client_name);
+        const originalEstimate = String(args.original_estimate);
+        const overrunReason = String(args.overrun_reason);
+        const revisedEstimate = args.revised_estimate ? String(args.revised_estimate) : null;
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const route = args.route ? String(args.route) : "revised_estimate";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const revisedLine = revisedEstimate ? revisedEstimate : "[revised estimate]";
+        let subject;
+        let body;
+        if (route === "propose_split") {
+            subject = `${projectName ? projectName + " — " : ""}revised approach`;
+            body = `Hi ${clientName},
+
+I need to flag something that's come up${projectRef} and I'd rather do it now than at the end.
+
+When I put together the original estimate (${originalEstimate}), I didn't have visibility into ${overrunReason}. Now that I'm in the work, it's clear that what I quoted covers the foundation, but the full picture is larger.
+
+Here's what I'd like to propose: I'll complete the scope we agreed on${projectRef} at the original ${originalEstimate}. That delivers something genuinely useful and finished. The additional complexity — the part I didn't price for — I'd quote separately as a phase 2, so you can decide whether to proceed with full information.
+
+The phase 2 estimate would be ${revisedLine}. Happy to walk you through exactly what that covers before you decide anything.
+
+Does that work for you?
+
+${yourName}`;
+        }
+        else if (route === "absorb") {
+            subject = `${projectName ? projectName + " — " : ""}a note on the estimate`;
+            body = `Hi ${clientName},
+
+I wanted to be transparent about something, even though it won't affect what you pay.
+
+When I scoped this out${projectRef}, I quoted ${originalEstimate}. What I didn't account for was ${overrunReason}. The actual work has gone over that — and I'm going to absorb the difference rather than come back to you with a revised number.
+
+I'm flagging it because I think you deserve to know, and because it's useful context: if something similar comes up in future projects, I'll make sure to factor it in from the start.
+
+No action needed from you — just wanted to be straight with you.
+
+${yourName}`;
+        }
+        else {
+            // revised_estimate (default)
+            subject = `${projectName ? projectName + " — " : ""}revised estimate`;
+            body = `Hi ${clientName},
+
+I need to be upfront about something before we go further${projectRef}.
+
+When I put together the original estimate (${originalEstimate}), I was working from the information available at the time. Since then, I've discovered ${overrunReason}. That's changed the picture.
+
+To do this properly — the way I'd want to put my name on it — the revised estimate is ${revisedLine}.
+
+I wanted to come to you with this now, before the gap gets wider, rather than surprise you at the end. I'd like to get your go-ahead before I continue.
+
+A few options:
+- Approve the revised estimate and I'll carry on
+- We discuss adjusting the scope to fit the original budget
+- We pause while you consider
+
+Happy to jump on a call if that's easier. What would you like to do?
 
 ${yourName}`;
         }
