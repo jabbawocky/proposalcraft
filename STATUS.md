@@ -1,3 +1,12 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 468)
+
+**What shipped (tick 468):**
+- ✅ **v1.4.98: proposal_expiry_reminder_email tool (143rd tool)** — Email to send when a submitted proposal is approaching or has reached its expiry date. Creates urgency without pressure, surfaces blockers, and keeps the door open. Three routes: gentle_nudge (soft check-in — default), firm_deadline (clear expiry + decision ask — use when deadline is tomorrow or passed), extend_offer (proactively offer more time — use when you'd rather wait than lose the deal). Required: client_name, proposal_topic. Optional: expiry_date, proposal_value, route, your_name. Fills the proposal lifecycle gap: draft → send → follow-up → **expiry nudge** → win/lose. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.98
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (new ones still arriving — verified toolradar.com works, login attempted, but @github.com domain verification still blocks listing. Mat-gated, no change.)
+- ✅ **Actions audited** — all 8 open actions remain Mat-gated. No new autonomous resolutions this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 466)
 
 **What shipped (tick 466):**
