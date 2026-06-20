@@ -4999,6 +4999,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "contract_type"],
             },
         },
+        {
+            name: "client_complaint_response_email",
+            description: "Write a professional email responding to a client complaint or serious dissatisfaction — distinct from creative feedback on deliverables. This is for relationship-level issues: missed expectations, process frustrations, quality concerns, or a client who is genuinely upset. The hardest email to write under pressure — most freelancers either over-apologise (which signals guilt and invites further demands) or get defensive (which escalates). Three routes: acknowledge (own what's warranted, propose a concrete fix — the default for most complaints), dispute (professionally push back on a complaint you don't agree is fair, without burning the relationship), resolve (follow-up once the issue has been addressed, closing the loop and resetting the tone). Required: client_name, complaint_summary. Optional: project_name, what_went_wrong (for acknowledge), proposed_fix, your_response (for dispute — your position in 1-2 sentences), resolution_summary (for resolve), route, your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "The client's first name",
+                    },
+                    complaint_summary: {
+                        type: "string",
+                        description: "A brief description of what the client is unhappy about (e.g. 'missed the agreed deadline by four days', 'the final design didn't match the brief', 'communication was slow during the project', 'the invoice was higher than expected')",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: the project name — helps ground the email (e.g. 'the brand identity project', 'the website build')",
+                    },
+                    what_went_wrong: {
+                        type: "string",
+                        description: "Optional (used with route=acknowledge): a brief honest explanation of what happened — not an excuse, but context that shows you understand the issue (e.g. 'a dependency on the third-party API took longer than anticipated', 'I misread the brief on the colour palette'). If omitted, the email acknowledges without detailed explanation.",
+                    },
+                    proposed_fix: {
+                        type: "string",
+                        description: "Optional (used with route=acknowledge): the concrete step you're taking or proposing to resolve it (e.g. 'an additional revision round at no charge', 'a partial refund of $200', 'a call this week to realign'). If omitted, the email offers to discuss the best path forward.",
+                    },
+                    your_response: {
+                        type: "string",
+                        description: "Optional (used with route=dispute): your position in 1-2 sentences — what you disagree with and why, framed as clarification not confrontation (e.g. 'the timeline was extended at your request on March 12', 'the brief specified a dark background and the design followed that exactly'). Keep factual.",
+                    },
+                    resolution_summary: {
+                        type: "string",
+                        description: "Optional (used with route=resolve): what was done to resolve the issue (e.g. 'delivered the revised designs', 'applied the partial credit to the invoice', 'we got on a call and realigned on the scope'). If omitted, the email references the resolution generically.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["acknowledge", "dispute", "resolve"],
+                        description: "acknowledge: own what's warranted and propose a fix (default — right for most complaints). dispute: professionally push back on a complaint you disagree with. resolve: follow-up once the issue has been resolved, resetting the relationship.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "complaint_summary"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -10864,6 +10911,77 @@ ${timingLine} ${workLine}
 I'd love to renew on the same terms if you're happy with how things have been going. Happy to keep the arrangement exactly as it is.
 
 Just let me know and I'll get the paperwork sorted.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "client_complaint_response_email") {
+        const clientName = String(args.client_name);
+        const complaintSummary = String(args.complaint_summary);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const whatWentWrong = args.what_went_wrong ? String(args.what_went_wrong) : null;
+        const proposedFix = args.proposed_fix ? String(args.proposed_fix) : null;
+        const yourResponse = args.your_response ? String(args.your_response) : null;
+        const resolutionSummary = args.resolution_summary ? String(args.resolution_summary) : null;
+        const route = args.route ? String(args.route) : "acknowledge";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        let subject;
+        let body;
+        if (route === "dispute") {
+            subject = `Re: ${complaintSummary}`;
+            const positionLine = yourResponse
+                ? yourResponse
+                : `I want to make sure I understand what happened here before we move forward.`;
+            body = `Hi ${clientName},
+
+Thank you for raising this — I take feedback seriously and I want to address it directly.
+
+${positionLine}
+
+I'd rather talk through this properly than go back and forth over email. Can we find 20 minutes this week to get on a call? I want to make sure we're looking at the same picture and, if there's a genuine issue, find the right way to address it.
+
+${yourName}`;
+        }
+        else if (route === "resolve") {
+            subject = `Following up — ${complaintSummary}`;
+            const resolutionLine = resolutionSummary
+                ? `As a follow-up: ${resolutionSummary}.`
+                : `I wanted to follow up now that we've had a chance to address things.`;
+            body = `Hi ${clientName},
+
+${resolutionLine}
+
+I know it was a frustrating experience${projectRef} and I appreciate you giving me the chance to put it right. I hope this closes the loop — but if there's anything else you'd like to raise, please don't hesitate.
+
+${yourName}`;
+        }
+        else {
+            // acknowledge (default)
+            subject = `Re: ${complaintSummary}`;
+            const contextLine = whatWentWrong
+                ? `What happened: ${whatWentWrong}. That's on me.`
+                : `That's not the standard I hold myself to.`;
+            const fixLine = proposedFix
+                ? `Here's what I'd like to do: ${proposedFix}.`
+                : `I'd like to find the right way to address this — can we get on a quick call this week to work out the best path forward?`;
+            body = `Hi ${clientName},
+
+Thanks for telling me directly — I'd rather hear this than not.
+
+I understand why you're frustrated with ${complaintSummary}${projectRef}. ${contextLine}
+
+${fixLine}
+
+Let me know if that works for you.
 
 ${yourName}`;
         }
