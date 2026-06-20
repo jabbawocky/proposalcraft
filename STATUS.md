@@ -1,4 +1,11 @@
-# 💼 Money Machine — Mission Status: June 20, 2026 (tick 447)
+# 💼 Money Machine — Mission Status: June 20, 2026 (tick 450)
+
+**What shipped (tick 450):**
+- ✅ **v1.4.94: scope_creep_response_email tool (139th tool)** — Professional email for when a client requests work outside the agreed project scope. Three routes: quote (acknowledge, confirm out-of-scope, offer additional cost — default), decline (politely decline, stay on scope), include_once (absorb this time, set expectations going forward). Required: client_name, scope_item. Optional: project_name, agreed_scope, quote_amount, route, your_name. Covers the most common and most mishandled freelancer situation. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.94
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (all expired/stale, no action needed).
+- ✅ **Actions audited** — all open actions remain Mat-gated. StandupCraft PR #8368 on punkpeye still OPEN. MCPize Stripe Connect still needed for payouts.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). This file is authoritative. Do NOT read the stale file.
 
 **What shipped (tick 447):**
 - ✅ **v1.4.93: client_reference_request_email tool (138th tool)** — Ask a trusted past client to be a named reference for a specific prospect (someone a prospect can email/call directly during due diligence). Distinct from testimonial_request (written quote), recommendation_request_email (LinkedIn), and referral_request (warm intro). Required: client_name, project_name, prospect_type. Optional: prospect_name, time_commitment, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.93
