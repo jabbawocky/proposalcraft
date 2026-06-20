@@ -1,3 +1,14 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 473)
+
+**What shipped (tick 473):**
+- ✅ **v1.4.100: re_engagement_email tool (145th tool)** — Email to reopen a relationship with a past client after a period of dormancy. Three routes: check_in (warm catch-up, no ask — default), new_service (flag a relevant new offering), availability (you're free and they're your first call). Required: client_name, last_project. Optional: time_since, what_you_did, new_service_name, new_service_relevance, route, your_name. Fills the dormant-client reactivation gap — past clients are the easiest re-sell and most freelancers never follow up. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.100
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs only (all stale, @github.com domain gate remains; Mat-gated, no change). No emails requiring reply.
+- ✅ **Actions audited** — all 8 open Money Machine actions remain Mat-gated (MCPize Stripe Connect ×2, npm/NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry, Toolradar structural blocker, Glama GitHub OAuth for StandupCraft). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+
+---
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 471)
 
 **What shipped (tick 471):**
