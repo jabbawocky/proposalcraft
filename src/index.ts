@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.98" },
+  { name: "proposalcraft", version: "1.4.99" },
   { capabilities: { tools: {} } }
 );
 
@@ -5339,6 +5339,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name", "proposal_topic"],
+      },
+    },
+    {
+      name: "mutual_introduction_email",
+      description:
+        "Write the email you send when you're connecting two people in your network — as the connector, not the person being introduced. Distinct from introduction_email (your reply when someone introduces you to a prospect). Common use: connecting a past client with a supplier, two founders who share a problem, a contact with a potential collaborator, or two clients who'd benefit from knowing each other. Two modes: double_opt_in (default — send to each person separately first, checking they're open to the intro before making it; standard best practice for high-value relationships and mutual respect) or direct (one email to both people at the same time; fine when you know both parties well and the introduction is low-stakes). For double_opt_in, use the target parameter to specify which person this individual email is addressed to. Required: person_a_name (first person being introduced), person_b_name (second person), reason_to_connect (why these two people should meet — be specific; 'they're both in tech' is weak, 'you're both solving the same cold-outreach problem from opposite angles' is strong). Optional: person_a_description (what Person A does — one line), person_b_description (what Person B does — one line), mode ('double_opt_in' | 'direct' — default double_opt_in), target (for double_opt_in only: 'a' or 'b' — which person this email is going to; default 'a'), your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          person_a_name: {
+            type: "string",
+            description: "First name of the first person being introduced",
+          },
+          person_b_name: {
+            type: "string",
+            description: "First name of the second person being introduced",
+          },
+          reason_to_connect: {
+            type: "string",
+            description: "Why these two people should meet — be specific. 'They're both in marketing' is weak; 'you're both trying to solve the same client-onboarding problem from opposite sides' is strong.",
+          },
+          person_a_description: {
+            type: "string",
+            description: "Optional: one-line description of what Person A does — e.g. 'runs a boutique UX studio', 'heads product at a Series A fintech'. Used to give context to Person B (or the opt-in request to Person A).",
+          },
+          person_b_description: {
+            type: "string",
+            description: "Optional: one-line description of what Person B does — e.g. 'freelance brand strategist', 'co-founder of a B2B SaaS startup'. Used to give context to Person A (or the opt-in request to Person B).",
+          },
+          mode: {
+            type: "string",
+            enum: ["double_opt_in", "direct"],
+            description: "double_opt_in (default): send to each person individually first, checking they want the intro before making it — best practice for high-value relationships. direct: one email addressed to both at the same time — fine when you know both well and the intro is low-stakes.",
+          },
+          target: {
+            type: "string",
+            enum: ["a", "b"],
+            description: "For double_opt_in mode only: which person this email is going to — 'a' (asking Person A if they'd like to meet Person B) or 'b' (asking Person B if they'd like to meet Person A). Defaults to 'a'. Ignored in direct mode.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["person_a_name", "person_b_name", "reason_to_connect"],
       },
     },
   ],
@@ -12205,6 +12250,67 @@ ${yourName}`;
 Hope things are going well.${expiryLine}
 
 Just wanted to check in — do you have any questions about what I've proposed, or is there anything I can clarify before you make a call? Happy to jump on a quick call if that helps.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "mutual_introduction_email") {
+    const personAName = String(args!.person_a_name);
+    const personBName = String(args!.person_b_name);
+    const reasonToConnect = String(args!.reason_to_connect);
+    const personADescription = args!.person_a_description ? String(args!.person_a_description) : null;
+    const personBDescription = args!.person_b_description ? String(args!.person_b_description) : null;
+    const mode = args!.mode ? String(args!.mode) : "double_opt_in";
+    const target = args!.target ? String(args!.target) : "a";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const aDesc = personADescription ? ` — ${personADescription}` : "";
+    const bDesc = personBDescription ? ` — ${personBDescription}` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (mode === "direct") {
+      subject = `Introducing ${personAName} ↔ ${personBName}`;
+
+      body = `Hi ${personAName} and ${personBName},
+
+I wanted to connect you both — I think you'd get a lot from knowing each other.
+
+${personAName}${aDesc}. ${personBName}${bDesc}.
+
+${reasonToConnect}.
+
+I'll leave it with you — happy to stay on CC if it's useful, otherwise I'll step back and let you take it from here.
+
+${yourName}`;
+
+    } else {
+      // double_opt_in
+      const recipient = target === "b" ? personBName : personAName;
+      const otherName = target === "b" ? personAName : personBName;
+      const otherDesc = target === "b" ? personADescription : personBDescription;
+      const otherDescLine = otherDesc ? ` — ${otherDesc}` : "";
+
+      subject = `Intro idea — you and ${otherName}`;
+
+      body = `Hi ${recipient},
+
+Quick one — I've been meaning to connect you with ${otherName}${otherDescLine}.
+
+${reasonToConnect}.
+
+Would you be open to an introduction? I'll only make it if you're keen — happy to share a bit more context first if that helps.
 
 ${yourName}`;
     }
