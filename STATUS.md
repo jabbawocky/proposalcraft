@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 478)
+
+**What shipped (tick 478):**
+- ✅ **v1.4.102: estimate_revision_email tool (147th tool)** — Email for when you discover mid-project that the work costs more or takes longer than your original estimate (your under-estimate, not client scope creep). Three routes: revised_estimate (default — disclose gap, explain why, present new number, ask for go-ahead), propose_split (deliver agreed scope at original price, quote new complexity as phase 2), absorb (eat the extra cost, be transparent, set expectations). Required: client_name, original_estimate, overrun_reason. Optional: revised_estimate, project_name, route, your_name. Fills the mid-project cost-overrun gap — distinct from change_order_email, scope_creep_email, and project_delay_notification_email. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.102
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTPs (fresh ones; completed full Toolradar login flow — confirmed @github.com domain-verification gate still blocks listing; manual review path also rejected). No other emails needing reply.
+- ✅ **Toolradar listing attempt** — Logged in as moneymachine@mc.team, clicked "List Your Tool, Free", ProposalCraft detected (github.com as domain), verification requires @github.com email for instant path OR manual review (manual review rejected as moneymachine@mc.team ≠ github.com). Structural blocker confirmed; Mat-gated action add9d2a895a979fc remains open.
+- ✅ **Actions audited** — all 8 open Money Machine actions remain Mat-gated (MCPize Stripe Connect ×2, npm/NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry, Toolradar structural blocker, Glama GitHub OAuth for StandupCraft). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+
+---
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 473)
 
 **What shipped (tick 473):**
