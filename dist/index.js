@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.94" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.97" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5044,6 +5044,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "complaint_summary"],
+            },
+        },
+        {
+            name: "post_discovery_follow_up_email",
+            description: "Write the follow-up email sent after a productive discovery or intro call with a prospect — the email most freelancers either skip or fumble. Its job: confirm you listened, recap the key points so nothing gets lost, set the next step clearly, and keep the momentum toward a proposal. Distinct from discovery_call_no_show_email (for when they don't show) and client_followup (for chasing a sent proposal). Three routes: warm (engaged prospect, moving forward — default), interested_but_not_ready (good conversation but they need more time or internal buy-in — play the long game), send_proposal (they asked for one on the call — confirm it's coming and when). Required: contact_name, what_discussed (2-4 bullet points or a brief paragraph of what you covered on the call). Optional: next_steps (what you agreed to do next — e.g. 'send a proposal by Friday', 'schedule a follow-up in two weeks'; defaults to a warm but open close), your_service (what you do — helps personalise the recap line), timeline (their stated timeline or urgency — e.g. 'looking to start in July', 'hoping to launch before Q3'), route, your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    contact_name: {
+                        type: "string",
+                        description: "The prospect's first name",
+                    },
+                    what_discussed: {
+                        type: "string",
+                        description: "The key points from the call — 2-4 bullets or a brief paragraph (e.g. 'their rebrand timeline, budget range of $5-8k, need for brand guidelines and logo, internal stakeholder review required before sign-off'). This becomes the recap section.",
+                    },
+                    next_steps: {
+                        type: "string",
+                        description: "Optional: what was agreed as the next step (e.g. 'I'll send a proposal by Friday', 'you'll come back to me once you have internal sign-off', 'we'll speak again in two weeks'). If omitted, the email closes warmly without a hard next step.",
+                    },
+                    your_service: {
+                        type: "string",
+                        description: "Optional: a short description of what you do — helps personalise the recap line (e.g. 'brand identity and packaging design', 'React development for SaaS products', 'copywriting for B2B tech companies'). If omitted, the email stays generic.",
+                    },
+                    timeline: {
+                        type: "string",
+                        description: "Optional: the prospect's stated timeline or urgency (e.g. 'looking to start in July', 'hoping to launch before Q3', 'no fixed deadline yet'). If provided, the email acknowledges it.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["warm", "interested_but_not_ready", "send_proposal"],
+                        description: "warm: engaged prospect, ready to move forward — default for most calls. interested_but_not_ready: good conversation but they need more time, budget approval, or internal buy-in. send_proposal: they asked for a proposal on the call — confirm it's on its way and when they'll have it.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["contact_name", "what_discussed"],
             },
         },
     ],
@@ -10982,6 +11021,86 @@ I understand why you're frustrated with ${complaintSummary}${projectRef}. ${cont
 ${fixLine}
 
 Let me know if that works for you.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "post_discovery_follow_up_email") {
+        const contactName = String(args.contact_name);
+        const whatDiscussed = String(args.what_discussed);
+        const nextSteps = args.next_steps ? String(args.next_steps) : null;
+        const yourService = args.your_service ? String(args.your_service) : null;
+        const timeline = args.timeline ? String(args.timeline) : null;
+        const route = args.route ? String(args.route) : "warm";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const timelineLine = timeline
+            ? ` I've noted your timeline — ${timeline}.`
+            : "";
+        const serviceIntro = yourService
+            ? `Great speaking with you today about how ${yourService} could help.`
+            : `Great speaking with you today.`;
+        let subject;
+        let body;
+        if (route === "send_proposal") {
+            subject = `Proposal coming your way`;
+            const proposalLine = nextSteps
+                ? nextSteps.charAt(0).toUpperCase() + nextSteps.slice(1) + "."
+                : "I'll have a proposal over to you shortly.";
+            body = `Hi ${contactName},
+
+${serviceIntro} Enjoyed the conversation — you gave me a clear picture of what you're working toward.
+
+Quick recap of what we covered:
+${whatDiscussed}
+${timelineLine ? "\n" + timelineLine + "\n" : ""}
+${proposalLine} It'll cover the scope, timeline, and investment, so you have everything you need to make a decision.
+
+If anything shifts or you have questions before then, just reply here.
+
+${yourName}`;
+        }
+        else if (route === "interested_but_not_ready") {
+            subject = `Good to meet you`;
+            const patienceLine = nextSteps
+                ? `In the meantime, ${nextSteps.charAt(0).toLowerCase() + nextSteps.slice(1)}.`
+                : `No rush on your end — when the timing is right, I'm happy to pick up where we left off.`;
+            body = `Hi ${contactName},
+
+${serviceIntro} It's clear you're thinking carefully about this, which usually leads to better outcomes anyway.
+
+Quick recap of what we covered:
+${whatDiscussed}
+${timelineLine ? "\n" + timelineLine + "\n" : ""}
+${patienceLine}
+
+Feel free to reach out whenever things move forward — or if questions come up in the meantime.
+
+${yourName}`;
+        }
+        else {
+            // warm (default)
+            subject = `Great speaking with you`;
+            const closingLine = nextSteps
+                ? nextSteps.charAt(0).toUpperCase() + nextSteps.slice(1) + "."
+                : "Looking forward to what's next.";
+            body = `Hi ${contactName},
+
+${serviceIntro} Good conversation — I came away with a solid sense of what you need.
+
+Quick recap of what we covered:
+${whatDiscussed}
+${timelineLine ? "\n" + timelineLine + "\n" : ""}
+${closingLine}
+
+Anything I missed or anything you'd like to add before we move forward?
 
 ${yourName}`;
         }
