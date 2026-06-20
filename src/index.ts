@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.97" },
+  { name: "proposalcraft", version: "1.4.98" },
   { capabilities: { tools: {} } }
 );
 
@@ -5303,6 +5303,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["contact_name", "what_discussed"],
+      },
+    },
+    {
+      name: "proposal_expiry_reminder_email",
+      description:
+        "Write the follow-up email sent when a submitted proposal is approaching — or has reached — its expiry date. Its job: create urgency without pressure, surface any blockers holding up the decision, and keep the door open. Distinct from client_followup (general chasing of a sent proposal with no deadline angle), bid_lost_follow_up (for when you've already lost), and post_discovery_follow_up_email (sent right after a call, before the proposal is written). Three routes: gentle_nudge (default — soft check-in asking if they have questions before the deadline, no hard pressure), firm_deadline (clear statement of expiry, direct ask for a decision — use when the deadline is tomorrow or already passed), extend_offer (proactively offer to extend the deadline if they need more time — use when you'd genuinely rather wait than lose the deal). Required: client_name (prospect's first name), proposal_topic (what the proposal covers — e.g. 'brand identity project', 'Q3 development retainer', 'website redesign'). Optional: expiry_date (when the proposal expires or expired — e.g. 'Friday', 'June 27', 'yesterday'; if omitted, the email references 'the proposal' generically), proposal_value (total value or rate — e.g. '$8,500', '$4,200/mo'; if provided, re-anchors the investment in the reader's mind), route, your_name. Does not count against your monthly draft limit.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "The prospect's first name",
+          },
+          proposal_topic: {
+            type: "string",
+            description: "What the proposal covers — e.g. 'brand identity project', 'Q3 development retainer', 'website redesign'. Used to personalise the subject and body.",
+          },
+          expiry_date: {
+            type: "string",
+            description: "Optional: when the proposal expires or expired — e.g. 'Friday', 'June 27', 'yesterday'. If omitted, the email references the proposal generically without a hard date.",
+          },
+          proposal_value: {
+            type: "string",
+            description: "Optional: the total value or rate in the proposal — e.g. '$8,500', '$4,200/mo'. If provided, re-anchors the investment in the prospect's mind.",
+          },
+          route: {
+            type: "string",
+            enum: ["gentle_nudge", "firm_deadline", "extend_offer"],
+            description: "gentle_nudge: soft check-in asking if they have questions before the deadline — default for most situations. firm_deadline: clear statement of expiry, direct ask for a decision — use when the deadline is tomorrow or already passed. extend_offer: proactively offer to extend if they need more time — use when you'd rather wait than lose the deal.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "proposal_topic"],
       },
     },
   ],
@@ -12101,6 +12137,74 @@ ${timelineLine ? "\n" + timelineLine + "\n" : ""}
 ${closingLine}
 
 Anything I missed or anything you'd like to add before we move forward?
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "proposal_expiry_reminder_email") {
+    const clientName = String(args!.client_name);
+    const proposalTopic = String(args!.proposal_topic);
+    const expiryDate = args!.expiry_date ? String(args!.expiry_date) : null;
+    const proposalValue = args!.proposal_value ? String(args!.proposal_value) : null;
+    const route = args!.route ? String(args!.route) : "gentle_nudge";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const expiryLine = expiryDate
+      ? ` I sent over a proposal for the ${proposalTopic} — it's set to expire ${expiryDate}.`
+      : ` I sent over a proposal for the ${proposalTopic} a little while ago.`;
+
+    const valueLine = proposalValue
+      ? ` (the ${proposalValue} proposal)`
+      : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "firm_deadline") {
+      subject = `Proposal expiring — ${proposalTopic}`;
+
+      body = `Hi ${clientName},
+
+Quick note:${expiryLine}
+
+Once it expires, I'll need to re-price based on my current availability and any changes in scope — so if you're still keen to move forward, now is the time to lock it in${valueLine}.
+
+If you're ready to proceed, just reply here and I'll get things moving. If the timing no longer works, no problem — just let me know either way.
+
+${yourName}`;
+
+    } else if (route === "extend_offer") {
+      subject = `Need a bit more time? — ${proposalTopic}`;
+
+      body = `Hi ${clientName},
+
+I know decisions like this take time.${expiryLine}
+
+I'm happy to extend the proposal${valueLine} if you need a few more days — just say the word and I'll push the date out for you. No pressure, I'd rather give you the space to decide properly than rush it.
+
+Either way, feel free to reply with any questions or if anything's changed on your end.
+
+${yourName}`;
+
+    } else {
+      // gentle_nudge (default)
+      subject = `Quick check-in — ${proposalTopic} proposal`;
+
+      body = `Hi ${clientName},
+
+Hope things are going well.${expiryLine}
+
+Just wanted to check in — do you have any questions about what I've proposed, or is there anything I can clarify before you make a call? Happy to jump on a quick call if that helps.
 
 ${yourName}`;
     }
