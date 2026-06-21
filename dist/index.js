@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.104" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.107" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5452,6 +5452,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     go_live_date: {
                         type: "string",
                         description: "Optional: when the project is going live or was delivered — e.g. 'next Monday', 'June 30', 'this week'. Grounds the timing of the ask.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "project_name"],
+            },
+        },
+        {
+            name: "revision_rounds_exceeded_email",
+            description: "Write the email when a client requests revisions beyond their contracted allocation — enforcing your revision policy without damaging the relationship. One of the most avoided conversations in freelancing; this email makes it easy by being matter-of-fact, not defensive. Three routes: notify_and_quote (default — inform the client their rounds are used, quote the additional cost, invite them to proceed; works when you want to keep the work and the relationship), offer_upgrade (offer a small add-on package for further revisions — works when the client is likely to need ongoing changes and a bundled approach makes sense), close_and_decline (flag that contracted revisions are complete and the project is considered signed off unless they purchase more; works when revisions are clearly not converging or the client is acting in bad faith). Distinct from revision_response_email (which handles the content of a specific revision), scope_creep_response_email (which is broader scope expansion), and change_order_email (which is a formal contract amendment). Does not count against your monthly draft limit. Required: client_name, project_name. Optional: revisions_included (how many rounds were in the contract — e.g. '2 rounds', '3 rounds of revisions'; default is 'the included'), revisions_used (how many have been used — helps make the email concrete), additional_rate (your rate for extra revision work — e.g. '$85/hr', '$150 per round'; makes the quote concrete), route ('notify_and_quote' | 'offer_upgrade' | 'close_and_decline' — default notify_and_quote), package_name (for offer_upgrade route — name of the add-on, e.g. 'Revision Pack', 'Polish Pass'), package_price (for offer_upgrade route — e.g. '$200', '2 hours at $85'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "The project name — e.g. 'the Westbrook website', 'your brand refresh', 'the app design'. Used throughout the email.",
+                    },
+                    revisions_included: {
+                        type: "string",
+                        description: "Optional: how many rounds were contracted — e.g. '2 rounds', '3 rounds of revisions', 'two feedback rounds'. Default is a vague reference to 'the included revisions'.",
+                    },
+                    revisions_used: {
+                        type: "string",
+                        description: "Optional: how many rounds have been used — e.g. 'two', 'three'. Helps make the email concrete rather than abstract.",
+                    },
+                    additional_rate: {
+                        type: "string",
+                        description: "Optional: your rate for extra revision work — e.g. '$85/hr', '$150 per round', '$200 per additional feedback round'. Makes the quote concrete.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["notify_and_quote", "offer_upgrade", "close_and_decline"],
+                        description: "notify_and_quote (default): inform the client, quote additional cost, invite them to proceed. offer_upgrade: propose a small add-on package for further revisions. close_and_decline: mark the revision stage as complete, project considered signed off unless they purchase more.",
+                    },
+                    package_name: {
+                        type: "string",
+                        description: "For offer_upgrade route: name of the add-on revision package — e.g. 'Revision Pack', 'Polish Pass', 'Extended Refinement'.",
+                    },
+                    package_price: {
+                        type: "string",
+                        description: "For offer_upgrade route: price of the add-on — e.g. '$200', '2 additional hours at $85', '$150 flat'.",
                     },
                     your_name: {
                         type: "string",
@@ -12059,6 +12106,67 @@ ${monthlyHours ? `The retainer includes ${monthlyHours} per month${rateLine}.` :
 ${monthlyRate ? `Rate: ${monthlyRate}. Cancel anytime with a month's notice.` : "Happy to share the details if you'd like to see what's included and at what rate."}
 
 A lot of my clients find it easier to have someone on call who already knows the project than to reach out cold every time something shifts. Wanted to flag it now while we're wrapping up — no pressure either way.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "revision_rounds_exceeded_email") {
+        const clientName = args?.client_name;
+        const projectName = args?.project_name;
+        const revisionsIncluded = args?.revisions_included || "the included revision rounds";
+        const revisionsUsed = args?.revisions_used;
+        const additionalRate = args?.additional_rate;
+        const route = args?.route || "notify_and_quote";
+        const packageName = args?.package_name || "Revision Pack";
+        const packagePrice = args?.package_price;
+        const yourName = args?.your_name || "";
+        const usedLine = revisionsUsed
+            ? `We've now completed ${revisionsUsed} — the full allocation under the project agreement.`
+            : `We've now completed ${revisionsIncluded} under the project agreement.`;
+        let subject;
+        let body;
+        if (route === "offer_upgrade") {
+            subject = `${projectName} — additional revisions`;
+            body = `Hi ${clientName},
+
+${usedLine}
+
+To keep things moving, I've put together a ${packageName} — a small add-on that covers further rounds of changes${packagePrice ? ` at ${packagePrice}` : ""}. It's the simplest way to keep refining without needing to scope each round individually.
+
+If you'd like to go ahead, just say the word and I'll send a quick invoice. Happy to answer any questions about what's covered.
+
+${yourName}`;
+        }
+        else if (route === "close_and_decline") {
+            subject = `${projectName} — revision stage complete`;
+            body = `Hi ${clientName},
+
+Just a note to confirm that ${usedLine}
+
+The project is now considered signed off on my end. Any further changes going forward would be out of scope and would need to be scoped and quoted as a new piece of work.
+
+If there's something specific you'd like to address, I'm happy to put together a quote — just let me know what's on your list.
+
+${yourName}`;
+        }
+        else {
+            // notify_and_quote (default)
+            subject = `${projectName} — revision rounds`;
+            body = `Hi ${clientName},
+
+Just flagging: ${usedLine}
+
+Any further revisions from here fall outside the original scope. ${additionalRate ? `I bill additional revision work at ${additionalRate}.` : "I'm happy to continue, and can quote you for any further rounds once I know what's needed."}
+
+Let me know how you'd like to proceed and I'll get a quote to you quickly.
 
 ${yourName}`;
         }
