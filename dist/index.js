@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.112" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.113" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5705,6 +5705,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "total_amount"],
+            },
+        },
+        {
+            name: "testimonial_request_email",
+            description: "Write the email asking a client for a testimonial or review after a completed project. For when you want to capture a happy client's feedback while the experience is fresh — the kind of social proof that closes the next deal without any extra selling. Three routes: after_completion (default — clean ask at the end of a project; tone is warm and low-pressure, makes it easy to say yes, offers to draft something for them to edit which removes the friction of starting from scratch), specific_platform (you need a review on a specific platform — Google, LinkedIn, Clutch, G2, Trustpilot — because that's where your next prospects look; routes the client to the right place without making it feel like an errand), delayed_ask (you finished the project weeks or months ago and forgot to ask, or didn't feel it was the right moment at the time; acknowledges the gap without apologising excessively, still low-pressure). Distinct from client_reference_request_email (asking someone to speak with a prospect by phone/video, not provide a written quote). Does not count against your monthly draft limit. Required: client_name. Optional: project_name (helps personalise — 'the Westbrook website rebrand', 'your new brand identity'), platform (for specific_platform route — e.g. 'Google', 'LinkedIn', 'Clutch', 'Trustpilot'), platform_url (direct link to the review page — if provided, makes the ask one click), offer_draft (set to true to offer to write a draft for them to edit — removes friction; implied on after_completion), route ('after_completion' | 'specific_platform' | 'delayed_ask' — default after_completion), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the project — e.g. 'the Westbrook website', 'your brand identity', 'the content strategy'. Personalises the ask.",
+                    },
+                    platform: {
+                        type: "string",
+                        description: "For specific_platform route: the review platform you want them to use — e.g. 'Google', 'LinkedIn', 'Clutch', 'G2', 'Trustpilot'.",
+                    },
+                    platform_url: {
+                        type: "string",
+                        description: "For specific_platform route: direct URL to the review page — e.g. your Google review link. Makes the ask one click for the client.",
+                    },
+                    offer_draft: {
+                        type: "boolean",
+                        description: "Optional: set to true to offer to write a draft testimonial for the client to edit. Removes the main friction point (starting from scratch). Implied on after_completion route.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["after_completion", "specific_platform", "delayed_ask"],
+                        description: "after_completion (default) — fresh ask at project close, warm and low-pressure; specific_platform — request a review on a named platform with a direct link; delayed_ask — following up weeks or months after the project ended.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name"],
             },
         },
     ],
@@ -12697,6 +12736,78 @@ ${milestoneDescription} is complete${projectRef}.
 Could you take a look and let me know if you're happy to approve it? I want to make sure you're satisfied with where things are before I continue.${nextPhaseRef}${deadlineRef}
 
 If anything needs adjusting, now is the right time to flag it — happy to make changes at this stage before we move on.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "testimonial_request_email") {
+        const clientName = String(args.client_name || "there");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const platform = args.platform ? String(args.platform) : null;
+        const platformUrl = args.platform_url ? String(args.platform_url) : null;
+        const offerDraft = args.offer_draft === true;
+        const route = args.route === "specific_platform" ? "specific_platform"
+            : args.route === "delayed_ask" ? "delayed_ask"
+                : "after_completion";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const draftOffer = (offerDraft || route === "after_completion")
+            ? "\n\nIf it helps, I'm happy to put together a short draft based on what we worked on together — you can edit it however you like, or just use it as a starting point. Sometimes that makes it easier than starting from a blank page."
+            : "";
+        let subject;
+        let body;
+        if (route === "specific_platform") {
+            const platformRef = platform || "the platform";
+            const linkLine = platformUrl
+                ? `\n\n[Leave a review on ${platformRef} →](${platformUrl})`
+                : `\n\nYou can leave a review directly on ${platformRef}${platform ? ` — searching for my name or business should bring it up` : ""}.`;
+            subject = `Quick ask — ${platformRef} review`;
+            body = `Hi ${clientName},
+
+I hope things are going well.
+
+I wanted to ask if you'd be open to leaving a short review on ${platformRef}${projectRef ? ` — it'd be great to have your feedback on ${projectRef} captured there` : ""}. It doesn't need to be long — a few sentences on what the work covered and how it went would make a real difference.${linkLine}${draftOffer}
+
+No pressure at all if it's not convenient — I just wanted to ask.
+
+${yourName}`;
+        }
+        else if (route === "delayed_ask") {
+            subject = projectName
+                ? `${projectName} — a belated ask`
+                : "A belated ask";
+            body = `Hi ${clientName},
+
+I hope things are going well on your end.
+
+I realise I should have asked this sooner, but I never got around to it${projectRef ? ` after we wrapped up ${projectRef}` : ""}: would you be willing to write a short testimonial about the work we did together?
+
+It doesn't need to be long — just a few sentences on what the project involved and how it went from your side. That kind of word-of-mouth really does help, and it means more coming from a client than anything I could say myself.${draftOffer}
+
+Completely fine if the timing doesn't suit — I just wanted to ask.
+
+${yourName}`;
+        }
+        else {
+            // after_completion (default)
+            subject = projectName
+                ? `${projectName} — one last thing`
+                : "One last thing";
+            body = `Hi ${clientName},
+
+It's been great working with you${projectRef ? ` on ${projectRef}` : ""}. I'm really pleased with how it came together.
+
+Now that we're wrapping up, I wanted to ask if you'd be willing to write a short testimonial — a few sentences on what the project covered and how the work went from your end. It doesn't need to be polished or long; I mainly want something that reflects the real experience.${draftOffer}
+
+It genuinely helps when I'm talking to new clients, so I'd really appreciate it if you have a few minutes.
 
 ${yourName}`;
         }
