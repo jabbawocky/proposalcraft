@@ -5543,6 +5543,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name"],
             },
         },
+        {
+            name: "project_handover_email",
+            description: "Write the email handing a project over to another developer or contractor. For when you're stepping back from a project and transferring it to someone else — either because you've been asked to, the client is moving in-house, or you're bringing in a specialist for a particular phase. Two routes: warm (default — introduce the incoming person positively, set the client at ease, frame as an upgrade or natural evolution), clean (factual hand-off with no extra framing — for situations where the relationship is already strained or you simply want a professional exit with no editorialising). Required: client_name, handover_to (name of the incoming person or team). Optional: project_name, handover_reason (brief reason — e.g. 'you've taken the project in-house', 'bringing in a specialist for the next phase'), next_steps (what the client should expect — e.g. 'Alex will reach out this week to schedule a call'), route ('warm' | 'clean' — default warm), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    handover_to: {
+                        type: "string",
+                        description: "Name of the incoming developer or team taking over the project",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the project being handed over",
+                    },
+                    handover_reason: {
+                        type: "string",
+                        description: "Optional: brief reason for the handover — e.g. 'you've taken the project in-house', 'bringing in a specialist for the next phase', 'my availability has changed'.",
+                    },
+                    next_steps: {
+                        type: "string",
+                        description: "Optional: what the client should expect next — e.g. 'Alex will reach out this week to schedule a call', 'I'll send through the full codebase and documentation by Friday'.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["warm", "clean"],
+                        description: "warm (default) — positive framing, introduce the incoming person, set the client at ease; clean — factual exit with no extra editorialising.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "handover_to"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -12265,6 +12304,57 @@ Now that we've got a good rhythm going${accountRef}${currentRef}, I wanted to su
 It's the kind of thing that fits naturally alongside what we're already doing, and keeping it under the retainer keeps things simple — no separate quotes or project kicks, just ongoing support.
 
 Happy to put together updated terms if you'd like to go ahead. Let me know if you want more detail on what's involved.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_handover_email") {
+        const clientName = String(args.client_name || "there");
+        const handoverTo = String(args.handover_to || "the new team");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const handoverReason = args.handover_reason ? String(args.handover_reason) : null;
+        const nextSteps = args.next_steps ? String(args.next_steps) : null;
+        const route = args.route === "clean" ? "clean" : "warm";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const reasonRef = handoverReason ? ` — ${handoverReason}` : "";
+        const nextRef = nextSteps ? `\n\n${nextSteps}` : "";
+        let subject;
+        let body;
+        if (route === "clean") {
+            subject = projectName
+                ? `${projectName} — handover to ${handoverTo}`
+                : `Project handover — ${handoverTo}`;
+            body = `Hi ${clientName},
+
+I wanted to let you know that ${handoverTo} will be taking over the work${projectRef} from here${reasonRef}.
+
+I'll make sure everything is in good shape for the transition — documentation, files, and context — so there's no disruption on your end.${nextRef}
+
+It's been good working with you. Please don't hesitate to reach out if there's anything you need from me during the transition.
+
+${yourName}`;
+        }
+        else {
+            // warm (default)
+            subject = projectName
+                ? `${projectName} — introducing ${handoverTo}`
+                : `Introducing ${handoverTo}`;
+            body = `Hi ${clientName},
+
+I have some news${projectRef}${reasonRef}. ${handoverTo} will be taking things forward from here, and I think you're in great hands.
+
+I've spent time making sure everything is properly documented and ready to hand over — the last thing I want is for this to feel like a disruption. ${handoverTo} will have full context on where things stand and what's coming next.${nextRef}
+
+It's been a genuine pleasure working with you. I'll make sure the transition is seamless, and I'm happy to answer any questions in the meantime.
 
 ${yourName}`;
         }
