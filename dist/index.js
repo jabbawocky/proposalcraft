@@ -5508,6 +5508,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "project_name"],
             },
         },
+        {
+            name: "retainer_expansion_email",
+            description: "Write the email proposing to expand an existing retainer — adding services, increasing hours, or upgrading to a higher tier. For when you're in an ongoing retained relationship and want to deepen it based on the work done so far. Three routes: add_services (default — propose adding new service lines to the current retainer, e.g. adding SEO audits to a design retainer or copywriting to a strategy retainer), increase_hours (propose increasing the monthly hours allocation — works when you're consistently hitting the cap and both parties are getting value), upgrade_tier (propose moving the client to a higher package that better fits their current usage or needs — works when they've outgrown what they're on). Distinct from retainer_proposal (initial pitch to a new client), retainer_check_in_email (a routine check-in with no commercial ask), and new_service_announcement_email (broadcasting a new service to all clients). Required: client_name. Optional: current_retainer (what they're currently on — e.g. '5 hours/month design support', '$800/month strategy'), proposed_expansion (what you're proposing to add or change — be specific), project_name, route ('add_services' | 'increase_hours' | 'upgrade_tier' — default add_services), your_name. Does not count against your monthly draft limit.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    current_retainer: {
+                        type: "string",
+                        description: "What they're currently on — e.g. '5 hours/month design support', '$800/month strategy retainer'.",
+                    },
+                    proposed_expansion: {
+                        type: "string",
+                        description: "What you're proposing to add or change — be specific, e.g. 'add monthly SEO audit and content brief', 'move from 5 to 10 hours/month', 'upgrade to the Growth package which includes analytics and reporting'.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the retainer or account for context",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["add_services", "increase_hours", "upgrade_tier"],
+                        description: "add_services (default) — add new service lines; increase_hours — more hours per month; upgrade_tier — move to a higher package.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -12167,6 +12202,69 @@ Just flagging: ${usedLine}
 Any further revisions from here fall outside the original scope. ${additionalRate ? `I bill additional revision work at ${additionalRate}.` : "I'm happy to continue, and can quote you for any further rounds once I know what's needed."}
 
 Let me know how you'd like to proceed and I'll get a quote to you quickly.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "retainer_expansion_email") {
+        const clientName = args?.client_name;
+        const currentRetainer = args?.current_retainer;
+        const proposedExpansion = args?.proposed_expansion;
+        const projectName = args?.project_name;
+        const route = args?.route || "add_services";
+        const yourName = args?.your_name || "";
+        const currentRef = currentRetainer ? ` (currently ${currentRetainer})` : "";
+        const accountRef = projectName ? ` on ${projectName}` : "";
+        let subject;
+        let body;
+        if (route === "increase_hours") {
+            subject = projectName
+                ? `${projectName} — increasing monthly hours`
+                : "Retainer — increasing monthly hours";
+            body = `Hi ${clientName},
+
+We've been getting through a good amount together${accountRef}${currentRef}, and I've noticed we're regularly hitting the monthly cap.
+
+I wanted to raise the option of increasing the hours${proposedExpansion ? ` — specifically, ${proposedExpansion}` : ""}. It would mean fewer queuing decisions each month and a bit more headroom to move quickly when things come up.
+
+Happy to put together a revised agreement if that sounds useful. Let me know if you'd like to talk it through.
+
+${yourName}`;
+        }
+        else if (route === "upgrade_tier") {
+            subject = projectName
+                ? `${projectName} — moving to a higher tier`
+                : "Retainer — moving to a higher tier";
+            body = `Hi ${clientName},
+
+Looking at how we've been working together${accountRef}${currentRef}, I think you've outgrown the current setup${proposedExpansion ? ` — ${proposedExpansion}` : ""}.
+
+The next tier up would give you more headroom and a better fit for where things are at now. I'd rather flag it proactively than have you keep running up against the edges of what's included.
+
+Would it be worth a quick call to talk through what that looks like? I can put together a revised agreement once we've landed on the right fit.
+
+${yourName}`;
+        }
+        else {
+            // add_services (default)
+            subject = projectName
+                ? `${projectName} — adding to the retainer`
+                : "Retainer — adding services";
+            body = `Hi ${clientName},
+
+Now that we've got a good rhythm going${accountRef}${currentRef}, I wanted to suggest adding something to the mix${proposedExpansion ? `: ${proposedExpansion}` : ""}.
+
+It's the kind of thing that fits naturally alongside what we're already doing, and keeping it under the retainer keeps things simple — no separate quotes or project kicks, just ongoing support.
+
+Happy to put together updated terms if you'd like to go ahead. Let me know if you want more detail on what's involved.
 
 ${yourName}`;
         }
