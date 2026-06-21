@@ -5642,6 +5642,54 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "reason", "proposed_reduction"],
       },
     },
+    {
+      name: "project_maintenance_proposal_email",
+      description:
+        "Write the email proposing a maintenance retainer or support agreement after delivering a project. One of the easiest upsells freelancers miss — once the work is live, clients are most open to someone they trust keeping it running. Three routes: standard (regular monthly check-in, defined hours for updates and fixes — most common), priority_support (faster response SLA, reserved hours — for clients who can't afford downtime), or light_touch (a small bank of hours, no monthly commitment — for low-maintenance projects or budget-conscious clients who still want access to you). Distinct from retainer_proposal (which opens an ongoing relationship from scratch) and service_package_email (a general menu of services). Does not count against your monthly draft limit. Required: client_name, project_name. Optional: monthly_hours (hours included per month — e.g. '4 hours'), monthly_rate (proposed monthly fee — e.g. '$350/month'), route ('standard' | 'priority_support' | 'light_touch' — default standard), response_time (SLA for priority_support — e.g. '4 business hours', 'same business day'), what_is_covered (brief summary of what's included — e.g. 'plugin updates, performance monitoring, minor copy edits'), go_live_date (when the project goes live — grounds the timing of the ask), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "First name or full name of the client",
+          },
+          project_name: {
+            type: "string",
+            description: "The project just delivered — e.g. 'the Westbrook website', 'your new booking system', 'the brand refresh'. Used throughout the email.",
+          },
+          monthly_hours: {
+            type: "string",
+            description: "Optional: hours included per month — e.g. '4 hours', '2 hours'. Omit to keep the email non-specific on hours.",
+          },
+          monthly_rate: {
+            type: "string",
+            description: "Optional: proposed monthly fee — e.g. '$350/month', '£250/month'. Omit to keep pricing out of the first email (useful if you want to discuss before quoting).",
+          },
+          route: {
+            type: "string",
+            enum: ["standard", "priority_support", "light_touch"],
+            description: "standard (default): regular monthly check-in, defined hours for updates and fixes, stability monitoring. priority_support: faster response SLA, reserved capacity, named contact — for clients where downtime has real cost. light_touch: a small bank of hours, no monthly commitment — for low-maintenance projects or budget-conscious clients.",
+          },
+          response_time: {
+            type: "string",
+            description: "Optional (most useful for priority_support): the response SLA you're committing to — e.g. '4 business hours', 'same business day', 'within 2 hours during business hours'.",
+          },
+          what_is_covered: {
+            type: "string",
+            description: "Optional: brief summary of what maintenance includes — e.g. 'plugin and dependency updates, uptime monitoring, minor copy edits, one design tweak per month'. Makes the offer concrete without needing a full proposal.",
+          },
+          go_live_date: {
+            type: "string",
+            description: "Optional: when the project is going live or was delivered — e.g. 'next Monday', 'June 30', 'this week'. Grounds the timing of the ask.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "project_name"],
+      },
+    },
   ],
 }));
 
@@ -13014,6 +13062,88 @@ What I'm proposing: ${proposedReduction}.
 That keeps the core value of the project intact and gives us something we can both be proud of. Anything cut from this version isn't lost — it's just scoped out of this engagement and can be revisited separately if useful.
 
 I'd rather raise this now and give you a clear picture than let it drift. Let me know if you want to talk through the details.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_maintenance_proposal_email") {
+    const clientName = String(args!.client_name);
+    const projectName = String(args!.project_name);
+    const monthlyHours = args!.monthly_hours ? String(args!.monthly_hours) : null;
+    const monthlyRate = args!.monthly_rate ? String(args!.monthly_rate) : null;
+    const route = args!.route ? String(args!.route) : "standard";
+    const responseTime = args!.response_time ? String(args!.response_time) : "next business day";
+    const whatIsCovered = args!.what_is_covered ? String(args!.what_is_covered) : null;
+    const goLiveDate = args!.go_live_date ? String(args!.go_live_date) : null;
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const liveLine = goLiveDate ? ` With ${projectName} going live ${goLiveDate}, it's` : ` Now that ${projectName} is live, it's`;
+    const hoursLine = monthlyHours ? ` (${monthlyHours}/month)` : "";
+    const rateLine = monthlyRate ? ` at ${monthlyRate}` : "";
+    const coverageLine = whatIsCovered ? `\n\nWhat's included: ${whatIsCovered}.` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "priority_support") {
+      subject = `${projectName} — priority support retainer`;
+
+      body = `Hi ${clientName},
+
+${liveLine} a good moment to think about what happens when something needs attention.
+
+I offer a priority support retainer for clients who can't afford to wait.${coverageLine}
+
+What you get: reserved capacity${hoursLine}, guaranteed response within ${responseTime}, and a direct line to me whenever something needs fixing — not a support queue, not a new project intake, just a quick reply and work underway.
+
+${monthlyRate ? `The retainer is ${monthlyRate}, which locks in your rate and keeps you at the front of the queue.` : "I can put together the details if you'd like to see exactly what's covered and at what rate."}
+
+Most clients on retainer find they rarely use all the hours — but they sleep better knowing they're covered. Worth a quick conversation if that sounds useful.
+
+${yourName}`;
+
+    } else if (route === "light_touch") {
+      subject = `${projectName} — light maintenance option`;
+
+      body = `Hi ${clientName},
+
+${liveLine} a natural point to think about what happens when things need a tweak.
+
+Not every project needs a full maintenance contract. Sometimes you just want a few hours in the bank — someone who already knows your setup, available when something comes up.${coverageLine}
+
+I offer a light-touch option: a small block of hours${rateLine} with no monthly commitment. You use them when you need them — updates, edits, fixes — and top up if you run low.
+
+${monthlyHours ? `Blocks start at ${monthlyHours}${rateLine}.` : "Happy to put together the details if this is useful."}
+
+No retainer, no recurring invoice — just access when you need it. Let me know if you'd like to set something up.
+
+${yourName}`;
+
+    } else {
+      // standard (default)
+      subject = `${projectName} — ongoing maintenance`;
+
+      body = `Hi ${clientName},
+
+${liveLine} worth thinking about what keeps it running well over time.
+
+I offer a monthly maintenance retainer for clients after delivery — so you're not starting from scratch every time something needs attention, and I'm not trying to remember your setup six months from now.${coverageLine}
+
+${monthlyHours ? `The retainer includes ${monthlyHours} per month${rateLine}.` : "It's a set amount of time each month at a fixed rate."} That covers routine updates, small fixes, and anything that comes up — without needing to scope and quote every small job.
+
+${monthlyRate ? `Rate: ${monthlyRate}. Cancel anytime with a month's notice.` : "Happy to share the details if you'd like to see what's included and at what rate."}
+
+A lot of my clients find it easier to have someone on call who already knows the project than to reach out cold every time something shifts. Wanted to flag it now while we're wrapping up — no pressure either way.
 
 ${yourName}`;
     }
