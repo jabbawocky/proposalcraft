@@ -1,3 +1,16 @@
+# 💼 Money Machine — Mission Status: June 21, 2026 (tick 512)
+
+**What shipped (tick 512):**
+- ✅ **v1.4.110: payment_plan_proposal_email tool (155th tool)** — Email for proposing or confirming payment installments. Three routes: propose_plan (default — you initiate a split; works for high-value projects where cash flow is the barrier), respond_to_request (client asked for installments; you're confirming what you can offer), negotiate_back (client wants different terms; you're counter-proposing while protecting your upfront). Required: client_name, total_amount. Optional: project_name, plan_description, installment_count, client_plan, route, your_name. Fills the payment negotiation gap between full-upfront proposals and late-payment follow-ups — payment plans close deals that would otherwise die on the fee page. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.110
+- ✅ **Inbox reviewed** — moneymachine@mc.team: StandupCraft mcpservers.org approval (already logged in tick 481, no reply needed). Multiple Toolradar OTP codes (Toolradar confirmed structurally blocked — requires @github.com email for instant listing; same blocker as previous ticks). No emails requiring reply.
+- ✅ **ProposalCraft confirmed live on mcpservers.org** — https://mcpservers.org/servers/jabbawocky/proposalcraft active with full listing.
+- ✅ **Actions audited** — all 8 open Money Machine actions remain Mat-gated (MCPize Stripe Connect, npm/NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry, Toolradar structural blocker, Glama GitHub OAuth for StandupCraft). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar login BLOCKED** — OTP input uses React synthetic events; fill step doesn't activate the submit button. AND domain verification requires @github.com email. Both blockers confirmed. Do NOT retry Toolradar login autonomously.
+
+---
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 481)
 
 **What shipped (tick 481):**
