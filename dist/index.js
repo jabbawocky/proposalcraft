@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.111" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.112" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5623,6 +5623,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "access_needed"],
+            },
+        },
+        {
+            name: "milestone_approval_request_email",
+            description: "Write the email asking a client to review and formally approve a completed milestone, concept, or phase before work continues. For when you need a clear go-ahead — not just a 'looks good' in a message thread — to protect against scope disputes and mid-project reversals. Three routes: milestone_complete (default — a defined project milestone or phase is done; you're requesting sign-off before proceeding to the next stage; tone is confident and forward-looking, frames approval as the natural next step), design_concepts (presenting early-stage creative work — wireframes, mockups, logo concepts, visual designs — for client approval before you move into build or refinement; sets expectations that this is a decision gate, not a preview), staged_delivery (you're delivering a discrete unit of work in a multi-phase project and need the client to accept it before phase two or three begins; useful for retainer work, development sprints, or content batches). Distinct from deliverables_sign_off_email (final project handover, not a mid-project checkpoint), brief_confirmation_email (confirms scope before work starts, not approval during), and project_status_update_email (an FYI update, not a decision gate). Does not count against your monthly draft limit. Required: client_name, milestone_description (what you're asking them to approve — e.g. 'the homepage wireframes', 'Phase 1: the discovery and strategy document', 'Sprint 1 deliverables: user auth and dashboard'). Optional: project_name, next_phase (what starts after approval — e.g. 'full visual design', 'development build', 'Phase 2: content migration'), deadline (when you need a decision by — e.g. 'by Friday', 'end of this week', 'before we lose our build slot'), route ('milestone_complete' | 'design_concepts' | 'staged_delivery' — default milestone_complete), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    milestone_description: {
+                        type: "string",
+                        description: "What you're asking them to approve — e.g. 'the homepage wireframes', 'Phase 1: discovery and strategy document', 'Sprint 1: user auth and dashboard'. Required.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the project — e.g. 'the Westbrook website', 'your brand identity', 'the app build'.",
+                    },
+                    next_phase: {
+                        type: "string",
+                        description: "Optional: what starts once approval is given — e.g. 'the full visual design stage', 'development', 'Phase 2: content migration'. Makes the stakes of the decision clear.",
+                    },
+                    deadline: {
+                        type: "string",
+                        description: "Optional: when you need a decision by — e.g. 'by Friday', 'before the end of the week', 'in the next couple of days'. Adds urgency without being pushy.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["milestone_complete", "design_concepts", "staged_delivery"],
+                        description: "milestone_complete (default) — phase done, requesting sign-off before next stage; design_concepts — early creative work for approval before build; staged_delivery — discrete unit in a multi-phase project.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "milestone_description"],
             },
         },
         {
@@ -12586,6 +12625,78 @@ The total is ${totalAmount}. Rather than the full amount upfront, I'm happy to s
 This is something I offer on larger projects to make the cash flow more predictable on your end — it doesn't change the scope, timeline, or anything else, just the payment structure.
 
 If you'd prefer to pay in full, that's fine too. Let me know which way works better for you and I'll update the proposal accordingly.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "milestone_approval_request_email") {
+        const clientName = String(args.client_name || "there");
+        const milestoneDescription = String(args.milestone_description || "the milestone");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const nextPhase = args.next_phase ? String(args.next_phase) : null;
+        const deadline = args.deadline ? String(args.deadline) : null;
+        const route = args.route === "design_concepts" ? "design_concepts"
+            : args.route === "staged_delivery" ? "staged_delivery"
+                : "milestone_complete";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        const nextPhaseRef = nextPhase ? ` Once you've approved, I'll move straight into ${nextPhase}.` : " Once you've signed off I'll be ready to move to the next stage.";
+        const deadlineRef = deadline ? `\n\nIf you're able to get back to me ${deadline} that would be great — it keeps the timeline on track.` : "";
+        let subject;
+        let body;
+        if (route === "design_concepts") {
+            subject = projectName
+                ? `${projectName} — concepts ready for your review`
+                : `${milestoneDescription} — ready for your review`;
+            body = `Hi ${clientName},
+
+${milestoneDescription} are ready for your review${projectRef}.
+
+I'd love your feedback before I take anything further — this is the point where changes are straightforward. Once you've approved the direction, I'll lock it in and move forward from there.${nextPhaseRef}
+
+A few things that would help with your feedback:
+- What's working and what isn't (specific is better than general)
+- Any copy, colours, or layout elements you'd like adjusted
+- Whether the overall direction feels right for your audience
+
+${deadlineRef ? deadlineRef + "\n\n" : ""}Please have a look and let me know your thoughts. Happy to jump on a call if that's easier.
+
+${yourName}`;
+        }
+        else if (route === "staged_delivery") {
+            subject = projectName
+                ? `${projectName} — ${milestoneDescription} delivered`
+                : `${milestoneDescription} — delivered for sign-off`;
+            body = `Hi ${clientName},
+
+${milestoneDescription} is complete and ready for your review${projectRef}.
+
+Before I start the next phase, I need your formal sign-off on this delivery. This keeps everything clean: if changes come up later that go beyond what was agreed here, we can scope them properly rather than them eating into the next phase.${nextPhaseRef}${deadlineRef}
+
+Please take a look and confirm you're happy to proceed — or flag anything you'd like adjusted before we move forward.
+
+${yourName}`;
+        }
+        else {
+            // milestone_complete (default)
+            subject = projectName
+                ? `${projectName} — ${milestoneDescription} complete`
+                : `${milestoneDescription} — ready for your approval`;
+            body = `Hi ${clientName},
+
+${milestoneDescription} is complete${projectRef}.
+
+Could you take a look and let me know if you're happy to approve it? I want to make sure you're satisfied with where things are before I continue.${nextPhaseRef}${deadlineRef}
+
+If anything needs adjusting, now is the right time to flag it — happy to make changes at this stage before we move on.
 
 ${yourName}`;
         }
