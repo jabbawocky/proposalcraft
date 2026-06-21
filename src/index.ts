@@ -5988,6 +5988,46 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name"],
       },
     },
+    {
+      name: "project_kickoff_email",
+      description:
+        "Write the email that officially starts the project and sets the client up for a smooth engagement. Sent once the contract is signed and the deposit is in — this is the email that takes the client from 'hired' to 'we're underway'. Covers what happens next, the timeline, what you need from them, and any links or access to share. Three routes: first_project (default — you're working with this client for the first time; warm and structured; introduces your process and what they can expect at each stage), returning_client (you've worked together before; skips the formalities, gets straight to the project specifics — references shared shorthand, sets up the new timeline), complex_project (large or multi-phase project; more structured; lists phases with indicative dates, key milestones, and communication cadence; useful when misaligned expectations at the start cause trouble later). Distinct from working_agreement_email (which covers norms and ground rules) and proposal tools (pre-hire). Does not count against your monthly draft limit. Required: client_name. Optional: project_name (e.g. 'the Westbrook site rebrand', 'your Q3 content strategy'), kickoff_date (date work officially begins — e.g. 'Monday 24 June'), first_deliverable (what they'll receive first and when — e.g. 'initial wireframes by Friday 28 June'), access_links (tools/files/links to share — e.g. 'Notion workspace: https://...', 'shared Drive: https://...'), route ('first_project' | 'returning_client' | 'complex_project' — default first_project), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client first name",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: name of the project — e.g. 'the Westbrook rebrand', 'your Q3 content strategy'. Personalises the email.",
+          },
+          kickoff_date: {
+            type: "string",
+            description: "Optional: date work officially begins — e.g. 'Monday 24 June', 'this Thursday'. Sets expectations on timing.",
+          },
+          first_deliverable: {
+            type: "string",
+            description: "Optional: what the client will receive first and when — e.g. 'initial wireframes by Friday 28 June', 'a discovery brief by end of this week'. Gives them something concrete to look forward to.",
+          },
+          access_links: {
+            type: "string",
+            description: "Optional: links, tools or shared resources to pass on — e.g. 'Notion workspace: https://...', 'shared Drive: https://...'. Paste as freeform text; will be formatted into the email.",
+          },
+          route: {
+            type: "string",
+            enum: ["first_project", "returning_client", "complex_project"],
+            description: "first_project (default) — new client, warm and structured, introduces your process; returning_client — you've worked together before, skip the formalities; complex_project — multi-phase project, structured phases and milestones.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
   ],
 }));
 
@@ -13964,6 +14004,93 @@ It's been great working with you${projectRef ? ` on ${projectRef}` : ""}. I'm re
 Now that we're wrapping up, I wanted to ask if you'd be willing to write a short testimonial — a few sentences on what the project covered and how the work went from your end. It doesn't need to be polished or long; I mainly want something that reflects the real experience.${draftOffer}
 
 It genuinely helps when I'm talking to new clients, so I'd really appreciate it if you have a few minutes.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_kickoff_email") {
+    const clientName = String(args!.client_name || "there");
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const kickoffDate = args!.kickoff_date ? String(args!.kickoff_date) : null;
+    const firstDeliverable = args!.first_deliverable ? String(args!.first_deliverable) : null;
+    const accessLinks = args!.access_links ? String(args!.access_links) : null;
+    const route = args!.route === "returning_client" ? "returning_client"
+      : args!.route === "complex_project" ? "complex_project"
+      : "first_project";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const startLine = kickoffDate ? `\n\nWork starts ${kickoffDate}.` : "";
+    const deliverableLine = firstDeliverable ? `\n\nYour first deliverable: ${firstDeliverable}.` : "";
+    const accessBlock = accessLinks
+      ? `\n\nHere are the links and tools for the project:\n${accessLinks}`
+      : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "returning_client") {
+      subject = projectName ? `${projectName} — we're underway` : "We're underway";
+
+      body = `Hi ${clientName},
+
+Great to be working together again${projectRef ? ` on ${projectRef}` : ""}.${startLine}${deliverableLine}
+
+If anything comes up or you have questions as we go, just drop me a line.${accessBlock}
+
+Looking forward to it.
+
+${yourName}`;
+
+    } else if (route === "complex_project") {
+      subject = projectName ? `${projectName} — project kickoff` : "Project kickoff";
+
+      body = `Hi ${clientName},
+
+We're officially underway${projectRef ? ` on ${projectRef}` : ""}. Here's what the next stage looks like.${startLine}
+
+**How the project is structured:**
+The work will run in phases with a clear handoff at each stage. I'll keep you updated at the start of each phase, and there'll be a review point before we move forward.
+
+**Communication:**
+I'll send a short update every week covering progress, what's next, and anything I need from you. If anything is time-sensitive, reach out directly and I'll come back to you same day.
+
+**What I need from you:**
+For things to move without delays, please try to turn around feedback within a few days of each delivery. If something's going to take longer, just let me know.${deliverableLine}${accessBlock}
+
+If you have any questions before we get started, now's a good time to raise them.
+
+${yourName}`;
+
+    } else {
+      // first_project (default)
+      subject = projectName ? `${projectName} — we're underway` : "We're underway";
+
+      body = `Hi ${clientName},
+
+Contract signed, deposit received — we're officially underway${projectRef ? ` on ${projectRef}` : ""}.${startLine}
+
+Here's what to expect:
+
+**How I work:** I'll keep you in the loop without overwhelming your inbox. You'll get a short update when something significant happens — a draft ready for review, a milestone hit, or something I need from you.
+
+**Feedback:** When I share something for review, I'll flag clearly what I'm looking for. A quick reply within a couple of days keeps things moving — if you need more time, just let me know.
+
+**Questions:** Anything urgent, message me directly. For non-urgent questions, email works fine and I'll come back to you within one business day.${deliverableLine}${accessBlock}
+
+If anything feels unclear about what we're building or how we're working together, now's the time to raise it.
+
+Looking forward to getting started.
 
 ${yourName}`;
     }
