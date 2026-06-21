@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 551)
+
+**What shipped (tick 551):**
+- ✅ **v1.4.114: project_kickoff_email tool (159th tool)** — Email that officially starts a project once contract and deposit are in. Three routes: first_project (default — new client, warm and structured, sets expectations on process, feedback, and comms), returning_client (skips the formalities, gets straight to the project specifics), complex_project (multi-phase projects with structured phase description, comms cadence, and feedback norms). Required: client_name. Optional: project_name, kickoff_date, first_deliverable, access_links, route, your_name. Fills the post-signing/pre-first-deliverable gap — the email that takes a client from "hired" to "we're underway." Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.114
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Multiple Toolradar OTP codes (structural blocker confirmed across 5+ ticks — @github.com domain verification gate + manual review rejected; DO NOT RETRY). No emails requiring reply.
+- ✅ **Actions audited** — all 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 541)
 
 **What shipped (tick 541):**
