@@ -5582,6 +5582,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "handover_to"],
             },
         },
+        {
+            name: "payment_plan_proposal_email",
+            description: "Write the email proposing or confirming payment installments for a project. For when a client can't pay the full fee upfront, or when you want to proactively offer a payment plan to remove a barrier to closing the deal. Three routes: propose_plan (default — you initiate a structured installment proposal: milestone-based or monthly splits; works for high-value projects where budget is not the issue but cash flow is), respond_to_request (client has already asked for installments and you're confirming what you can offer — tone is helpful and collaborative, not reluctant), negotiate_back (client wants different terms than you proposed — e.g. smaller upfront, more splits — and you're counter-proposing or finding a middle ground while protecting your interests). Distinct from deposit_request_email (collecting an agreed deposit that's already been discussed), budget_negotiation_email (negotiating the total fee, not the payment structure), and payment_reminder_email (chasing a payment already due). Does not count against your monthly draft limit. Required: client_name, total_amount (total project fee — e.g. '$4,500', '£3,000'). Optional: project_name, plan_description (your proposed structure — e.g. '50% upfront, 50% on delivery', '30% to start, 30% at midpoint, 40% on completion', '$500/month over 3 months'), installment_count (number of payments — e.g. '2', '3', 'monthly for 4 months'), client_plan (for negotiate_back route — the terms the client asked for), route ('propose_plan' | 'respond_to_request' | 'negotiate_back' — default propose_plan), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    total_amount: {
+                        type: "string",
+                        description: "Total project fee — e.g. '$4,500', '£3,000', '$12,000'. Required.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the project — e.g. 'the Westbrook website', 'your brand identity', 'the app build'.",
+                    },
+                    plan_description: {
+                        type: "string",
+                        description: "Optional: the payment structure you're proposing — e.g. '50% upfront, 50% on delivery', '30% to start, 30% at midpoint, 40% on completion', '$1,500/month over 3 months'. If omitted, a standard 50/50 split is implied.",
+                    },
+                    installment_count: {
+                        type: "string",
+                        description: "Optional: number of payments — e.g. '2', '3', '4 monthly payments'. Helps make the email concrete if plan_description is not provided.",
+                    },
+                    client_plan: {
+                        type: "string",
+                        description: "For negotiate_back route: the payment structure the client asked for — e.g. '20% upfront and the rest on delivery', 'monthly over 6 months'. Used to acknowledge their ask before counter-proposing.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["propose_plan", "respond_to_request", "negotiate_back"],
+                        description: "propose_plan (default) — you initiate the payment plan offer; respond_to_request — client asked, you're confirming what you can offer; negotiate_back — client wants different terms, you're counter-proposing.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "total_amount"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -12355,6 +12398,80 @@ I have some news${projectRef}${reasonRef}. ${handoverTo} will be taking things f
 I've spent time making sure everything is properly documented and ready to hand over — the last thing I want is for this to feel like a disruption. ${handoverTo} will have full context on where things stand and what's coming next.${nextRef}
 
 It's been a genuine pleasure working with you. I'll make sure the transition is seamless, and I'm happy to answer any questions in the meantime.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "payment_plan_proposal_email") {
+        const clientName = String(args.client_name || "there");
+        const totalAmount = String(args.total_amount || "the project fee");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const planDescription = args.plan_description ? String(args.plan_description) : null;
+        const installmentCount = args.installment_count ? String(args.installment_count) : null;
+        const clientPlan = args.client_plan ? String(args.client_plan) : null;
+        const route = args.route === "respond_to_request" ? "respond_to_request"
+            : args.route === "negotiate_back" ? "negotiate_back"
+                : "propose_plan";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const planRef = planDescription ? planDescription : (installmentCount ? `${installmentCount} payments` : "two payments — half upfront, half on delivery");
+        let subject;
+        let body;
+        if (route === "respond_to_request") {
+            subject = projectName
+                ? `${projectName} — payment plan`
+                : "Payment plan";
+            body = `Hi ${clientName},
+
+Happy to work out a payment plan${projectRef}. Here's what I can offer:
+
+${planRef} — total ${totalAmount}.
+
+That keeps things manageable on your end while making sure the project has the momentum it needs from mine. I'll send an updated proposal or invoice with the payment schedule clearly laid out.
+
+Let me know if that works for you, or if you'd like to adjust the structure.
+
+${yourName}`;
+        }
+        else if (route === "negotiate_back") {
+            const clientPlanRef = clientPlan ? `You mentioned ${clientPlan}` : "I've looked at the structure you suggested";
+            subject = projectName
+                ? `${projectName} — payment terms`
+                : "Payment terms";
+            body = `Hi ${clientName},
+
+${clientPlanRef}. I want to make this work${projectRef}, so let me suggest a middle ground:
+
+${planRef} — total ${totalAmount}.
+
+The reason I need something closer to this is that I start committing time and resources as soon as the project kicks off, so I need the first payment to reflect that. The split above keeps the risk balanced for both of us.
+
+If that works, I'll update the proposal and we can move forward. Let me know what you think.
+
+${yourName}`;
+        }
+        else {
+            // propose_plan (default)
+            subject = projectName
+                ? `${projectName} — payment plan option`
+                : "Payment plan option";
+            body = `Hi ${clientName},
+
+I wanted to flag an option on the payment side${projectRef} in case it's useful.
+
+The total is ${totalAmount}. Rather than the full amount upfront, I'm happy to split it: ${planRef}.
+
+This is something I offer on larger projects to make the cash flow more predictable on your end — it doesn't change the scope, timeline, or anything else, just the payment structure.
+
+If you'd prefer to pay in full, that's fine too. Let me know which way works better for you and I'll update the proposal accordingly.
 
 ${yourName}`;
         }
