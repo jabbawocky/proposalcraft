@@ -5325,6 +5325,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             },
         },
         {
+            name: "late_payment_follow_up_email",
+            description: "Write the email chasing an unpaid invoice — professionally, without damaging the relationship. Three routes: gentle (first nudge — invoice is a few days past due, tone is friendly and assumes an oversight, no pressure), firm (second or third follow-up — invoice is significantly overdue, tone is clear and direct, includes a deadline to respond), final_notice (last step before escalating — state what happens next: work pause, late fee, collections, or legal — be factual, not emotional). Distinct from re_engagement_email (chasing a prospect who went quiet before signing) and contract_renewal_email (renewing an ongoing relationship). Does not count against your monthly draft limit. Required: client_name, invoice_number, amount, days_overdue. Optional: route ('gentle' | 'firm' | 'final_notice' — default gentle based on days_overdue if not specified), due_date (original due date), project_name, next_step (for final_notice — what you'll do if unpaid: e.g. 'pause work on all active projects', 'add a 2% monthly late fee', 'refer to collections'), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "First name or full name of the client",
+                    },
+                    invoice_number: {
+                        type: "string",
+                        description: "Invoice number or reference — e.g. 'INV-042', '#112', 'the November invoice'. Used directly in the email.",
+                    },
+                    amount: {
+                        type: "string",
+                        description: "Amount outstanding — include currency symbol. E.g. '$4,200', '£1,850 + VAT', '$750 (50% balance)'.",
+                    },
+                    days_overdue: {
+                        type: "number",
+                        description: "How many days past the due date the invoice is. Used to calibrate tone and select the default route if route is not specified.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["gentle", "firm", "final_notice"],
+                        description: "gentle (default for 1–7 days): friendly first nudge, assumes an oversight. firm (default for 8–21 days): direct follow-up with a response deadline. final_notice (default for 22+ days): factual final warning stating what happens next.",
+                    },
+                    due_date: {
+                        type: "string",
+                        description: "Optional: the original due date — e.g. 'June 1', '1 June 2026'. Makes the email more specific.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: project name or description — adds context. E.g. 'the Westbrook website build', 'our Q2 retainer'.",
+                    },
+                    next_step: {
+                        type: "string",
+                        description: "Optional (recommended for final_notice): what you'll do if unpaid. E.g. 'pause work on all active projects until the balance is cleared', 'add a 2% monthly late fee from the original due date', 'refer the balance to a collections agency'. Keep it factual — this is a statement of policy, not a threat.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "invoice_number", "amount", "days_overdue"],
+            },
+        },
+        {
             name: "project_scope_reduction_email",
             description: "Write the email proposing a scope reduction when a project is running over budget or time — you're catching it proactively and offering a clean path rather than letting it overrun or blow up. This is a distinct moment: you're the one raising the issue before it becomes a crisis, and you're offering a concrete proposal (not a vague warning). Three routes: reduce_to_core (trim the scope to the minimum viable deliverable, explicitly stating what stays and what's cut — use when the cut is straightforward and the core is still valuable on its own), phase_it (deliver the agreed core now and scope the remainder as a future phase with a separate budget — use when the client will still want the rest and you want to preserve the relationship and future work), stop_here (deliver what exists now and close the project cleanly — use when continuing clearly doesn't serve the client, when the project has run its course, or when it's better to end well than drag on). Distinct from scope_creep_email (client adding uncosted work), budget_negotiation_email (negotiating budget before work starts), and mid_project_cancellation_response_email (client-initiated stop). Does not count against your monthly draft limit. Required: client_name, reason (what's driving the reduction — e.g. 'we're tracking 30% over budget due to unexpected API complexity', 'the timeline has compressed and the full scope no longer fits'), proposed_reduction (what you're proposing to cut or defer — be concrete). Optional: project_name, current_completion_percentage, phase_2_scope (for phase_it route — what goes into the next phase), route ('reduce_to_core' | 'phase_it' | 'stop_here' — default reduce_to_core), your_name.",
             inputSchema: {
@@ -11760,6 +11807,64 @@ To be clear on what we've agreed: I'll proceed on the adjusted basis of ${condit
 Once signed, I'll be in touch with next steps.
 
 Looking forward to it.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "late_payment_follow_up_email") {
+        const clientName = String(args.client_name);
+        const invoiceNumber = String(args.invoice_number);
+        const amount = String(args.amount);
+        const daysOverdue = Number(args.days_overdue);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const dueDate = args.due_date ? String(args.due_date) : null;
+        const nextStep = args.next_step ? String(args.next_step) : "pause work on active projects until the balance is cleared";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        let route = args.route ? String(args.route) : (daysOverdue <= 7 ? "gentle" : daysOverdue <= 21 ? "firm" : "final_notice");
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const dueDateRef = dueDate ? ` (due ${dueDate})` : "";
+        let subject;
+        let body;
+        if (route === "firm") {
+            subject = `${invoiceNumber} — ${amount} outstanding`;
+            body = `Hi ${clientName},
+
+I'm following up on ${invoiceNumber}${dueDateRef} for ${amount}${projectRef} — now ${daysOverdue} days past due and still showing as unpaid.
+
+I want to get this sorted quickly. Could you let me know the status by end of this week? If there's a query on the invoice or something I can help move through your approval process, just say the word.
+
+If payment has already been sent, please ignore this — and let me know so I can check on this end.
+
+${yourName}`;
+        }
+        else if (route === "final_notice") {
+            subject = `Final notice — ${invoiceNumber} — ${amount}`;
+            body = `Hi ${clientName},
+
+This is a final notice for ${invoiceNumber}${dueDateRef} — ${amount}${projectRef} — now ${daysOverdue} days past the due date. I haven't received payment or a response to my previous follow-ups.
+
+Unless I receive payment or hear from you by [date — suggest 5 business days from now], I'll need to ${nextStep}.
+
+I'd prefer to resolve this directly and keep things straightforward. If there's a specific issue holding things up, please reach out today.
+
+${yourName}`;
+        }
+        else {
+            // gentle (default)
+            subject = `Quick follow-up — ${invoiceNumber}`;
+            body = `Hi ${clientName},
+
+Just a quick note — ${invoiceNumber}${dueDateRef} for ${amount}${projectRef} doesn't appear to have been settled yet. I'm sure it's just got lost in the shuffle.
+
+Could you take a look when you get a moment? Happy to resend the invoice or answer any questions if that helps.
 
 ${yourName}`;
         }
