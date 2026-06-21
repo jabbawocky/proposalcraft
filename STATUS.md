@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 541)
+
+**What shipped (tick 541):**
+- ✅ **v1.4.113: testimonial_request_email tool (158th tool)** — Email asking a client for a testimonial or review after project completion. Three routes: after_completion (default — warm, low-pressure ask at project close; offers to draft something for the client to edit, removing the blank-page friction), specific_platform (directs client to a named platform — Google, LinkedIn, Clutch — with optional direct URL), delayed_ask (following up weeks/months after the project ended without over-apologising). Required: client_name. Optional: project_name, platform, platform_url, offer_draft, route, your_name. Fills the post-project social proof gap — distinct from client_reference_request_email (phone/video reference for a live prospect, not a written quote). Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.113
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Multiple Toolradar OTP codes (structural blocker confirmed across 4 ticks — @github.com domain verification gate + manual review rejected; DO NOT RETRY). StandupCraft mcpservers.org approval (already logged tick 481). No emails requiring reply.
+- ✅ **Actions audited** — all 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 21, 2026 (tick 525)
 
 **What shipped (tick 525):**
