@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.107" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.111" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5580,6 +5580,49 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name", "handover_to"],
+            },
+        },
+        {
+            name: "client_access_request_email",
+            description: "Write the email requesting access to client systems, tools, platforms, or repositories needed to start or continue work. For when you need logins, permissions, API keys, or repository invitations from the client side. Three routes: initial_request (default — first-time ask for specific access required to kick off or progress the project; tone is clear and practical, lists exactly what's needed and why), follow_up (chasing outstanding access that was promised or discussed but hasn't arrived yet — tone is patient but firm, reiterates the blocker clearly), partial_workaround (you've found a temporary workaround but still need full access eventually — explains what you've done, what you still need, and the impact of the delay). Distinct from client_material_chase_email (chasing files or content, not system access) and project_restart_email (restarting stalled work after a break). Does not count against your monthly draft limit. Required: client_name, access_needed (what you need — e.g. 'admin access to the WordPress dashboard', 'an invitation to the GitHub repo', 'read access to Google Analytics'). Optional: project_name, access_reason (why you need it — e.g. 'to set up the staging environment', 'to start the content migration'), workaround_description (for partial_workaround route — what you've done in the interim), deadline (when you need access by — e.g. 'by end of week', 'before Thursday's call'), route ('initial_request' | 'follow_up' | 'partial_workaround' — default initial_request), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    access_needed: {
+                        type: "string",
+                        description: "What you need access to — e.g. 'admin access to the WordPress dashboard', 'an invitation to the GitHub repo', 'read access to Google Analytics', 'the Figma project files', 'your hosting control panel'. Required.",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: name of the project — e.g. 'the Westbrook website', 'your brand identity', 'the app build'.",
+                    },
+                    access_reason: {
+                        type: "string",
+                        description: "Optional: why you need this access — e.g. 'to set up the staging environment', 'to start the content migration', 'to connect the analytics integration'. Makes the request feel purposeful, not administrative.",
+                    },
+                    workaround_description: {
+                        type: "string",
+                        description: "For partial_workaround route: what you've done in the interim — e.g. 'I've been working from the exported files you shared', 'I've set up a temporary admin account to keep things moving'. Explains what's been done so far.",
+                    },
+                    deadline: {
+                        type: "string",
+                        description: "Optional: when you need access by — e.g. 'by end of week', 'before Thursday's call', 'in the next day or two'. Adds urgency without being pushy.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["initial_request", "follow_up", "partial_workaround"],
+                        description: "initial_request (default) — first-time ask, clear and practical; follow_up — chasing outstanding access, patient but firm; partial_workaround — you've found a temp fix but still need full access.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "access_needed"],
             },
         },
         {
@@ -12398,6 +12441,77 @@ I have some news${projectRef}${reasonRef}. ${handoverTo} will be taking things f
 I've spent time making sure everything is properly documented and ready to hand over — the last thing I want is for this to feel like a disruption. ${handoverTo} will have full context on where things stand and what's coming next.${nextRef}
 
 It's been a genuine pleasure working with you. I'll make sure the transition is seamless, and I'm happy to answer any questions in the meantime.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "client_access_request_email") {
+        const clientName = String(args.client_name || "there");
+        const accessNeeded = String(args.access_needed || "the access details");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const accessReason = args.access_reason ? String(args.access_reason) : null;
+        const workaroundDescription = args.workaround_description ? String(args.workaround_description) : null;
+        const deadline = args.deadline ? String(args.deadline) : null;
+        const route = args.route === "follow_up" ? "follow_up"
+            : args.route === "partial_workaround" ? "partial_workaround"
+                : "initial_request";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const reasonRef = accessReason ? ` so I can ${accessReason}` : "";
+        const deadlineRef = deadline ? ` If you're able to send it ${deadline} that would be great.` : "";
+        let subject;
+        let body;
+        if (route === "follow_up") {
+            subject = projectName
+                ? `${projectName} — access still needed`
+                : "Access still needed";
+            body = `Hi ${clientName},
+
+Just following up on ${accessNeeded}${projectRef} — I haven't received it yet and it's blocking me from moving forward${reasonRef}.
+
+I know things get busy, so no stress — but I did want to flag it because it's holding up the next step on my end.${deadlineRef}
+
+Can you send it through when you get a chance, or let me know if there's a different way to get it sorted?
+
+${yourName}`;
+        }
+        else if (route === "partial_workaround") {
+            subject = projectName
+                ? `${projectName} — access update`
+                : "Access update";
+            const workaroundRef = workaroundDescription
+                ? `In the meantime, ${workaroundDescription}, which has kept things moving, but it's not a long-term solution.`
+                : "I've found a temporary workaround to keep things moving, but it's not sustainable.";
+            body = `Hi ${clientName},
+
+Quick update on ${accessNeeded}${projectRef}. ${workaroundRef}
+
+I still need proper access${reasonRef} — without it I'll hit a wall at the next stage.${deadlineRef}
+
+Could you sort that when you get a moment? Happy to jump on a quick call if it's easier than sorting permissions yourself.
+
+${yourName}`;
+        }
+        else {
+            // initial_request (default)
+            subject = projectName
+                ? `${projectName} — access needed`
+                : "Access needed to get started";
+            body = `Hi ${clientName},
+
+To get started${projectRef} I'll need access to ${accessNeeded}${reasonRef}.
+
+${deadline ? `If you could send this ${deadline} that would be great — it's on the critical path for getting things moving.` : "Once you're able to set that up and share the details, I can hit the ground running."}
+
+If you're not sure how to grant access or need a hand with the setup, I'm happy to walk you through it.
 
 ${yourName}`;
         }
