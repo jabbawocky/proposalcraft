@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.113" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.115" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5783,6 +5783,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                     },
                 },
                 required: ["client_name"],
+            },
+        },
+        {
+            name: "late_materials_impact_email",
+            description: "Write the email confirming receipt of client materials or feedback that arrived after the agreed deadline, and formally noting the revised delivery timeline as a result. Sends an email that (a) confirms what arrived and when, (b) briefly and professionally notes the impact without accusing the client, (c) states the revised delivery date, and (d) keeps the relationship warm. This is the email that protects your timeline while avoiding confrontation — most freelancers skip it and then get blamed for the delay, or send something that reads as passive-aggressive. Distinct from client_material_chase_email (chasing materials you haven't received yet) and project_delay_notification_email (your own delay — not client-caused). Three routes: brief (default — short professional note, minimal friction, just sets the new expectation), significant_impact (major delay needing a substantial timeline revision — more formal, important for contract protection), repeated (materials are late for the second or more time — firmer tone while still professional, makes clear the pattern affects deadlines). Does not count against your monthly draft limit. Required: client_name, materials_received (what arrived — e.g. 'your brand guidelines and copy'), original_deadline (when materials were due — e.g. 'Monday 16 June'), revised_delivery_date (your new delivery date — e.g. 'Wednesday 25 June'). Optional: project_name, route ('brief' | 'significant_impact' | 'repeated' — default brief), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    materials_received: {
+                        type: "string",
+                        description: "What you received — e.g. 'your brand guidelines and logo files', 'the copy for the homepage', 'your feedback on the first draft'",
+                    },
+                    original_deadline: {
+                        type: "string",
+                        description: "When the materials were originally due — e.g. 'Monday 16 June', 'last Friday', 'end of last week'",
+                    },
+                    revised_delivery_date: {
+                        type: "string",
+                        description: "Your new delivery date — e.g. 'Wednesday 25 June', 'end of next week', 'Friday 27 June'",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: project name — e.g. 'the Westbrook rebrand', 'your Q3 campaign'",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["brief", "significant_impact", "repeated"],
+                        description: "brief (default) — short, professional, low friction; significant_impact — major timeline revision, more formal; repeated — late materials more than once, firmer but still professional.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "materials_received", "original_deadline", "revised_delivery_date"],
             },
         },
     ],
@@ -12926,6 +12965,65 @@ Here's what to expect:
 If anything feels unclear about what we're building or how we're working together, now's the time to raise it.
 
 Looking forward to getting started.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "late_materials_impact_email") {
+        const clientName = String(args.client_name || "there");
+        const materialsReceived = String(args.materials_received);
+        const originalDeadline = String(args.original_deadline);
+        const revisedDeliveryDate = String(args.revised_delivery_date);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const route = args.route === "significant_impact" ? "significant_impact"
+            : args.route === "repeated" ? "repeated"
+                : "brief";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        let subject;
+        let body;
+        if (route === "significant_impact") {
+            subject = projectName ? `${projectName} — revised delivery timeline` : "Revised delivery timeline";
+            body = `Hi ${clientName},
+
+I've now received ${materialsReceived}${projectRef ? ` for ${projectRef}` : ""}, which arrived after the agreed ${originalDeadline} deadline.
+
+Given the delay in receiving these, I've had to reschedule your work around other commitments. The revised delivery date is now **${revisedDeliveryDate}**.
+
+I want to be transparent about this so we're aligned on the timeline going forward. If the revised date creates a problem on your end, please let me know as soon as possible so we can discuss options.
+
+${yourName}`;
+        }
+        else if (route === "repeated") {
+            subject = projectName ? `${projectName} — updated delivery date` : "Updated delivery date";
+            body = `Hi ${clientName},
+
+Thanks for sending through ${materialsReceived}${projectRef ? ` for ${projectRef}` : ""}. As with the previous round, these came in after the ${originalDeadline} deadline, which means I've had to push your slot back.
+
+The new delivery date is **${revisedDeliveryDate}**.
+
+Going forward, if you're not going to hit an agreed deadline, a quick heads-up in advance helps me keep things on track without the disruption. I'll factor in some extra buffer on my end, but I can't guarantee priority scheduling when materials arrive late.
+
+Happy to discuss if the new date doesn't work for you.
+
+${yourName}`;
+        }
+        else {
+            // brief (default)
+            subject = projectName ? `${projectName} — updated delivery date` : "Updated delivery date";
+            body = `Hi ${clientName},
+
+Just confirming I've received ${materialsReceived}${projectRef ? ` for ${projectRef}` : ""}. As these came in after the ${originalDeadline} deadline, the delivery date has shifted to **${revisedDeliveryDate}**.
+
+Let me know if that causes any issues.
 
 ${yourName}`;
         }
