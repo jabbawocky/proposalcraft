@@ -6196,6 +6196,46 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name"],
       },
     },
+    {
+      name: "project_resume_email",
+      description:
+        "Write a professional email restarting a paused project. Pairs with project_pause_email to complete the pause/resume lifecycle. Three routes: payment_received (default — payment has cleared, work is resuming; firm, professional, forward-looking; states the first concrete action so the client knows things are moving), client_unblocked (the missing items or information have now arrived; acknowledges receipt, notes any timeline adjustment, confirms next step), scheduled_restart (the agreed pause period has ended; warm reconnect, confirms restart, sets next milestone). Distinct from project_kickoff_email (starting fresh work) and project_closure_email (ending a project). Does not count against your monthly draft limit. Required: client_name. Optional: project_name, resume_date (when work is resuming — e.g. 'Monday', 'today', 'next week'), first_step (first concrete thing you'll do — e.g. 'I'll have the revised wireframes to you by Thursday', 'I'll pick up the development sprint'), timeline_note (any change to the overall deadline — e.g. 'we're still on track for the original July deadline', 'the revised delivery date is now 28 July'), route ('payment_received' | 'client_unblocked' | 'scheduled_restart' — default payment_received), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client first name",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: project name — e.g. 'the Hartley website', 'your brand refresh'. Makes the email specific.",
+          },
+          resume_date: {
+            type: "string",
+            description: "Optional: when work is resuming — e.g. 'today', 'Monday', 'next week'. Omit if you're just picking up immediately.",
+          },
+          first_step: {
+            type: "string",
+            description: "Optional: the first concrete action you'll take on restart — e.g. 'I'll have the revised wireframes to you by Thursday', 'I'll pick up the development sprint from where we left off'. Gives the client confidence that things are moving.",
+          },
+          timeline_note: {
+            type: "string",
+            description: "Optional: any change to the overall deadline — e.g. 'we're still on track for the original July deadline', 'the revised delivery date is now 28 July'. Omit if the timeline is unchanged and unambiguous.",
+          },
+          route: {
+            type: "string",
+            enum: ["payment_received", "client_unblocked", "scheduled_restart"],
+            description: "payment_received (default) — payment cleared, resuming work; client_unblocked — the missing items have arrived, picking back up; scheduled_restart — agreed pause period is over, restarting.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
   ],
 }));
 
@@ -14522,6 +14562,70 @@ I'm writing to let you know I've had to pause work${projectRef} due to an outsta
 Once that's cleared, I'll pick up where we left off — there's no delay to the timeline from my side as long as we can resolve this promptly.
 
 If there's a problem with the invoice or anything you'd like to discuss, please let me know.
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "project_resume_email") {
+    const clientName = String(args!.client_name || "there");
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const resumeDate = args!.resume_date ? String(args!.resume_date) : null;
+    const firstStep = args!.first_step ? String(args!.first_step) : null;
+    const timelineNote = args!.timeline_note ? String(args!.timeline_note) : null;
+    const route = args!.route === "client_unblocked" ? "client_unblocked"
+      : args!.route === "scheduled_restart" ? "scheduled_restart"
+      : "payment_received";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const resumeNote = resumeDate ? ` from ${resumeDate}` : "";
+    const firstStepLine = firstStep ? `\n\n${firstStep}.` : "";
+    const timelineLine = timelineNote ? `\n\n${timelineNote.charAt(0).toUpperCase() + timelineNote.slice(1)}.` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "client_unblocked") {
+      subject = projectName ? `${projectName} — got everything, picking back up` : "Got everything — picking back up";
+
+      body = `Hi ${clientName},
+
+Thanks for sending that across — I have everything I need to move forward.
+
+I'm picking work${projectRef} back up${resumeNote}.${firstStepLine}${timelineLine}
+
+Let me know if anything else comes up in the meantime.
+
+${yourName}`;
+
+    } else if (route === "scheduled_restart") {
+      subject = projectName ? `${projectName} — ready to restart` : "Ready to restart";
+
+      body = `Hi ${clientName},
+
+Hope the break was useful. I'm ready to pick ${projectName ? projectName : "things"} back up${resumeNote}.${firstStepLine}${timelineLine}
+
+Looking forward to getting this moving again — let me know if anything has changed on your end since we paused.
+
+${yourName}`;
+
+    } else {
+      // payment_received (default)
+      subject = projectName ? `${projectName} — resuming work` : "Resuming work";
+
+      body = `Hi ${clientName},
+
+Payment received — thank you. I'm resuming work${projectRef}${resumeNote}.${firstStepLine}${timelineLine}
 
 ${yourName}`;
     }
