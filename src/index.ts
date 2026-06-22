@@ -6108,6 +6108,46 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "deliverables"],
       },
     },
+    {
+      name: "portfolio_consent_email",
+      description:
+        "Write the email asking a client for permission to feature their project in your portfolio — the ask most freelancers either skip (and get caught out later) or make feel bigger than it needs to be. Three routes: add_to_portfolio (default — asking to name the client and list the project type in your portfolio; lowest-friction ask, single question, done in under 60 words), show_work_samples (asking to display actual screenshots, documents, or design files publicly — needs specific approval because you're sharing their outputs; names exactly what you want to show), full_case_study (requesting to write a detailed breakdown with results, metrics, or outcomes — warrants a slightly longer email with what you'd say and a clear opt-out so it doesn't feel like an obligation). Distinct from testimonial_request_email (asking them to write or approve a quote about you) and case_study_outline (an internal document structure). Does not count against your monthly draft limit. Required: client_name. Optional: project_name (helps the client know which project you mean), sample_description (for show_work_samples: what you want to show — e.g. 'the homepage, two interior pages, and the mobile screens'), results_to_share (for full_case_study: the metrics or outcomes you want to highlight — e.g. '40% faster proposal turnaround'), portfolio_url (where their work would appear — makes the ask concrete), route ('add_to_portfolio' | 'show_work_samples' | 'full_case_study' — default add_to_portfolio), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client first name",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: project name or type — e.g. 'the website redesign', 'your brand identity project'. Helps the client know which work you mean.",
+          },
+          sample_description: {
+            type: "string",
+            description: "Optional (show_work_samples route): what specifically you want to show publicly — e.g. 'the homepage, two interior pages, and the mobile screens', 'three proposal documents with company name visible'.",
+          },
+          results_to_share: {
+            type: "string",
+            description: "Optional (full_case_study route): the metrics or outcomes you want to highlight — e.g. '40% faster proposal turnaround', 'launched on time within budget, positive client feedback'. Keep it factual.",
+          },
+          portfolio_url: {
+            type: "string",
+            description: "Optional: URL where their work would appear — makes the ask concrete and lets them see how their work would be presented.",
+          },
+          route: {
+            type: "string",
+            enum: ["add_to_portfolio", "show_work_samples", "full_case_study"],
+            description: "add_to_portfolio (default) — name and list the project; show_work_samples — show actual screenshots or files publicly; full_case_study — write a detailed breakdown with results.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
   ],
 }));
 
@@ -14290,6 +14330,72 @@ ${yourName}`;
 Finished ${deliverables}${projectRef}${deadlineNote} — happy with how it's come together and wanted to get it to you as soon as it was ready rather than sitting on it.
 
 Everything is attached / linked below.${feedbackNote}
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "portfolio_consent_email") {
+    const clientName = String(args!.client_name || "there");
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const sampleDescription = args!.sample_description ? String(args!.sample_description) : null;
+    const resultsToShare = args!.results_to_share ? String(args!.results_to_share) : null;
+    const portfolioUrl = args!.portfolio_url ? String(args!.portfolio_url) : null;
+    const route = args!.route === "show_work_samples" ? "show_work_samples"
+      : args!.route === "full_case_study" ? "full_case_study"
+      : "add_to_portfolio";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const portfolioNote = portfolioUrl ? ` (${portfolioUrl})` : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "show_work_samples") {
+      const samples = sampleDescription || "some of the work from your project";
+      subject = projectName ? `${projectName} — quick portfolio question` : "Quick portfolio question";
+
+      body = `Hi ${clientName},
+
+Hope things are going well.
+
+Quick question: would you be comfortable with me showing ${samples}${projectRef ? ` from ${projectRef}` : ""} in my portfolio${portfolioNote}? I'd keep your company name visible — or anonymous if you'd prefer.
+
+Just a yes or no is fine — happy to adjust what I show if anything's off-limits.
+
+${yourName}`;
+
+    } else if (route === "full_case_study") {
+      const results = resultsToShare ? ` The angle I'd cover: ${resultsToShare}.` : "";
+      subject = projectName ? `${projectName} — case study request` : "Case study request";
+
+      body = `Hi ${clientName},
+
+I'd love to write up ${projectRef ? projectRef.trim() : "our project"} as a short case study for my portfolio${portfolioNote} — covering the brief, approach, and outcome.${results}
+
+I'd send you the draft for approval before it goes anywhere, and you can ask me to change or remove anything. No obligation at all — just wanted to ask before assuming.
+
+If you're happy for me to go ahead, just let me know.
+
+${yourName}`;
+
+    } else {
+      // add_to_portfolio (default)
+      subject = "Quick question — portfolio";
+
+      body = `Hi ${clientName},
+
+Hope you're well. Would you mind if I listed${projectRef ? ` ${projectRef.trim()}` : " our project"} in my portfolio${portfolioNote}? I'd just name the project type — nothing detailed.
 
 ${yourName}`;
     }
