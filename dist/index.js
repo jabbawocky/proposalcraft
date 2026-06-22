@@ -5824,6 +5824,45 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                 required: ["client_name", "materials_received", "original_deadline", "revised_delivery_date"],
             },
         },
+        {
+            name: "early_delivery_email",
+            description: "Write the email when your work is ready ahead of the agreed deadline — the email most freelancers mishandle by either sitting on finished work until the deadline (wasted goodwill) or sending with no context (client doesn't know what to do with it). This generates a confident, warm note that announces early delivery, frames it positively, and gives the client a clear next step. Two routes: full_delivery (default — everything is done and ready; confident announcement with handover details and a brief note on what you'd like from them next), early_preview (a first draft or near-complete version is ready before expected — inviting early feedback so you can finalise faster; useful for iterative projects). Distinct from project_completion_email (delivery at the expected time), project_handover_email (operational asset handover with checklist), and milestone_approval_request_email (mid-project sign-off gate). Does not count against your monthly draft limit. Required: client_name, deliverables (what you're sending — e.g. 'the homepage design', 'the three proposal templates', 'the full copy deck'). Optional: project_name, original_deadline (the date they were expecting it — makes the earliness concrete, e.g. 'Friday 27 June', 'end of next week'), feedback_window (how long you can accommodate revisions on your current schedule, e.g. 'the next few days', 'this week' — omit to keep it open), route ('full_delivery' | 'early_preview' — default full_delivery), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    deliverables: {
+                        type: "string",
+                        description: "What you're sending early — e.g. 'the homepage design', 'the three proposal templates', 'the full copy deck'",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: project name — e.g. 'the Hartley rebrand', 'your Q3 content pack'",
+                    },
+                    original_deadline: {
+                        type: "string",
+                        description: "Optional: when they were expecting the work — e.g. 'Friday 27 June', 'end of next week'. Makes the earliness concrete.",
+                    },
+                    feedback_window: {
+                        type: "string",
+                        description: "Optional: how long you can accommodate revisions on your current schedule — e.g. 'the next few days', 'this week'. Omit to leave open.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["full_delivery", "early_preview"],
+                        description: "full_delivery (default) — everything is ready; early_preview — a first draft is ready earlier than expected, inviting feedback before the final.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name", "deliverables"],
+            },
+        },
     ],
 }));
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -13024,6 +13063,51 @@ ${yourName}`;
 Just confirming I've received ${materialsReceived}${projectRef ? ` for ${projectRef}` : ""}. As these came in after the ${originalDeadline} deadline, the delivery date has shifted to **${revisedDeliveryDate}**.
 
 Let me know if that causes any issues.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "early_delivery_email") {
+        const clientName = String(args.client_name || "there");
+        const deliverables = String(args.deliverables);
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const originalDeadline = args.original_deadline ? String(args.original_deadline) : null;
+        const feedbackWindow = args.feedback_window ? String(args.feedback_window) : null;
+        const route = args.route === "early_preview" ? "early_preview" : "full_delivery";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` for ${projectName}` : "";
+        const deadlineNote = originalDeadline ? ` ahead of the ${originalDeadline} deadline` : " ahead of schedule";
+        const feedbackNote = feedbackWindow
+            ? ` I have capacity to turn around any revisions ${feedbackWindow}, so the sooner you can take a look the better.`
+            : " Let me know if you have any feedback or changes.";
+        let subject;
+        let body;
+        if (route === "early_preview") {
+            subject = projectName ? `${projectName} — early look ready` : "Early look ready for your review";
+            body = `Hi ${clientName},
+
+Good news — I've got an early draft of ${deliverables}${projectRef} ready${deadlineNote}. Wanted to get it in front of you now in case you'd like to shape the final version before I lock it down.
+
+It's not the final — but it's close enough that your feedback at this stage will make the finished piece sharper.${feedbackNote}
+
+${yourName}`;
+        }
+        else {
+            // full_delivery (default)
+            subject = projectName ? `${projectName} — ready for you` : "Your work is ready";
+            body = `Hi ${clientName},
+
+Finished ${deliverables}${projectRef}${deadlineNote} — happy with how it's come together and wanted to get it to you as soon as it was ready rather than sitting on it.
+
+Everything is attached / linked below.${feedbackNote}
 
 ${yourName}`;
         }
