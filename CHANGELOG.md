@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), version
 
 ---
 
+## [1.4.121] — 2026-06-23
+
+### Added
+- `spec_work_decline_email` tool — decline a request to produce unpaid work samples as part of a pitch or evaluation, without burning the relationship. Two routes: decline (default — firm but warm no; redirects to existing portfolio; use when you don't want to counter-offer), counter (no to spec, yes to a small paid discovery or test engagement as the right first step). Distinct from client_decline_email (turning down the whole project) and competitor_response_email (already engaged, client comparing providers). Required: client_name. Optional: project_description, portfolio_url, discovery_offer, route, your_name. Does not count against the monthly draft limit.
+
+[1.4.121]: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.121
+
 ## [1.2.4] — 2026-06-11
 
 ### Added

@@ -6280,6 +6280,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ["client_name", "return_date"],
       },
     },
+    {
+      name: "spec_work_decline_email",
+      description:
+        "Decline a request to produce work on spec (unpaid design, copy, or code samples produced as part of a pitch or evaluation) without burning the relationship. Two routes: decline (default — firm but warm no; redirects to your existing portfolio and process; use when you don't want to propose an alternative), counter (no to spec, yes to a small paid discovery or test engagement as the right first step — use when you're genuinely interested in the project but won't work for free). Distinct from competitor_response_email (you've already been engaged and the client is comparing providers), client_decline_email (you're turning down the whole project), and proposal_expiry_reminder_email (chasing a submitted proposal). Does not count against your monthly draft limit. Required: client_name. Optional: project_description (what the spec request was for — e.g. 'a sample homepage design', 'a draft chapter', 'a prototype feature'), portfolio_url (link to existing work — include so the client can self-qualify), discovery_offer (the paid alternative you're proposing — e.g. 'a paid half-day discovery workshop', 'a two-hour paid strategy session', 'a small paid scoping engagement'; default 'a paid discovery session'), route ('decline' | 'counter' — default decline), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client first name or company name",
+          },
+          project_description: {
+            type: "string",
+            description: "Optional: what the spec request was for — e.g. 'a sample homepage design', 'a draft chapter', 'a prototype feature'. Makes the email specific rather than generic.",
+          },
+          portfolio_url: {
+            type: "string",
+            description: "Optional: URL to your existing portfolio, case studies, or work samples — e.g. 'mysite.com/work'. Including this gives the client a clear next step to evaluate fit without spec work.",
+          },
+          discovery_offer: {
+            type: "string",
+            description: "Optional (counter route only): the paid alternative you're offering — e.g. 'a paid half-day discovery workshop', 'a two-hour paid strategy session', 'a small paid scoping engagement'. Default: 'a paid discovery session'. Only used when route is counter.",
+          },
+          route: {
+            type: "string",
+            enum: ["decline", "counter"],
+            description: "decline (default) — warm, firm no to spec, redirect to portfolio, keep door open; counter — no to spec but offer a paid alternative engagement as the first step.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name"],
+      },
+    },
   ],
 }));
 
@@ -14745,6 +14781,65 @@ ${yourName}`;
 Wanted to give you a heads up${projectRef} — I'm taking annual leave${fromLine} and will be back on ${returnDate}.${deliverableLine}
 
 I won't be checking email while I'm away. I'll respond to anything that comes in from ${returnDate}.${coverLine}
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "spec_work_decline_email") {
+    const clientName = String(args!.client_name || "there");
+    const projectDescription = args!.project_description ? String(args!.project_description) : null;
+    const portfolioUrl = args!.portfolio_url ? String(args!.portfolio_url) : null;
+    const discoveryOffer = args!.discovery_offer ? String(args!.discovery_offer) : "a paid discovery session";
+    const route = args!.route === "counter" ? "counter" : "decline";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectDescription ? ` on ${projectDescription}` : "";
+    const projectRefGeneral = projectDescription ? ` with ${projectDescription}` : " with this";
+    const portfolioLine = portfolioUrl
+      ? `\n\nThe best way to see how I think and work is my existing portfolio: ${portfolioUrl}. If anything there resonates, I'm happy to jump on a call.`
+      : "\n\nIf you'd like to talk through your project and see whether we're a fit, I'm happy to jump on a short call.";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "counter") {
+      subject = projectDescription
+        ? `Re: ${projectDescription} — alternative approach`
+        : "Re: working together — alternative approach";
+
+      body = `Hi ${clientName},
+
+Thanks for reaching out. I'm genuinely interested in working${projectRefGeneral}.
+
+That said, I don't produce work on spec — unpaid samples aren't part of my process, regardless of the project size or the opportunity.
+
+What I can offer instead: ${discoveryOffer}. This gives you something concrete, keeps the risk low on your side, and lets me demonstrate how I work on your actual problem rather than a hypothetical brief.
+
+If that sounds like a good fit, I'm happy to scope it out. Let me know.
+
+${yourName}`;
+
+    } else {
+      // decline (default)
+      subject = projectDescription
+        ? `Re: ${projectDescription} — approach to working together`
+        : "Re: working together — my process";
+
+      body = `Hi ${clientName},
+
+Thanks for thinking of me${projectRef}.
+
+I don't take on spec work — producing unpaid samples as part of a selection process isn't something I do at any stage of my career. It's not personal; it's a firm professional boundary.${portfolioLine}
 
 ${yourName}`;
     }
