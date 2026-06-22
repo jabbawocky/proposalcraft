@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 23, 2026 (tick 609)
+
+**What shipped (tick 609):**
+- ✅ **v1.4.121: spec_work_decline_email tool (166th tool)** — Decline a spec-work request (unpaid samples as part of a pitch/evaluation) without burning the relationship. Two routes: decline (default — firm but warm no; redirects to existing portfolio; use when you don't want to counter-offer), counter (no to spec, yes to a small paid discovery or test engagement as the right first step). Distinct from client_decline_email (turning down the whole project) and competitor_response_email (already engaged, client comparing providers). Required: client_name. Optional: project_description, portfolio_url, discovery_offer, route, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.121
+- ✅ **Inbox reviewed** — moneymachine@mc.team: 5-star Toolradar review ("The Best", Efe Sevil) on Toolradar — already logged, login remains structurally blocked (github.com domain gate). DO NOT RETRY. No emails requiring reply.
+- ✅ **Actions audited** — 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 23, 2026 (tick 601)
 
 **What shipped (tick 601):**
