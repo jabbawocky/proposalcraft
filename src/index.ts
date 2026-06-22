@@ -90,7 +90,7 @@ function loadProposals(): { name: string; content: string }[] {
 }
 
 const server = new Server(
-  { name: "proposalcraft", version: "1.4.118" },
+  { name: "proposalcraft", version: "1.4.120" },
   { capabilities: { tools: {} } }
 );
 
@@ -6234,6 +6234,50 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
         },
         required: ["client_name"],
+      },
+    },
+    {
+      name: "unavailability_notice_email",
+      description:
+        "Write a proactive heads-up email to an active client before you go away — annual leave, a personal absence, or a conference/training. Sends this BEFORE you leave so the client isn't surprised when you go quiet. Three routes: vacation (default — fully offline; states the exact dates, what you'll complete before you go, and when you'll respond on return; gives the client confidence that active work is handled), conference_or_training (professional development; acknowledges you may check email intermittently; warmer tone since you're still reachable in genuine emergencies), personal (minimal detail — just the dates and return; no explanation required). Distinct from project_pause_email (formal indefinite pause, often for non-payment), availability_announcement_email (announcing new slots for future work), and project_delay_notification_email (your own delay mid-project). Does not count against your monthly draft limit. Required: client_name, return_date (when you'll be back — e.g. 'Monday 7 July', 'next Thursday'). Optional: project_name, from_date (first day away — e.g. 'Friday', '27 June'; omit if sending on the day of departure), pre_absence_deliverable (what you'll complete before you leave — e.g. 'the first-draft wireframes', 'the revised copy'), cover_contact (name + email of someone handling genuine emergencies — omit if you have no cover), route ('vacation' | 'conference_or_training' | 'personal' — default vacation), your_name.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          client_name: {
+            type: "string",
+            description: "Client first name",
+          },
+          return_date: {
+            type: "string",
+            description: "When you'll be back and responding to emails — e.g. 'Monday 7 July', 'next Thursday', '14 July'. Give a specific date so the client has a concrete expectation.",
+          },
+          project_name: {
+            type: "string",
+            description: "Optional: project name — e.g. 'the Hartley website', 'your brand refresh'. Makes the email specific rather than generic.",
+          },
+          from_date: {
+            type: "string",
+            description: "Optional: first day away — e.g. 'Friday', '27 June', 'tomorrow'. Omit if sending on the day of departure.",
+          },
+          pre_absence_deliverable: {
+            type: "string",
+            description: "Optional: what you'll complete and send before you leave — e.g. 'the first-draft wireframes', 'the revised copy deck', 'the updated timeline'. Reassures the client that active work is handled.",
+          },
+          cover_contact: {
+            type: "string",
+            description: "Optional: name and contact for genuine emergencies — e.g. 'Sarah (sarah@agency.com)'. Omit if you have no cover. Do not list a cover contact unless you have one — a named contact who doesn't respond is worse than no contact.",
+          },
+          route: {
+            type: "string",
+            enum: ["vacation", "conference_or_training", "personal"],
+            description: "vacation (default) — annual leave, fully offline; conference_or_training — professional development, may check email intermittently; personal — minimal detail, just the dates.",
+          },
+          your_name: {
+            type: "string",
+            description: "Optional: your name for the sign-off",
+          },
+        },
+        required: ["client_name", "return_date"],
       },
     },
   ],
@@ -14626,6 +14670,81 @@ ${yourName}`;
       body = `Hi ${clientName},
 
 Payment received — thank you. I'm resuming work${projectRef}${resumeNote}.${firstStepLine}${timelineLine}
+
+${yourName}`;
+    }
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Subject: ${subject}\n\n${body}`,
+        },
+      ],
+    };
+  }
+
+  if (name === "unavailability_notice_email") {
+    const clientName = String(args!.client_name || "there");
+    const returnDate = String(args!.return_date || "next week");
+    const projectName = args!.project_name ? String(args!.project_name) : null;
+    const fromDate = args!.from_date ? String(args!.from_date) : null;
+    const preAbsenceDeliverable = args!.pre_absence_deliverable ? String(args!.pre_absence_deliverable) : null;
+    const coverContact = args!.cover_contact ? String(args!.cover_contact) : null;
+    const route = args!.route === "conference_or_training" ? "conference_or_training"
+      : args!.route === "personal" ? "personal"
+      : "vacation";
+    const yourName = args!.your_name ? String(args!.your_name) : "[Your name]";
+
+    const projectRef = projectName ? ` on ${projectName}` : "";
+    const fromLine = fromDate ? ` from ${fromDate}` : "";
+    const deliverableLine = preAbsenceDeliverable
+      ? `\n\nBefore I go, I'll have ${preAbsenceDeliverable} to you${fromDate ? " before then" : ""}.`
+      : "";
+    const coverLine = coverContact
+      ? `\n\nFor genuine emergencies while I'm away, ${coverContact} can help.`
+      : "";
+
+    let subject: string;
+    let body: string;
+
+    if (route === "conference_or_training") {
+      subject = projectName
+        ? `${projectName} — away for training ${fromDate ? fromDate + "–" : "until "}${returnDate}`
+        : `Away for training ${fromDate ? fromDate + "–" : "until "}${returnDate}`;
+
+      body = `Hi ${clientName},
+
+Heads up — I'm away${fromLine} for a conference/training until ${returnDate}. I'll have limited access to email during this time, but I'll be back and fully responsive from ${returnDate}.${deliverableLine}${coverLine}
+
+Apologies in advance for any slower replies. I'll catch up on everything when I'm back.
+
+${yourName}`;
+
+    } else if (route === "personal") {
+      subject = projectName
+        ? `${projectName} — away ${fromDate ? fromDate + "–" : "until "}${returnDate}`
+        : `Away ${fromDate ? fromDate + "–" : "until "}${returnDate}`;
+
+      body = `Hi ${clientName},
+
+Just a quick heads up — I'll be away${fromLine} and back on ${returnDate}.${deliverableLine}${coverLine}
+
+I'll be in touch when I return.
+
+${yourName}`;
+
+    } else {
+      // vacation (default)
+      subject = projectName
+        ? `${projectName} — annual leave ${fromDate ? fromDate + "–" : "until "}${returnDate}`
+        : `Annual leave ${fromDate ? fromDate + "–" : "until "}${returnDate}`;
+
+      body = `Hi ${clientName},
+
+Wanted to give you a heads up${projectRef} — I'm taking annual leave${fromLine} and will be back on ${returnDate}.${deliverableLine}
+
+I won't be checking email while I'm away. I'll respond to anything that comes in from ${returnDate}.${coverLine}
 
 ${yourName}`;
     }
