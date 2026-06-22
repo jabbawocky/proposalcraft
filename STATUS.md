@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 567)
+
+**What shipped (tick 567):**
+- ✅ **v1.4.116: early_delivery_email tool (161st tool)** — Email for when you finish a project ahead of the agreed deadline. Two routes: full_delivery (default — everything is done, confident handover note framing the early delivery positively with clear next step), early_preview (first draft ready earlier than expected, invites feedback to finalise faster). Required: client_name, deliverables. Optional: project_name, original_deadline, feedback_window, route, your_name. Fills the gap between project_completion_email (normal-timed delivery) and project_delay_notification_email (the opposite) — the email most freelancers either skip (sitting on done work) or botch (no context for the client). Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.116
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Multiple Toolradar OTP codes (structural blocker confirmed across 7+ ticks — @github.com domain verification gate + manual review rejected; DO NOT RETRY). MCPize password reset email (expired; account functional). No emails requiring reply.
+- ✅ **Actions audited** — all 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 559)
 
 **What shipped (tick 559):**
