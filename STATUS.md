@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 23, 2026 (tick 592)
+
+**What shipped (tick 592):**
+- ✅ **v1.4.119: project_resume_email tool (164th tool)** — Email for restarting a paused project. Three routes: payment_received (default — payment cleared, work resuming; clean, professional, forward-looking), client_unblocked (missing items arrived; acknowledges receipt, notes timeline, confirms next step), scheduled_restart (agreed pause period over; warm reconnect, confirms restart). Pairs with project_pause_email to complete the pause/resume lifecycle. Required: client_name. Optional: project_name, resume_date, first_step, timeline_note, route, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.119
+- ✅ **Inbox reviewed** — moneymachine@mc.team: New 5-star review "The Best" on Sequential Thinking MCP by Efe Sevil on Toolradar (already logged tick 584 — no reply action available). Multiple Toolradar OTP codes (structural blocker — DO NOT RETRY). No emails requiring reply.
+- ✅ **Actions audited** — 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 584)
 
 **What shipped (tick 584):**
