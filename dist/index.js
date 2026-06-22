@@ -74,7 +74,7 @@ function loadProposals() {
         content: fs.readFileSync(path.join(dir, f), "utf-8"),
     }));
 }
-const server = new Server({ name: "proposalcraft", version: "1.4.115" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "proposalcraft", version: "1.4.118" }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
         {
@@ -5893,6 +5893,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
                         type: "string",
                         enum: ["add_to_portfolio", "show_work_samples", "full_case_study"],
                         description: "add_to_portfolio (default) — name and list the project; show_work_samples — show actual screenshots or files publicly; full_case_study — write a detailed breakdown with results.",
+                    },
+                    your_name: {
+                        type: "string",
+                        description: "Optional: your name for the sign-off",
+                    },
+                },
+                required: ["client_name"],
+            },
+        },
+        {
+            name: "project_pause_email",
+            description: "Write the email formally pausing work on a project — the hardest email most freelancers delay sending until it's awkward, or send too aggressively and damage the relationship. Three routes: non_payment (default — work is on hold until an outstanding invoice is settled; firm but not aggressive, states the pause clearly and gives a single clear path to resume), blocked_on_client (work can't proceed until the client provides something — a missing brief, asset, decision, or approval; names the specific blocker, sets a soft deadline, and keeps the tone collaborative not accusatory), planned_pause (both parties are pausing the project for a defined period — a client budget gap, seasonal pause, or mutual decision; warm tone, confirms the resume expectation, keeps the relationship intact). Distinct from project_delay_notification_email (your own delay without pausing), late_materials_impact_email (timeline impact from late materials, not a formal pause), and project_scope_reduction_email (reducing scope rather than pausing). Does not count against your monthly draft limit. Required: client_name. Optional: project_name, pause_reason (brief context — omit for non_payment to let the invoice speak), outstanding_invoice (non_payment route: what's owed — e.g. 'Invoice #42 for £1,200 due 5 June'), missing_item (blocked_on_client route: what you need — e.g. 'the final logo files', 'sign-off on the wireframes', 'the content brief for section 3'), response_deadline (blocked_on_client route: by when you need a response to stay on schedule — e.g. 'by end of Wednesday', 'within the next 48 hours'), resume_date (planned_pause route: when you expect to pick up again — e.g. 'early July', 'the week of 14 July'), route ('non_payment' | 'blocked_on_client' | 'planned_pause' — default non_payment), your_name.",
+            inputSchema: {
+                type: "object",
+                properties: {
+                    client_name: {
+                        type: "string",
+                        description: "Client first name",
+                    },
+                    project_name: {
+                        type: "string",
+                        description: "Optional: project name — e.g. 'the Hartley website', 'your brand refresh'. Makes the email specific rather than generic.",
+                    },
+                    pause_reason: {
+                        type: "string",
+                        description: "Optional: brief context for the pause — e.g. 'while we wait for the Q3 budget to open up', 'while you're sorting the internal sign-off'. Omit for non_payment to let the invoice speak for itself.",
+                    },
+                    outstanding_invoice: {
+                        type: "string",
+                        description: "Optional (non_payment route): what's owed — e.g. 'Invoice #42 for £1,200 due 5 June', 'the deposit invoice sent on 2 June'. Makes the path to resume concrete.",
+                    },
+                    missing_item: {
+                        type: "string",
+                        description: "Optional (blocked_on_client route): what you need from the client — e.g. 'the final logo files', 'sign-off on the wireframes', 'the content brief for section 3'. Be specific — vague blockers create vague responses.",
+                    },
+                    response_deadline: {
+                        type: "string",
+                        description: "Optional (blocked_on_client route): by when you need a response to stay on your current schedule — e.g. 'by end of Wednesday', 'within the next 48 hours'. Creates urgency without being demanding.",
+                    },
+                    resume_date: {
+                        type: "string",
+                        description: "Optional (planned_pause route): when you expect to pick up again — e.g. 'early July', 'the week of 14 July'. Keeps the project alive and sets a shared expectation.",
+                    },
+                    route: {
+                        type: "string",
+                        enum: ["non_payment", "blocked_on_client", "planned_pause"],
+                        description: "non_payment (default) — work on hold pending an outstanding invoice; blocked_on_client — can't proceed without something from the client; planned_pause — mutual pause for a defined period.",
                     },
                     your_name: {
                         type: "string",
@@ -13205,6 +13252,76 @@ ${yourName}`;
             body = `Hi ${clientName},
 
 Hope you're well. Would you mind if I listed${projectRef ? ` ${projectRef.trim()}` : " our project"} in my portfolio${portfolioNote}? I'd just name the project type — nothing detailed.
+
+${yourName}`;
+        }
+        return {
+            content: [
+                {
+                    type: "text",
+                    text: `Subject: ${subject}\n\n${body}`,
+                },
+            ],
+        };
+    }
+    if (name === "project_pause_email") {
+        const clientName = String(args.client_name || "there");
+        const projectName = args.project_name ? String(args.project_name) : null;
+        const pauseReason = args.pause_reason ? String(args.pause_reason) : null;
+        const outstandingInvoice = args.outstanding_invoice ? String(args.outstanding_invoice) : null;
+        const missingItem = args.missing_item ? String(args.missing_item) : null;
+        const responseDeadline = args.response_deadline ? String(args.response_deadline) : null;
+        const resumeDate = args.resume_date ? String(args.resume_date) : null;
+        const route = args.route === "blocked_on_client" ? "blocked_on_client"
+            : args.route === "planned_pause" ? "planned_pause"
+                : "non_payment";
+        const yourName = args.your_name ? String(args.your_name) : "[Your name]";
+        const projectRef = projectName ? ` on ${projectName}` : "";
+        let subject;
+        let body;
+        if (route === "blocked_on_client") {
+            const blocker = missingItem || "the outstanding items";
+            const deadlineNote = responseDeadline
+                ? ` If I haven't heard back ${responseDeadline}, I'll need to reallocate your slot and we can reschedule when you're ready.`
+                : " Once I have what I need, I can pick up where we left off.";
+            subject = projectName ? `${projectName} — work on hold` : "Project on hold — waiting on you";
+            body = `Hi ${clientName},
+
+I wanted to flag that work${projectRef} is currently on hold — I'm waiting on ${blocker} before I can move forward.${pauseReason ? ` (${pauseReason})` : ""}
+
+Could you send that across as soon as you're able?${deadlineNote}
+
+Happy to answer any questions in the meantime.
+
+${yourName}`;
+        }
+        else if (route === "planned_pause") {
+            const resumeNote = resumeDate ? ` I'll plan to pick things up again ${resumeDate}.` : " We can agree a restart date when you're ready to go again.";
+            const reasonNote = pauseReason ? ` — ${pauseReason}` : "";
+            subject = projectName ? `${projectName} — pausing until further notice` : "Project pause — agreed";
+            body = `Hi ${clientName},
+
+Just confirming that we're pausing work${projectRef}${reasonNote}.${resumeNote}
+
+All the work done to date is in good shape, so we'll be able to pick up quickly when the time is right. I'll keep everything on file.
+
+Feel free to reach out whenever you're ready to restart, and we can agree the next steps from there.
+
+${yourName}`;
+        }
+        else {
+            // non_payment (default)
+            const invoiceNote = outstandingInvoice
+                ? ` I'm referring to ${outstandingInvoice}.`
+                : " There's an outstanding invoice I'd need settled before we continue.";
+            subject = projectName ? `${projectName} — work paused` : "Work paused — outstanding invoice";
+            body = `Hi ${clientName},
+
+I'm writing to let you know I've had to pause work${projectRef} due to an outstanding payment.${invoiceNote}
+
+Once that's cleared, I'll pick up where we left off — there's no delay to the timeline from my side as long as we can resolve this promptly.
+
+If there's a problem with the invoice or anything you'd like to discuss, please let me know.
 
 ${yourName}`;
         }
