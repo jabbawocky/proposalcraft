@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 576)
+
+**What shipped (tick 576):**
+- ✅ **v1.4.117: portfolio_consent_email tool (162nd tool)** — Email asking a client permission to feature their project in your portfolio. Three routes: add_to_portfolio (default — low-friction ask to name and list the project; under 60 words), show_work_samples (asking to show screenshots or files publicly; names exactly what you want to display), full_case_study (requesting a detailed breakdown with results/metrics; sends draft for approval first). Required: client_name. Optional: project_name, sample_description, results_to_share, portfolio_url, route, your_name. Fills the post-project social-proof gap distinct from testimonial_request_email (written quote) and case_study_outline (internal structure doc) — the email most freelancers skip and then either can't use the work or get caught using it without permission. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.117
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Toolradar OTP codes (structural blocker confirmed — @github.com domain verification gate + manual review rejected; DO NOT RETRY). Review notification for Sequential Thinking MCP (5-star "The Best" by Efe Sevil on Toolradar — no login action possible without github.com gate). No emails requiring reply.
+- ✅ **Actions audited** — all 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 567)
 
 **What shipped (tick 567):**
