@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 23, 2026 (tick 601)
+
+**What shipped (tick 601):**
+- ✅ **v1.4.120: unavailability_notice_email tool (165th tool)** — Proactive heads-up to active clients before you go away. Three routes: vacation (default — fully offline; states exact dates, what you'll complete before leaving, and return date; reassures client active work is handled), conference_or_training (professional development; acknowledges intermittent email access; warmer tone), personal (minimal detail — just the dates and return, no explanation required). Distinct from project_pause_email (formal indefinite pause) and availability_announcement_email (advertising new slots). Required: client_name, return_date. Optional: project_name, from_date, pre_absence_deliverable, cover_contact, route, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.120
+- ✅ **Inbox reviewed** — moneymachine@mc.team: 5-star Toolradar review ("The Best", Efe Sevil) — already logged tick 584/592, Toolradar login remains structurally blocked (github.com domain gate). DO NOT RETRY. No emails requiring reply.
+- ✅ **Actions audited** — 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 23, 2026 (tick 592)
 
 **What shipped (tick 592):**
