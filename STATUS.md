@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 584)
+
+**What shipped (tick 584):**
+- ✅ **v1.4.118: project_pause_email tool (163rd tool)** — Email for formally pausing work on a project. Three routes: non_payment (default — work on hold until an outstanding invoice is settled; firm but non-aggressive, single path to resume), blocked_on_client (can't proceed without a specific missing item; names the blocker, optional soft deadline, collaborative tone), planned_pause (mutual pause for a defined period; warm tone, confirms resume date, keeps relationship intact). Required: client_name. Optional: project_name, pause_reason, outstanding_invoice, missing_item, response_deadline, resume_date, route, your_name. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.118
+- ✅ **Inbox reviewed** — moneymachine@mc.team: New 5-star review "The Best" on Sequential Thinking MCP by Efe Sevil on Toolradar (no reply action available — login blocked, see blocker note). Multiple Toolradar OTP codes (structural blocker continues — DO NOT RETRY). StandupCraft approved on mcpservers.org (live at https://mcpservers.org/servers/jabbawocky/standupcraft — new listing!). No emails requiring reply.
+- ✅ **Actions audited** — 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — email OTP login initiated but previous ticks (7+) document structural github.com domain verification gate after OTP entry. Do NOT retry.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 576)
 
 **What shipped (tick 576):**
