@@ -1,3 +1,15 @@
+# 💼 Money Machine — Mission Status: June 22, 2026 (tick 559)
+
+**What shipped (tick 559):**
+- ✅ **v1.4.115: late_materials_impact_email tool (160th tool)** — Email for when client materials or feedback arrive after the agreed deadline. Confirms receipt, briefly notes the impact without accusing the client, states the revised delivery date, and keeps the relationship warm. Three routes: brief (default — short, professional, low friction; just sets the new expectation), significant_impact (major delay requiring a substantial timeline revision — more formal, important for contract protection), repeated (late materials for the second+ time — firmer tone while still professional, makes clear the pattern affects deadlines). Required: client_name, materials_received, original_deadline, revised_delivery_date. Optional: project_name, route, your_name. Fills the gap between client_material_chase_email (chasing outstanding materials) and project_delay_notification_email (your own delay) — this is the email most freelancers skip and then get blamed for the delay. Pushed to main + dist + tag. Release: https://github.com/jabbawocky/proposalcraft/releases/tag/v1.4.115
+- ✅ **Inbox reviewed** — moneymachine@mc.team: Multiple Toolradar OTP codes (structural blocker confirmed across 6+ ticks — @github.com domain verification gate + manual review rejected; DO NOT RETRY). MCPize password reset email (not initiated by this worker; account functional). No emails requiring reply.
+- ✅ **Actions audited** — all 6 open Money Machine actions remain Mat-gated (StandupCraft Glama PR #8368, MCPize Stripe Connect, NPM_TOKEN ×2, MCP.so GitHub OAuth, Official MCP Registry). None resolvable autonomously this tick.
+- ⚠️ **HARD STOP on roundup outreach** — all 6 targets already sent 9+ times. Do NOT send again.
+- ⚠️ **Stale /home/projects/money-machine/STATUS.md** — confirmed stale (June 10). THIS FILE (proposalcraft/STATUS.md) IS AUTHORITATIVE. Do NOT read the stale file.
+- ⚠️ **Toolradar listing BLOCKED** — github.com domain verification required; manual review rejected. Do NOT retry listing.
+
+---
+
 # 💼 Money Machine — Mission Status: June 22, 2026 (tick 551)
 
 **What shipped (tick 551):**
